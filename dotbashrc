@@ -68,6 +68,12 @@ function set_cross()
 	fi
     else
 	echo "No target specified - clearing env"
+	CROSS_TARGET=
+	CROSS_CC=
+	CROSS_LD=
+	CROSS_STRIP=
+	CROSS_AR=
+	CROSS_RANLIB=
 	export -n CROSS_TARGET
 	export -n CROSS_CC
 	export -n CROSS_LD
