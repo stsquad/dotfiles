@@ -2,7 +2,7 @@
 #
 # PS1 manipulations
 #
-# Why go to all this extra stuff. Well mainly to work-around things
+# Why go to all this extra stuff? Well mainly to work-around things
 # like LAVA which break when they get unexpected login prompts. But it
 # is also nice to keep things together.
 #
@@ -124,15 +124,17 @@ fi
 #
 function update_ps1()
 {
-    final=$1
+    local final=$1
+    local tty=`tty`
+
     if [ -z "$final" ];
     then
         final="\W"
     fi
 
-    if [[ "$TERM" == "vt100" || "$TERM" == "vt102" ]]; then
+    if [[ "$TERM" == "vt100" || "$TERM" == "vt102" || "$tty" == /dev/ttyS* ]]; then
         # Dumb serial line, don't confuse LAVA
-        export PS1="${ps_user}@\h:\w\$"
+        export PS1="\u@\h:\w\$"
     else
         # Setup the prompt to show who I am and on what machine, what processor and my SCM state
         export PS1="\A ${ps_user}@\h/${ps_proc} [$final] >"
@@ -143,3 +145,4 @@ update_ps1
 
 # Alias for reloading
 alias .ps1=". ~/.bash_ps1"
+echo "loading .bash_ps1 ($TERM on `tty`)"
