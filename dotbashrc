@@ -2,9 +2,22 @@
 # Alexs .bashrc
 # loaded by bash when any non-login shell started
 
+#
 # Source global definitions
+#
+
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+    source /etc/bashrc
+fi
+
+if [ -f /etc/bash.bashrc ]; then
+    source /etc/bash.bashrc
+fi
+
+# This is for any local bashrcs
+if [ -f $HOME/.bashrc_local ]; then
+    echo "Adding local .bashrc_local"
+    source $HOME/.bashrc_local
 fi
 
 #############
@@ -18,7 +31,7 @@ alias h="history | grep"
 alias f='find . -iname'
 
 # and search code for stuff
-alias sc="find . -iname '*.[chS]' | xargs grep -H "
+alias sc="find . -iname '*.[chS]' -or -iname '*.cc' | xargs grep -H "
 alias sh="find . -iname '*.h' | xargs grep -H "
 alias sa="find . -xtype f | xargs grep -H "
 
@@ -45,56 +58,6 @@ export CVSEDITOR=emacs
 HISTIGNORE="rm*"
 export HISTIGNORE
 
-#
-# Cross Compile Stuff
-#
-# set_cross exports a bunch of cross-compile environment variables
-# to make switching between different compilers easy
-#
-function set_cross()
-{
-    if [ "$1" ]
-    then
-	GCC=`which $1-gcc`
-	if [ ! x$GCC = x ]
-	then
-	    export CROSS_TARGET=$1
-	    export CROSS_CC=$CROSS_TARGET-gcc
-	    export CROSS_LD=$CROSS_TARGET-ld
-	    export CROSS_STRIP=$CROSS_TARGET-strip
-	    export CROSS_AR=$CROSS_TARGET-ar
-	    export CROSS_RANLIB=$CROSS_TARGET-ranlib
-	else
-	    echo "Couldn't find $1-gcc, bad path maybe?"
-	fi
-    else
-	echo "No target specified - clearing env"
-	CROSS_TARGET=
-	CROSS_CC=
-	CROSS_LD=
-	CROSS_STRIP=
-	CROSS_AR=
-	CROSS_RANLIB=
-	export -n CROSS_TARGET
-	export -n CROSS_CC
-	export -n CROSS_LD
-	export -n CROSS_STRIP
-	export -n CROSS_AR
-	export -n CROSS_RANLIB
-    fi
-}
-
-
-#
-# If the SH cross-compile tools are around I'll have those as well
-#
-# FIXME: Shouldn't zap path if already in it or cross-tool in effect
-#
-if [ -d "/opt/STM/ST40Linux-1.0/devkit/sh4/bin" ]
-then
-    export NOCROSS_PATH=$PATH
-    export PATH=/opt/STM/ST40Linux-1.0/devkit/sh4/bin:/opt/STM/st40load/bin:$PATH
-fi
 
 ########################
 # Miscelaneous Stuff
