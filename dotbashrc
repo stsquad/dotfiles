@@ -14,12 +14,6 @@ if [ -f /etc/bash.bashrc ]; then
     source /etc/bash.bashrc
 fi
 
-# This is for any local bashrcs
-if [ -f $HOME/.bashrc_local ]; then
-    echo "Adding local .bashrc_local"
-    source $HOME/.bashrc_local
-fi
-
 #############
 # Aliases
 #############
@@ -27,13 +21,34 @@ fi
 # I like a quick grep of history
 alias h="history | grep"
 
-# Find files under here
-alias f='find . -iname'
+#
+# Some systems I use don't have a decent 'find' implentation so
+#
+FIND=`find --version 2>/dev/null`
+if [  "${FIND:0:8}" == "GNU find" ]; then
 
-# and search code for stuff
-alias sc="find . -iname '*.[chS]' -or -iname '*.cc' | xargs grep -H "
-alias sh="find . -iname '*.h' | xargs grep -H "
-alias sa="find . -xtype f | xargs grep -H "
+    # Find files under here
+    alias f='find . -iname'
+
+    # and search code for stuff
+    alias sc="find . -iname '*.[chS]' -or -iname '*.cc' -print0 | xargs -0 grep -H "
+    alias sh="find . -iname '*.h' -print0 | xargs -0 grep -H "
+    alias sa="find . -xtype f -print0 | xargs -0 grep -H "
+else
+    #
+    # Who knows how standard unix is, its not GNU so probably not
+    #
+    # Lets assume both find and grep are borken
+    #
+
+    # Find files under here
+    alias f="find . -name"
+
+    # and search code for stuff
+    alias sc="find . -name '*.[chS]' -o  -name '*.cc' | xargs grep "
+    alias sh="find . -name '*.h' | xargs grep "
+    alias sa="find -L . -type f | xargs grep "
+fi    
 
 # create patches easily
 export DIFFIGNORE="-x*~ -x*.o -x*.pyc "
@@ -55,8 +70,10 @@ export CVSEDITOR=emacs
 
 # Setup history control - hard to get right, could do with
 # bashcompletion as well. Just make sure I don't repeatedly delete stuff
-HISTIGNORE="rm*"
-export HISTIGNORE
+
+export HISTCONTROL=ignoredups
+export HISTIGNORE="rm*"
+export HISTFILESIZE=2000
 
 
 ########################
@@ -65,4 +82,10 @@ export HISTIGNORE
 # I want core-dumps dammit
 ulimit -S -c unlimited
 
-
+#
+# Now source any local bashrc's which can overide stuff
+# or add stuff relevant to the system I am on
+#
+if [ -f $HOME/.bashrc_local ]; then
+    source $HOME/.bashrc_local
+fi
