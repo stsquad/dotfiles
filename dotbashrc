@@ -21,17 +21,27 @@ fi
 # I like a quick grep of history
 alias h="history | grep"
 
+
 #
 # Some systems I use don't have a decent 'find' implentation so
 #
 FIND=`find --version 2>/dev/null`
 if [  "${FIND:0:8}" == "GNU find" ]; then
 
+    # Some nice find expressions
+    FIND_BACKUPS=" -name '.#*' -o -name '#*#' -o -name '*\.~*.~' -o -path '*./CVS/*.'"
+    FIND_CVS=" -path '*./CVS/.*' "
+    FIND_CCODE="  -iname '*.[chS]' -or -iname '*.cc' "
+    FIND_CHEAD=" -iname '*.h' "
+        
     # Find files under here
     alias f='find . -iname'
 
-    # and search code for stuff
-    alias sc="find . -iname '*.[chS]' -or -iname '*.cc' -print0 | xargs -0 grep -H "
+    # and search code for stuff (when I figure out proper expansion and quuting I'll make this neater)
+    
+    #alias sc="find . -iname '*.[chS]' -or -iname '*.cc' -and -not \( -name '.#' -o -name '#*#' -o -name '*\.~*.~' -o -path '*./CVS/*.' \) -print0 | xargs -0 grep -H "
+
+    alias sc="find . \( $FIND_CCODE \) -and -not \( $FIND_BACKUPS -o $FIND_CVS \) -print0 | xargs -0 grep -H"
     alias sh="find . -iname '*.h' -print0 | xargs -0 grep -H "
     alias sa="find . -xtype f -print0 | xargs -0 grep -H "
 else
