@@ -1,17 +1,31 @@
-# .bashrc - loaded by bash when any non-login shell started
+#!/bin/bash
+# Alexs .bashrc
+# loaded by bash when any non-login shell started
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-# User specific aliases and functions
+#############
+# Aliases
+#############
+
+# I like a quick grep of history
+alias h="history | grep"
+
+# and search code for stuff
+alias sc="find . -iname '*.[chS]' | xargs grep -H "
+
+######################
+# Environent Variables
+######################
+
+# There is only one editor
+export EDITOR=emacs
 
 # set CFLAGS for debugging - autoconf usually picks it up.
 export CFLAGS=-g3
-
-# I want core-dumps dammit
-ulimit -S -c unlimited
 
 # CVS exports
 export CVS_RSH=ssh
@@ -27,5 +41,11 @@ if [ -d "/opt/STM/ST40Linux-1.0/devkit/sh4/bin" ]
 then
     export PATH=/opt/STM/ST40Linux-1.0/devkit/sh4/bin:/opt/STM/st40load/bin:$PATH
 fi
+
+########################
+# Miscelaneous Stuff
+########################
+# I want core-dumps dammit
+ulimit -S -c unlimited
 
 
