@@ -75,6 +75,9 @@ export HISTCONTROL=ignoredups
 export HISTIGNORE="rm*"
 export HISTFILESIZE=2000
 
+# Setup the prompt to show who I am and on what machine
+export PS1="\A \u@\h [\W] >"
+
 
 ########################
 # Miscelaneous Stuff
