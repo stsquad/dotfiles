@@ -7,6 +7,8 @@ fi
 
 # User specific aliases and functions
 
+# set CFLAGS for debugging - autoconf usually picks it up.
+export CFLAGS=-g3
 
 # I want core-dumps dammit
 ulimit -S -c unlimited
