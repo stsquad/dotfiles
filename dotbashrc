@@ -1,16 +1,17 @@
-# .bashrc
-
-# User specific aliases and functions
+# .bashrc - loaded by bash when any non-login shell started
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# User specific aliases and functions
+
+
 # I want core-dumps dammit
 ulimit -S -c unlimited
 
-# exports
+# CVS exports
 export CVS_RSH=ssh
 export CVSEDITOR=emacs
 
@@ -18,3 +19,11 @@ export CVSEDITOR=emacs
 # bashcompletion as well. Just make sure I don't repeatedly delete stuff
 HISTIGNORE="rm*"
 export HISTIGNORE
+
+# If the SH cross-compile tools are around I'll have those as well
+if [ -d "/opt/STM/ST40Linux-1.0/devkit/sh4/bin" ]
+then
+    export PATH=/opt/STM/ST40Linux-1.0/devkit/sh4/bin:/opt/STM/st40load/bin:$PATH
+fi
+
+
