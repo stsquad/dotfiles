@@ -23,7 +23,8 @@ alias sh="find . -iname '*.h' | xargs grep -H "
 alias sa="find . -xtype f | xargs grep -H "
 
 # create patches easily
-alias mkpatch="diff -Naur -x*~ "
+export DIFFIGNORE="-x*~ -x*.o -x*.pyc "
+alias mkpatch="diff -Naur $DIFFIGNORE "
 
 ######################
 # Environent Variables
