@@ -8,8 +8,14 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # I want core-dumps dammit
-ulimit -c 10240
+ulimit -S -c unlimited
 
 # exports
 export CVS_RSH=ssh
 export CVSEDITOR=emacs
+
+# Setup history control
+# don't remember all navigation stuff
+# or files played with mplayer or mpg123
+HISTIGNORE="ls*:rm*:cd*:mpg123*:mplayer*"
+export HISTIGNORE
