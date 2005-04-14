@@ -89,6 +89,10 @@ export HISTFILESIZE=2000
 export PS1="\A \u@\h [\W] >"
 
 
+# GNU systems usually use less by default for
+# man pages, however not all unix-a-likes do
+export PAGER=less
+
 ########################
 # Miscelaneous Stuff
 ########################
