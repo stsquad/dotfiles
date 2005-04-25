@@ -85,9 +85,97 @@ export HISTCONTROL=ignoredups
 export HISTIGNORE="rm*"
 export HISTFILESIZE=2000
 
+#
+# Gentoo Related Macros
+#
+# These are various tools for manipulating a local
+# portage structure (which can be part of an overlay)
+#
+# These functions allow you to list, clone, delete and diff ebuilds
+#
+
+LOCAL_PORTAGE=$HOME/portage
+MASTER_PORTAGE=/usr/portage
+
+alias ls_le="find $LOCAL_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$LOCAL_PORTAGE##"
+alias ls_me="find $MASTER_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$MASTER_PORTAGE##"
+
+#
+# guess_ebuild
+#
+# Take an ebuild, possibly partial and return the correct
+# group/ebuild format for the other code
+#
+function guess_ebuild()
+{
+    if [ -d $MASTER_PORTGAE/$1 ]
+    then
+	result=$1
+    else
+	echo "bah"
+    fi
+}
+
+#
+# diff ebuild
+#
+# Do a diff for a given ebuild
+#
+function diff_ebuild()
+{
+    result=0
+    
+    if [ "$1" ]
+    then
+	diff -ub $MASTER_PORTAGE/$1 $LOCAL_PORTAGE/$1
+    else
+	for ebuild in `ls_le`
+	do
+	  diff -ub $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild
+	done
+    fi
+}
+
+#
+# Clone an ebuild from the master tree into the local tree
+#
+#
+function clone_ebuild()
+{
+    if [ "$1" ]
+    then
+	if [ -d $MASTER_PORTAGE/$1 ]
+	then
+	    cp -aP $MASTER_PORTAGE/$1 $LOCAL_PORTAGE/
+	else
+	    echo "$1 not in  Master Portage"
+	fi
+    else
+        echo "No ebuild specified"
+    fi
+}
+
+
+#
+# Clean ebuilds
+#
+# Delete untouched ebuilds from local portage
+#
+function clean_ebuilds()
+{
+    for ebuild in `ls_le`
+    do
+      result=`diff -br --brief $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild`
+      if [ "x$result" == "x" ]
+      then
+	  echo "Removing local copy of $ebuild"
+	  rm -rf $LOCAL_PORTAGE/$ebuild
+      fi
+    done
+}
+
 # Setup the prompt to show who I am and on what machine
 export PS1="\A \u@\h [\W] >"
-
 
 # GNU systems usually use less by default for
 # man pages, however not all unix-a-likes do
