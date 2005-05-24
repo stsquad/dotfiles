@@ -64,6 +64,10 @@ fi
 export DIFFIGNORE="-x*~ -x*.o -x*.pyc "
 alias mkpatch="diff -Naur $DIFFIGNORE "
 
+# Make creating an isofs easy
+alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
+
+
 ######################
 # Environent Variables
 ######################
@@ -103,18 +107,15 @@ alias ls_me="find $MASTER_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$MAST
 #
 # guess_ebuild
 #
-# Take an ebuild, possibly partial and return the correct
-# group/ebuild format for the other code
+# Take a string, possibly partial and match it a proper group/ebuild
 #
 function guess_ebuild()
 {
-    if [ -d $MASTER_PORTGAE/$1 ]
-    then
-	result=$1
-    else
-	echo "bah"
-    fi
+    tmp=`ls_me | grep $1`
+    group=`echo $tmp | perl -ne 'm#/([^/]*)#; print "$1"'`
+    ebuild=`echo $tmp | perl -ne 'm#/([^/]*)/(\w*)#; print "$2"'`
 }
+
 
 #
 # diff ebuild
@@ -127,7 +128,11 @@ function diff_ebuild()
     
     if [ "$1" ]
     then
-	diff -ub $MASTER_PORTAGE/$1 $LOCAL_PORTAGE/$1
+	guess_ebuild $1
+	if [[ "$group" && "$ebuild" ]]
+	then 
+	    diff -ub $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/$ebuild
+	fi
     else
 	for ebuild in `ls_le`
 	do
@@ -144,9 +149,12 @@ function clone_ebuild()
 {
     if [ "$1" ]
     then
-	if [ -d $MASTER_PORTAGE/$1 ]
-	then
-	    cp -aP $MASTER_PORTAGE/$1 $LOCAL_PORTAGE/
+	guess_ebuild $1
+	if [[ "$group" && "$ebuild" ]]
+	then 
+	    echo "Cloning ebuild $group/$ebuild"
+	    mkdir -p $LOCAL_PORTAGE/$group
+	    cp -aP $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/
 	else
 	    echo "$1 not in  Master Portage"
 	fi
