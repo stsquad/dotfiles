@@ -61,7 +61,7 @@ else
 fi    
 
 # create patches easily
-export DIFFIGNORE="-x*~ -x*.o -x*.pyc "
+export DIFFIGNORE="-X~/.diffignore "
 alias mkpatch="diff -Naur $DIFFIGNORE "
 
 # Make creating an isofs easy
