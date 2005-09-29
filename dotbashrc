@@ -85,9 +85,13 @@ export CVSEDITOR=emacs
 # Setup history control - hard to get right, could do with
 # bashcompletion as well. Just make sure I don't repeatedly delete stuff
 
+# append (as I use lots of shells)
+shopt -s histappend
+
 export HISTCONTROL=ignoredups
 export HISTIGNORE="rm*"
 export HISTFILESIZE=2000
+
 
 #
 # Gentoo Related Macros
