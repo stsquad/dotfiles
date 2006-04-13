@@ -1,10 +1,21 @@
-#!/bin/bash
+#
 # Alexs .bashrc
 # loaded by bash when any non-login shell started
 
 #
 # Source global definitions
 #
+
+#echo "Starting ajb's .bashrc $*"
+
+#ENVLOG=~/tmp/env`date +%s`.log
+#env > $ENVLOG
+
+#echo "ARGS=$*" >> $ENVLOG
+
+#if [ "$HOST" == "" ]; then
+#    exec bash --norc
+#fi
 
 if [ -f /etc/bashrc ]; then
     source /etc/bashrc
