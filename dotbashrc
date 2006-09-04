@@ -215,7 +215,7 @@ ulimit -S -c unlimited
 # or add stuff relevant to the system I am on
 #
 if [ -f $HOME/.bashrc_local ]; then
-    echo "loading .bashrc_local"
+#    echo "loading .bashrc_local"
     source $HOME/.bashrc_local
 fi
 
