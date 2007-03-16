@@ -101,7 +101,7 @@ shopt -s histappend
 
 export HISTCONTROL=ignoredups
 export HISTIGNORE="rm*"
-export HISTFILESIZE=2000
+export HISTFILESIZE=10000
 
 
 #
