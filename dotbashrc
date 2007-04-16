@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Alexs .bashrc
 # loaded by bash when any non-login shell started
@@ -24,11 +25,6 @@ fi
 
 #if [ "$INTERACTIVE" == "true" ]; then
 #  echo "Assuming interactive shell"
-#fi
-
-
-#if [ "$HOST" == "" ]; then
-#    exec bash --norc
 #fi
 
 if [ -f /etc/bashrc ]; then
@@ -218,6 +214,13 @@ export PS1="\A \u@\h [\W] >"
 # man pages, however not all unix-a-likes do
 export PAGER=less
 
+#
+# GIT env
+#
+export GIT_AUTHOR_NAME="Alex Bennee"
+export GIT_AUTHOR_EMAIL="alex@bennee.com"
+export GIT_COMMITTER_NAME="Alex Bennee"
+
 ########################
 # Miscelaneous Stuff
 ########################
@@ -241,13 +244,10 @@ if [ "$INTERACTIVE" == "true" ]; then
 
   # Gentoo Stuff
   if [ -f $HOME/.bashrc_gentoo ]; then
-    if [ -d /usr/portage ];
-    then
-	echo "loading .bashrc_gentoo"
-	source $HOME/.bashrc_gentoo
+    if [ -d /usr/portage ]; then
+      echo "loading .bashrc_gentoo"
+      source $HOME/.bashrc_gentoo
     fi
   fi
-
   
 fi
-  
