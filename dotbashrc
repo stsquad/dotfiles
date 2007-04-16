@@ -8,10 +8,24 @@
 
 #echo "Starting ajb's .bashrc $*"
 
+#For debuging when we are interactive or non-interactive (tty)
+#
 #ENVLOG=~/tmp/env`date +%s`.log
 #env > $ENVLOG
-
 #echo "ARGS=$*" >> $ENVLOG
+
+# If ssh is conecting to run a command it has no controlling TTY
+INTERACTIVE=true
+if [ "$SSH_CLIENT" != "" ]; then
+  if [ "$SSH_TTY" == "" ]; then
+      INTERACTIVE=false
+  fi
+fi
+
+#if [ "$INTERACTIVE" == "true" ]; then
+#  echo "Assuming interactive shell"
+#fi
+
 
 #if [ "$HOST" == "" ]; then
 #    exec bash --norc
@@ -214,18 +228,26 @@ ulimit -S -c unlimited
 # Now source any local bashrc's which can overide stuff
 # or add stuff relevant to the system I am on
 #
-if [ -f $HOME/.bashrc_local ]; then
-#    echo "loading .bashrc_local"
-    source $HOME/.bashrc_local
-fi
+# We only want this for interactive shells as remote
+# noise just gets in the way.
 
-#
-# Gentoo Stuff
-#
-if [ -f $HOME/.bashrc_gentoo ]; then
+if [ "$INTERACTIVE" == "true" ]; then
+
+  # Generic local configs for work and stuff
+  if [ -f $HOME/.bashrc_local ]; then
+    echo "loading .bashrc_local"
+    source $HOME/.bashrc_local
+  fi
+
+  # Gentoo Stuff
+  if [ -f $HOME/.bashrc_gentoo ]; then
     if [ -d /usr/portage ];
     then
 	echo "loading .bashrc_gentoo"
 	source $HOME/.bashrc_gentoo
     fi
+  fi
+
+  
 fi
+  
