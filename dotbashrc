@@ -14,6 +14,11 @@
 #ENVLOG=~/tmp/env`date +%s`.log
 #env > $ENVLOG
 #echo "ARGS=$*" >> $ENVLOG
+#PID=$$
+#echo "PID=$PID"  >> $ENVLOG
+#cat /proc/$PID/cmdline >> $ENVLOG
+#echo "pstree" >> $ENVLOG
+#pstree -p >> $ENVLOG
 
 # If ssh is conecting to run a command it has no controlling TTY
 INTERACTIVE=true
@@ -108,6 +113,9 @@ export CVSEDITOR=emacs
 
 # append (as I use lots of shells)
 shopt -s histappend
+
+# Dump history to the file each prompt
+PROMPT_COMMAND='history -a'
 
 export HISTCONTROL=ignoredups
 export HISTIGNORE="rm*"
