@@ -1,0 +1,2 @@
+shell -${SHELL}
+caption always "%n(%t) : %C"
