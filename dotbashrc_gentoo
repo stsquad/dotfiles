@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# Gentoo Related Bash Functions
+#
+# These are various tools for manipulating a local
+# portage structure (which can be part of an overlay)
+#
+# These functions allow you to list, clone, delete and diff ebuilds
+#
+
+if [ -d /usr/portage ];
+then
+  LOCAL_PORTAGE=$HOME/portage
+  MASTER_PORTAGE=/usr/portage
+
+  alias ls_le="find $LOCAL_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$LOCAL_PORTAGE##"
+  alias ls_me="find $MASTER_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$MASTER_PORTAGE##"
+fi
+  
+#
+# guess_ebuild
+#
+# Take a string, possibly partial and match it a proper group/ebuild
+#
+function guess_ebuild()
+{
+    tmp=`ls_me | grep $1`
+    group=`echo $tmp | perl -ne 'm#/([^/]*)#; print "$1"'`
+    ebuild=`echo $tmp | perl -ne 'm#/([^/]*)/(\w*)#; print "$2"'`
+}
+
+
+#
+# diff ebuild
+#
+# Do a diff for a given ebuild
+#
+function diff_ebuild()
+{
+    result=0
+    
+    if [ "$1" ]
+    then
+	guess_ebuild $1
+	if [[ "$group" && "$ebuild" ]]
+	then 
+	    diff -ub $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/$ebuild
+	fi
+    else
+	for ebuild in `ls_le`
+	do
+	  diff -ub $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild
+	done
+    fi
+}
+
+#
+# Clone an ebuild from the master tree into the local tree
+#
+#
+function clone_ebuild()
+{
+    if [ "$1" ]
+    then
+	guess_ebuild $1
+	if [[ "$group" && "$ebuild" ]]
+	then 
+	    echo "Cloning ebuild $group/$ebuild"
+	    mkdir -p $LOCAL_PORTAGE/$group
+	    cp -aP $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/
+	else
+	    echo "$1 not in  Master Portage"
+	fi
+    else
+        echo "No ebuild specified"
+    fi
+}
+
+
+#
+# Clean ebuilds
+#
+# Delete untouched ebuilds from local portage
+#
+function clean_ebuilds()
+{
+    for ebuild in `ls_le`
+    do
+      result=`diff -br --brief $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild`
+      if [ "x$result" == "x" ]
+      then
+	  echo "Removing local copy of $ebuild"
+	  rm -rf $LOCAL_PORTAGE/$ebuild
+      fi
+    done
+}

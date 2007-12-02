@@ -1,0 +1,15 @@
+# .bashrc
+
+# User specific aliases and functions
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# I want core-dumps dammit
+ulimit -c 10240
+
+# exports
+export CVS_RSH=ssh
+export CVSEDITOR=emacs
