@@ -61,7 +61,7 @@ function find_alternatives ()
 {
     for arg in "$@"
     do
-      file=`which $arg`
+      file=`which $arg 2> /dev/null`
       if [ -x "$file" ]; then
 	  echo "$file"
 	  return
