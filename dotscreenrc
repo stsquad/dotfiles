@@ -1,2 +1,10 @@
+# Ensure we run a fresh login shell
 shell -${SHELL}
-caption always "%n(%t) : %C"
+
+# Set the caption to show the date/time and current window
+caption always "%c %D %d %M : %{bs} %n %t %{-b -s}"
+
+# The hardstatus line goes at the bottom of the screen
+#hardstatus alwayslastline
+#hardstatus string '%-Lw  %50>%n%f* %t %+Lw%<  %-= %D %d %M %Y %c:%s%{-}'
+#hardstatus string '%w'
