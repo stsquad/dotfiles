@@ -202,6 +202,14 @@ ulimit -S -c unlimited
 
 if [ "$INTERACTIVE" == "true" ]; then
 
+  # If we have apt on this system I'll want some
+  # debian like shortcuts
+  APT=`which apt`
+  if [[ -f $APT && -f $HOME/.bashrc_apt ]]; then
+    echo "loading .bashrc_apt"
+    source $HOME/.bashrc_apt
+  fi  
+
   # Generic local configs for work and stuff
   if [ -f $HOME/.bashrc_local ]; then
     echo "loading .bashrc_local"

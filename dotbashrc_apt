@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# Alexs .bashrc_apt
+#
+# Stuff useful when running on apt based systems
+
+alias acs="apt-cache search"
+
