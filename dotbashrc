@@ -213,7 +213,7 @@ if [ "$INTERACTIVE" == "true" ]; then
 
   # Gentoo Stuff
   EMERGE=$(find_alternatives "emerge")
-  if [[ -f $APT && -f $HOME/.bashrc_gentoo ]]; then
+  if [[ -f $EMERGE && -f $HOME/.bashrc_gentoo ]]; then
     if [ -d /usr/portage ]; then
       echo "loading .bashrc_gentoo"
       source $HOME/.bashrc_gentoo
