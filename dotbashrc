@@ -168,7 +168,7 @@ fi
 # Working with DBT's all day makes you want to know what your arch is
 # However some linux machines can't give you a processor with uname -p
 
-PROC=`uname -p`
+PROC=`uname -m`
 if [ "$PROC" == "unknown" ]; then
   PROC=`uname -m`
 fi
@@ -213,24 +213,27 @@ if [ "$INTERACTIVE" == "true" ]; then
 
   # If we have apt on this system I'll want some
   # debian like shortcuts
-  APT=`which apt`
+  APT=$(find_alternatives "apt")
   if [[ -f $APT && -f $HOME/.bashrc_apt ]]; then
     echo "loading .bashrc_apt"
     source $HOME/.bashrc_apt
-  fi  
+  fi
+  unset APT
 
+  # Gentoo Stuff
+  EMERGE=$(find_alternatives "emerge")
+  if [[ -f $EMERGE && -f $HOME/.bashrc_gentoo ]]; then
+    if [ -d /usr/portage ]; then
+      echo "loading .bashrc_gentoo"
+      source $HOME/.bashrc_gentoo
+    fi
+  fi
+  unset EMERGE
+  
   # Generic local configs for work and stuff
   if [ -f $HOME/.bashrc_local ]; then
     echo "loading .bashrc_local"
     source $HOME/.bashrc_local
   fi
 
-  # Gentoo Stuff
-  if [ -f $HOME/.bashrc_gentoo ]; then
-    if [ -d /usr/portage ]; then
-      echo "loading .bashrc_gentoo"
-      source $HOME/.bashrc_gentoo
-    fi
-  fi
-  
 fi

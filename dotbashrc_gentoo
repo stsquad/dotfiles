@@ -10,7 +10,7 @@
 
 if [ -d /usr/portage ];
 then
-  LOCAL_PORTAGE=$HOME/portage
+  LOCAL_PORTAGE=$HOME/src/gentoo/portage
   MASTER_PORTAGE=/usr/portage
 
   alias ls_le="find $LOCAL_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$LOCAL_PORTAGE##"
