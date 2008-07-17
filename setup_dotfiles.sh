@@ -11,11 +11,20 @@
 for file in dot*
 do
   dotfile=`echo $file | sed s/dot/\./`
-  if [ -f $HOME/$dotfile ] ; then
-    echo "backing up $HOME/$dotfile"
-    mv $HOME/$dotfile $HOME/$dotfile.orig
+  dotfilepath=$HOME/$dotfile
+  
+
+  # Don't save orig if it's already a link
+  if [ -L $dotfilepath ] ; then
+    linkdest=`ls -L $dotfilepath`
+    echo "skipping symlink at $dotfilepath"
+  else
+    if [ -f $dotfilepath ] ; then
+      echo "backing up $dotfilepath"
+      mv $dotfilepath $HOME/$dotfile.orig
+    fi
+    linkfile=`pwd`/$file
+    echo "Linking $linkfile to ~/$dotfile"
+    ln -s $linkfile ~/$dotfile
   fi
-  linkfile=`pwd`/$file
-  echo "Linking $linkfile to ~/$dotfile"
-  ln -s $linkfile ~/$dotfile
 done
