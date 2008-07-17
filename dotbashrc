@@ -195,6 +195,17 @@ export LANG=en_GB
 export LANGUAGE=en_GB
 export LC_ALL=C
 
+#
+# surfraw, command line browser control
+# http://surfraw.alioth.debian.org/
+#
+SURFRAW=$(find_alternatives "surfraw")
+if [[ -f $SURFRAW ]]; then
+    alias wiki="$SURFRAW wikipedia "
+    alias google="$SURFRAW google "
+    alias imdb="$SURFRAW imdb "
+fi
+
 
 ########################
 # Miscelaneous Stuff
