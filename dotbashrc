@@ -40,6 +40,62 @@ if [ -f /etc/bash.bashrc ]; then
     source /etc/bash.bashrc
 fi
 
+#######################################################################
+# Terminal Setup 
+#
+# via http://github.com/ciaranm/dotfiles-ciaranm/tree/master/bashrc  
+#######################################################################
+
+case "${TERM}" in
+    xterm*)
+#        export TERM=xterm-256color
+        cache_term_colours=256
+        ;;
+    screen)
+        cache_term_colours=256
+        ;;
+    dumb)
+        cache_term_colours=2
+        ;;
+    *)
+        cache_term_colours=16
+        ;;
+esac
+ 
+case "${cache_term_colours}" in
+    256)
+        cache_colour_l_blue='\033[38;5;33m'
+        cache_colour_d_blue='\033[38;5;21m'
+        cache_colour_m_purp='\033[38;5;69m'
+        cache_colour_l_yell='\033[38;5;229m'
+        cache_colour_m_yell='\033[38;5;227m'
+        cache_colour_m_gren='\033[38;5;35m'
+        cache_colour_m_grey='\033[38;5;245m'
+        cache_colour_m_orng='\033[38;5;208m'
+        cache_colour_l_pink='\033[38;5;206m'
+        cache_colour_m_teal='\033[38;5;38m'
+        cache_colour_m_brwn='\033[38;5;130m'
+        cache_colour_end='\033[0;0m'
+        ;;
+    16)
+        cache_colour_l_blue='\033[1;34m'
+        cache_colour_d_blue='\033[0;32m'
+        cache_colour_m_purp='\033[0;35m'
+        cache_colour_l_yell='\033[1;33m'
+        cache_colour_m_yell='\033[0;33m'
+        cache_colour_m_gren='\033[0;32m'
+        cache_colour_m_grey='\033[0;37m'
+        cache_colour_m_orng='\033[1;31m'
+        cache_colour_l_pink='\033[1;35m'
+        cache_colour_m_teal='\033[0;36m'
+        cache_colour_m_brwn='\033[0;31m'
+        cache_colour_end='\033[0;0m'
+        ;;
+    *)
+        eval unset ${!cache_colour_*}
+        ;;
+esac
+
 #############
 # Aliases
 #############
@@ -165,17 +221,6 @@ if [ -d $HOME/bin ]; then
   export PATH=~/bin:$PATH
 fi
 
-# Working with DBT's all day makes you want to know what your arch is
-# However some linux machines can't give you a processor with uname -p
-
-PROC=`uname -m`
-if [ "$PROC" == "unknown" ]; then
-  PROC=`uname -m`
-fi
-
-# Setup the prompt to show who I am and on what machine
-export PS1="\A \u@\h/$PROC [\W] >"
-
 # GNU systems usually use less by default for
 # man pages, however not all unix-a-likes do
 export PAGER=less
@@ -205,6 +250,81 @@ if [[ -f $SURFRAW ]]; then
     alias google="$SURFRAW google "
     alias imdb="$SURFRAW imdb "
 fi
+
+
+
+########################
+# PS Setup
+########################
+
+ps_scm_f() {
+    local s=
+    if [[ -d ".svn" ]] ; then
+        local r=$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )
+        s="(r$r$(svn status | grep -q -v '^?' && echo -n "*" ))"
+    else
+        local d=$(git rev-parse --git-dir 2>/dev/null ) b= r= a= c=
+        if [[ -n "${d}" ]] ; then
+            if [[ -d "${d}/../.dotest" ]] ; then
+                if [[ -f "${d}/../.dotest/rebase" ]] ; then
+                    r="rebase"
+                elif [[ -f "${d}/../.dotest/applying" ]] ; then
+                    r="am"
+                else
+                    r="???"
+                fi
+                b=$(git symbolic-ref HEAD 2>/dev/null )
+            elif [[ -f "${d}/.dotest-merge/interactive" ]] ; then
+                r="rebase-i"
+                b=$(<${d}/.dotest-merge/head-name)
+            elif [[ -d "${d}/../.dotest-merge" ]] ; then
+                r="rebase-m"
+                b=$(<${d}/.dotest-merge/head-name)
+            elif [[ -f "${d}/MERGE_HEAD" ]] ; then
+                r="merge"
+                b=$(git symbolic-ref HEAD 2>/dev/null )
+            elif [[ -f "${d}/BISECT_LOG" ]] ; then
+                r="bisect"
+                b=$(git symbolic-ref HEAD 2>/dev/null )"???"
+            else
+                r=""
+                b=$(git symbolic-ref HEAD 2>/dev/null )
+            fi
+ 
+            if git status | grep -q '^# Changed but not updated:' ; then
+                a="${a}*"
+            fi
+ 
+            if git status | grep -q '^# Changes to be committed:' ; then
+                a="${a}+"
+            fi
+ 
+            if git status | grep -q '^# Untracked files:' ; then
+                a="${a}?"
+            fi
+ 
+            b=${b#refs/heads/}
+            b=${b// }
+            [[ -n "${b}" ]] && c="$(git config "branch.${b}.remote" 2>/dev/null )"
+            [[ -n "${r}${b}${c}${a}" ]] && s="(${r:+${r}:}${b}${c:+@${c}}${a:+ ${a}})"
+        fi
+    fi
+    echo -n "$s"
+}
+
+cache_colour_scm=${cache_colour_m_orng}
+ps_scm="\[${cache_colour_scm}\]\$(ps_scm_f)\[${cache_colour_end}\]"
+
+# Hangover from the Transitive days, but I do like seeing my processor
+PROC=`uname -m`
+if [ "$PROC" == "unknown" ]; then
+  PROC=`uname -m`
+fi
+ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
+
+
+# Setup the prompt to show who I am and on what machine, what processor and my SCM state
+export PS1="\A \u@\h/${ps_proc} [\W ${ps_scm}] >"
 
 
 ########################
