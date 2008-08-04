@@ -324,7 +324,7 @@ ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
 
 
 # Setup the prompt to show who I am and on what machine, what processor and my SCM state
-export PS1="\A \u@\h/${ps_proc} [\W ${ps_scm}] >"
+export PS1="\A \u@\h/${ps_proc} [\W] >"
 
 
 ########################
