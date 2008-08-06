@@ -193,8 +193,31 @@ alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
 # Environent Variables
 ######################
 
-# There is only one editor
-export EDITOR=emacs
+# There is only one editor (although I can get to it in different ways)
+export EDITOR=emacsclient
+export VISUAL=emacsclient
+export ALTERNATE_EDITOR=emacs
+
+# roughly based on the emacs.bash with emacs
+#
+# If I start emacs without a file or -nw then call it directly
+
+start_emacs() {
+
+    if [[ "$@" == "" || "$1" == "-nw" ]]; then
+      $ALTERNATE_EDITOR "$@"
+    else
+      if [ -e "${HOME}/.emacs_server" -o -e "/tmp/emacs${UID}/server" ]; then
+       $EDITOR "$@"
+       return $?
+      else
+       echo "start_emacs: starting emacs in background..." 1>&2
+       $ALTERNATE_EDITOR "$@" &
+      fi
+    fi
+}
+
+alias emacs="start_emacs"
 
 # set CFLAGS for debugging - autoconf usually picks it up.
 export CFLAGS=-g3
