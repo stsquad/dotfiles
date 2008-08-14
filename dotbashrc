@@ -43,13 +43,23 @@ fi
 #######################################################################
 # Terminal Setup 
 #
-# via http://github.com/ciaranm/dotfiles-ciaranm/tree/master/bashrc  
+# via http://github.com/ciaranm/dotfiles-ciaranm/tree/master/bashrc
+#
+# The Apple Terminal doesn't seem to handle 256 colours very well so we
+# limit it to a 16 colour display
 #######################################################################
 
 case "${TERM}" in
     xterm*)
 #        export TERM=xterm-256color
-        cache_term_colours=256
+	case "${TERM_PROGRAM}" in
+	    Apple_Terminal)
+		cache_term_colours=16
+		;;
+	    *)
+		cache_term_colours=256
+		;;
+	esac
         ;;
     screen)
         cache_term_colours=256
