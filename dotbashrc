@@ -227,7 +227,7 @@ start_emacs() {
     fi
 }
 
-alias emacs="start_emacs"
+#alias emacs="start_emacs"
 
 # set CFLAGS for debugging - autoconf usually picks it up.
 export CFLAGS=-g3
