@@ -204,14 +204,9 @@ alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
 ######################
 
 # There is only one editor (although I can get to it in different ways)
-export EDITOR=emacsclient
-export VISUAL=emacsclient
-export ALTERNATE_EDITOR=emacs
-
 # roughly based on the emacs.bash with emacs
-#
-# If I start emacs without a file or -nw then call it directly
 
+# Start an emacsclient or start emacs if no server if running
 start_emacs() {
 
     if [[ "$@" == "" || "$1" == "-nw" ]]; then
@@ -227,7 +222,11 @@ start_emacs() {
     fi
 }
 
-#alias emacs="start_emacs"
+alias ec="start_emacs"
+
+export EDITOR=ec
+export VISUAL=ec
+export ALTERNATE_EDITOR=emacs
 
 # set CFLAGS for debugging - autoconf usually picks it up.
 export CFLAGS=-g3
@@ -394,10 +393,18 @@ if [ "$INTERACTIVE" == "true" ]; then
   fi
   unset EMERGE
   
+  # Any machine specific stuff
+  HOST_BASHRC="$HOME/.bashrc_`hostname`"
+  if [ -f $HOST_BASHRC ]; then
+    echo "loading .bashrc_`hostname`"
+    source $HOST_BASHRC
+  fi
+  
   # Generic local configs for work and stuff
   if [ -f $HOME/.bashrc_local ]; then
     echo "loading .bashrc_local"
     source $HOME/.bashrc_local
   fi
+
 
 fi
