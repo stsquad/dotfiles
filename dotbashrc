@@ -358,6 +358,11 @@ ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
 # Setup the prompt to show who I am and on what machine, what processor and my SCM state
 export PS1="\A \u@\h/${ps_proc} [\W] >"
 
+# We want to extract the screen session name (if it exisits) from STY
+session_name=${STY/*./}
+if [ $session_name ]; then
+    export PS1="$PS1\e]2;${session_name}\a"
+fi
 
 ########################
 # Miscelaneous Stuff
