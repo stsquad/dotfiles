@@ -13,6 +13,8 @@ then
   LOCAL_PORTAGE=$HOME/src/gentoo/portage
   MASTER_PORTAGE=/usr/portage
 
+  export PORTAGE_TMPDIR=$HOME/src/gentoo/tmp 
+
   alias ls_le="find $LOCAL_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$LOCAL_PORTAGE##"
   alias ls_me="find $MASTER_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$MASTER_PORTAGE##"
 fi
