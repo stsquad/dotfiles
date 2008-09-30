@@ -206,6 +206,12 @@ alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
 # There is only one editor (although I can get to it in different ways)
 # roughly based on the emacs.bash with emacs
 
+alias ec="emacsclient"
+
+export ALTERNATE_EDITOR=emacs
+export EDITOR=ec
+export VISUAL=ec
+
 # Start an emacsclient or start emacs if no server if running
 start_emacs() {
 
@@ -222,18 +228,13 @@ start_emacs() {
     fi
 }
 
-alias ec="start_emacs"
-
-export EDITOR=ec
-export VISUAL=ec
-export ALTERNATE_EDITOR=emacs
 
 # set CFLAGS for debugging - autoconf usually picks it up.
 export CFLAGS=-g3
 
 # CVS exports
 export CVS_RSH=ssh
-export CVSEDITOR=emacs
+export CVSEDITOR=ec
 
 # Setup history control - hard to get right, could do with
 # bashcompletion as well. Just make sure I don't repeatedly delete stuff
@@ -281,6 +282,10 @@ if [[ -f $SURFRAW ]]; then
     alias wiki="$SURFRAW wikipedia "
     alias google="$SURFRAW google "
     alias imdb="$SURFRAW imdb "
+    alias code="$SURFRAW codesearch"
+    alias jspcode="$SURFRAW codesearch lang:jsp"
+    alias javacode="$SURFRAW codesearch lang:java"
+    alias pycode="$SURFRAW codesearch lang:python"
 fi
 
 
