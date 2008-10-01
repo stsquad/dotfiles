@@ -414,6 +414,12 @@ if [ "$INTERACTIVE" == "true" ]; then
     echo "loading .bashrc_`hostname`"
     source $HOST_BASHRC
   fi
+
+  SCREEN=$(find_alternatives "screen")
+  if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
+      echo "loading .bashrc_screen"
+      source $HOME/.bashrc_screen
+  fi
   
   # Generic local configs for work and stuff
   if [ -f $HOME/.bashrc_local ]; then
