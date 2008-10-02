@@ -6,7 +6,8 @@
 #
 
 SCREEN_ATT=`screen -ls | grep -c Attached`
+SCREEN_DET=`screen -ls | grep -c Detached`
 SCREEN_DEAD=`screen -ls | grep -c Dead`
 
-echo "Currently $SCREEN_ATT Attached and $SCREEN_DEAD Dead screens"
+echo "Currently $SCREEN_ATT Attached, $SCREEN_DET Detached and $SCREEN_DEAD Dead screens"
 
