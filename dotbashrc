@@ -364,15 +364,16 @@ ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
 export PS1="\A \u@\h/${ps_proc} [\W] >"
 
 # We want to extract the screen session name (if it exisits) from STY
-session_name=${STY/*./}
-if [ $session_name ]; then
-    session_name="${session_name}@`hostname`"
-else
-    session_name="\w@`hostname`"
-
+if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
+    session_name=${STY/*./}
+    if [ $session_name ]; then
+	session_name="${session_name}@`hostname`"
+    else
+	session_name="\w@`hostname`"
+    fi
+    export PS1="$PS1\e]2;${session_name}\a"
 fi
 
-export PS1="$PS1\e]2;${session_name}\a"
 
 ########################
 # Miscelaneous Stuff
