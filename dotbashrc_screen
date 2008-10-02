@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Alex's .bashrc_screen
+#
+# Various screen session hacks for bringing up special screens
+#
+
+SCREEN_ATT=`screen -ls | grep -c Attached`
+SCREEN_DEAD=`screen -ls | grep -c Dead`
+
+echo "Currently $SCREEN_ATT Attached and $SCREEN_DEAD Dead screens"
+
