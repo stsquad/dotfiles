@@ -363,17 +363,32 @@ ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
 # Setup the prompt to show who I am and on what machine, what processor and my SCM state
 export PS1="\A \u@\h/${ps_proc} [\W] >"
 
+
 # We want to extract the screen session name (if it exisits) from STY
-if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
+ps_xterm_f()
+{
     session_name=${STY/*./}
     if [ $session_name ]; then
 	session_name="${session_name}@`hostname`"
     else
-	session_name="\w@`hostname`"
+	session_name="`pwd`@`hostname`"
     fi
-    export PS1="$PS1\e]2;${session_name}\a"
+    echo -n -e "\e]2;${session_name}\a"
+}
+
+if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
+    # Too prevent confusion about line lengths we append this to the PROMPT_COMMAND
+    export PROMPT_COMMAND="$PROMPT_COMMAND; ps_xterm_f"
 fi
 
+# Screen can loose connections to the root ssh-agent. Either we could create and agent for
+# every screen or just try and dink it out again.
+
+find_ssh_agent()
+{
+    KEYS=`ssh-add -l`
+    
+}
 
 ########################
 # Miscelaneous Stuff
