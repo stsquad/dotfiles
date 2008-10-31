@@ -423,6 +423,14 @@ if [ "$INTERACTIVE" == "true" ]; then
     fi
   fi
   unset EMERGE
+
+  # KVM Stuff
+  KVM=$(find_alternatives "kvm")
+  if [[ -f $KVM && -f $HOME/.bashrc_kvm ]]; then
+    echo "loading .bashrc_kvm"
+    source $HOME/.bashrc_kvm
+  fi
+  unset KVM
   
   # Any machine specific stuff
   HOST_BASHRC="$HOME/.bashrc_`hostname`"
@@ -431,6 +439,7 @@ if [ "$INTERACTIVE" == "true" ]; then
     source $HOST_BASHRC
   fi
 
+  # Screen Tweaks
   SCREEN=$(find_alternatives "screen")
   if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
       echo "loading .bashrc_screen"

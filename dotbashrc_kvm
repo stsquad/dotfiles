@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Alexs .bashrc
+#
+# KVM bits
+
+DEFAULT_KVM_OPTS="-m 1024 -soundhw es1370"
+
+run_kvm()
+{
+ IMG=$1
+ CMD="kvm ${DEFAULT_KVM_OPTS} -hda ${IMG}"
+ echo "Running: $CMD"
+ ${CMD} &
+}
