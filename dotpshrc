@@ -1,0 +1,7 @@
+# -*- Mode: Cperl -*-
+# .pshrc - loaded and executed on entry into a psh shell
+# 
+
+# psh can't handle \A in it's prompt
+option ps1='{psh} \u@\h:\W> '
+    
