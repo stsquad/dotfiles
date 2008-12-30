@@ -270,11 +270,17 @@ fi
 export PAGER=less
 
 #
-# GIT env
+# GIT Stuff
 #
 export GIT_AUTHOR_NAME="Alex Bennee"
 export GIT_AUTHOR_EMAIL="alex@bennee.com"
 export GIT_COMMITTER_NAME="Alex Bennee"
+
+# Until I retrain my brain
+alias git-diff='git diff'
+alias git-commit='git commit'
+alias git-log='git log'
+alias git-push='git push'
 
 #
 # locales
@@ -283,6 +289,89 @@ export GIT_COMMITTER_NAME="Alex Bennee"
 export LANG=en_GB
 export LANGUAGE=en_GB
 export LC_ALL=C
+
+#
+# PATH hackage
+#
+# Not installing everything I like to quickly setup my local LD_LIBRARY_PATH and PATH
+# for non-root installs and resting. This will break if you attempt to do things like
+# suid in code your testing as LD_LIBRARY_PATH isn't usually exported to suid binaries
+# for obvious security reasons.
+#
+
+# Save the PATH/LD_LIBRARY_PATH
+ORIG_PATH=$PATH
+ORIG_LD_PATH=$LD_LIBRARY_PATH
+
+
+function switch_world
+{
+    # Save the old state
+    OLD_WORLD_ROOT=$CURRENT_WORLD_ROOT
+    OLD_WORLD_BIN=$CURRENT_WORLD_BIN
+    OLD_WORLD_LIB=$CURRENT_WORLD_LIB
+    OLD_WORLD_SRC=$CURRENT_WORLD_SRC
+
+    if [ "$1" ]
+    then
+	# Reset
+	if [ "$1" = "-" ]
+	then
+	    PATH=$ORIG_PATH
+	    LD_LIBRARY_PATH=$ORIG_LD_PATH
+	    echo "PATH=$PATH"
+	    echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+	    return
+	elif [ "$1" = "." ]
+	then
+	    CURRENT_WORLD_ROOT=`pwd`
+	else
+	    CURRENT_WORLD_ROOT=$1
+	fi
+    else
+	CURRENT_WORLD_ROOT=`pwd`
+    fi
+
+    # Check the paths are valid
+    CURRENT_WORLD_BIN=${CURRENT_WORLD_ROOT}/install/bin
+    if [ -d "$CURRENT_WORLD_BIN" ]
+    then
+	echo "Setting CURRENT_WORLD_BIN=$CURRENT_WORLD_BIN"
+	export CURRENT_WORLD_BIN
+	export PATH=$CURRENT_WORLD_BIN:$ORIG_PATH
+    else
+	echo "No directory at $CURRENT_WORLD_BIN, giving up"
+	CURRENT_WORLD_ROOT=$OLD_WORLD_ROOT
+	CURRENT_WORLD_BIN=$OLD_WORLD_BIN
+	return
+    fi
+
+    # The lib path needs to point at the libs we use, we overide LD_LIBRARY_PATH
+    # so the correct libs are loaded. This *will not work* with suid binaries as it opens
+    # a massive security hole
+
+    CURRENT_WORLD_LIB=${CURRENT_WORLD_ROOT}/install/lib
+    if [ -d "$CURRENT_WORLD_LIB" ]
+    then
+	echo "Setting CURRENT_WORLD_LIB=$CURRENT_WORLD_LIB"
+	export CURRENT_WORLD_LIB
+	export LD_LIBRARY_PATH=$CURRENT_WORLD_LIB:$ORIG_LD_PATH
+    else
+	echo "No directory at $CURRENT_WORLD_LIB, giving up"
+	CURRENT_WORLD_ROOT=$OLD_WORLD_ROOT
+	CURRENT_WORLD_BIN=$OLD_WORLD_BIN
+	CURRENT_WORLD_LIB=$OLD_WORLD_LIB
+	# Also reset path/ld
+	PATH=$ORIG_PATH
+	LD_LIBRARY_PATH=$ORIG_LD_PATH
+	return
+    fi
+
+}
+
+alias sw="switch_world"
+
+
 
 #
 # surfraw, command line browser control
