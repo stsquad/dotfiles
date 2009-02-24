@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# .bashrc_danny
+#
+
+SOCRATES_SRC="alex@bennee.com:."
+SOCRATES_DST="$HOME/socrates"
+
+SOC_OPTS="-rav --delete-after"
+
+alias sync_socrates="rsync $SOC_OPTS $SOCRATES_SRC $SOCRATES_DST"
