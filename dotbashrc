@@ -127,7 +127,9 @@ function find_alternatives ()
 {
     for arg in "$@"
     do
-      file=`which --skip-alias $arg 2> /dev/null`
+      # --skip-alias only works with GNU which
+      # file=`which --skip-alias $arg 2> /dev/null`
+      file=`which $arg 2> /dev/null`
       if [ -x "$file" ]; then
 	  echo "$file"
 	  return
