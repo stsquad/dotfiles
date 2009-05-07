@@ -15,8 +15,8 @@ then
 
   export PORTAGE_TMPDIR=$HOME/src/gentoo/tmp 
 
-  alias ls_le="find $LOCAL_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$LOCAL_PORTAGE##"
-  alias ls_me="find $MASTER_PORTAGE -xtype d -mindepth 2 -maxdepth 2 | sed s#$MASTER_PORTAGE##"
+  alias ls_le="find $LOCAL_PORTAGE -mindepth 2 -maxdepth 2 -xtype d  | sed s#$LOCAL_PORTAGE##"
+  alias ls_me="find $MASTER_PORTAGE -mindepth 2 -maxdepth 2 -xtype d  | sed s#$MASTER_PORTAGE##"
 fi
   
 #
@@ -28,7 +28,9 @@ function guess_ebuild()
 {
     tmp=`ls_me | grep $1`
     group=`echo $tmp | perl -ne 'm#/([^/]*)#; print "$1"'`
-    ebuild=`echo $tmp | perl -ne 'm#/([^/]*)/(\w*)#; print "$2"'`
+    ebuild=`echo $tmp | perl -ne 'm#/([^/]*)/(.*)$#; print "$2"'`
+
+    echo "guess_ebuild=${group}/${ebuild}"
 }
 
 
