@@ -300,9 +300,19 @@ export LC_ALL=C
 #
 
 # Save the PATH/LD_LIBRARY_PATH
-ORIG_PATH=$PATH
-ORIG_LD_PATH=$LD_LIBRARY_PATH
+export ORIG_PATH=$PATH
+export ORIG_LD_PATH=$LD_LIBRARY_PATH
 
+function clear_world
+{
+    export PATH=$ORIG_PATH
+    export LD_LIBRARY_PATH=$ORIG_LD_PATH
+    echo "Reset to"
+    echo "PATH=$PATH"
+    echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+}
+
+alias cw="clear_world"
 
 function switch_world
 {
@@ -361,16 +371,13 @@ function switch_world
 	CURRENT_WORLD_ROOT=$OLD_WORLD_ROOT
 	CURRENT_WORLD_BIN=$OLD_WORLD_BIN
 	CURRENT_WORLD_LIB=$OLD_WORLD_LIB
-	# Also reset path/ld
-	PATH=$ORIG_PATH
-	LD_LIBRARY_PATH=$ORIG_LD_PATH
+	clear_world
 	return
     fi
 
 }
 
 alias sw="switch_world"
-
 
 
 #
