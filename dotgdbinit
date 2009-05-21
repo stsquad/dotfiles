@@ -6,3 +6,24 @@
 set history filename .gdb_history
 set history save on
 set history expansion on
+set history size 100
+
+#
+# A simple instruction stepping macro that steps and then dumps the
+# next few instructions
+#
+define i
+    si
+    x/3i 
+end
+
+#
+# Alias for register information
+#
+define regs
+    info registers
+end
+
+
+echo Executed .gdbinit
+echo \n
