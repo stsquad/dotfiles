@@ -225,7 +225,7 @@ if [ -e "${HOME}/.emacs_server" -o -e "/tmp/emacs${UID}/server" ]; then
 	fi
     else
 	# For X the focusing of the new frame is problem for emacs, I should see it
-	EMACS_CMD="emacsclient "
+	EMACS_CMD="emacsclient -c"
     fi
 else
     # If we have no server running lets just call emacs
