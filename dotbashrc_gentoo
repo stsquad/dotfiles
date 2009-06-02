@@ -54,13 +54,21 @@ function diff_ebuild()
     then
 	guess_ebuild $1
 	if [[ "$group" && "$ebuild" ]]
-	then 
-	    diff -ub $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/$ebuild
+	then
+	    if [ -d $MASTER_PORTAGE/$group/$ebuild ]; then
+		diff -ub $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/$ebuild
+	    else
+		echo "$group/$ebuild not in master portage"
+	    fi
 	fi
     else
 	for ebuild in `ls_le`
 	do
-	  diff -ub $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild
+	    if [ -d $MASTER_PORTAGE/$ebuild ]; then
+		diff -ub $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild
+	    else
+		echo "$ebuild not in master portage"
+	    fi
 	done
     fi
 }
