@@ -26,11 +26,18 @@ fi
 #
 function guess_ebuild()
 {
+    n=`ls_me | grep $1 | wc -l`
     tmp=`ls_me | grep $1`
-    group=`echo $tmp | perl -ne 'm#/([^/]*)#; print "$1"'`
-    ebuild=`echo $tmp | perl -ne 'm#/([^/]*)/(.*)$#; print "$2"'`
-
-    echo "guess_ebuild=${group}/${ebuild}"
+    if [ "$n" == "1" ]; then
+	group=`echo $tmp | perl -ne 'm#/([^/]*)#; print "$1"'`
+	ebuild=`echo $tmp | perl -ne 'm#/([^/]*)/(.*)$#; print "$2"'`
+	echo "guess_ebuild: $group/$ebuild"
+    else
+	unset group
+	unset ebuild
+	echo "guess_ebuild: not unique enough"
+	echo $tmp
+    fi
 }
 
 
