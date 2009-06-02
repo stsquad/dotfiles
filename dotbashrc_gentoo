@@ -95,6 +95,33 @@ function clone_ebuild()
     fi
 }
 
+#
+# Sync Ebuild
+#
+# Bring changes from maintree into local portage
+#
+function sync_ebuild()
+{
+    old_cwd=`pwd`
+    
+    if [ "$1" ]
+    then
+	guess_ebuild $1
+	if [[ "$group" && "$ebuild" ]]
+	then 
+	    echo "Syncing ebuild $group/$ebuild"
+	    cd $LOCAL_PORTAGE
+	    rsync --ignore-existing -r /usr/portage/${group}/${ebuild}/ ${group}/${ebuild}/
+	    git status
+	fi
+    else
+        echo "No ebuild specified"
+    fi
+
+    cd $old_cwd
+}
+
+
 
 #
 # Clean ebuilds
