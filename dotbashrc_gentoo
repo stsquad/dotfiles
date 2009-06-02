@@ -97,11 +97,15 @@ function clean_ebuilds()
 {
     for ebuild in `ls_le`
     do
-      result=`diff -br --brief $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild`
-      if [ "x$result" == "x" ]
-      then
-	  echo "Removing local copy of $ebuild"
-	  rm -rf $LOCAL_PORTAGE/$ebuild
+      if [ -d $MASTER_PORTAGE/$ebuild ]; then
+	  result=`diff -br --brief $MASTER_PORTAGE/$ebuild $LOCAL_PORTAGE/$ebuild`
+	  if [ "x$result" == "x" ]
+	  then
+	      echo "Removing local copy of $ebuild"
+	      rm -rf $LOCAL_PORTAGE/$ebuild
+	  fi
+      else
+	  echo "$ebuild does not exist in master portage"
       fi
     done
 }
