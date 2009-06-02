@@ -15,7 +15,7 @@ then
 
   export PORTAGE_TMPDIR=$HOME/src/gentoo/tmp 
 
-  alias ls_le="find $LOCAL_PORTAGE -mindepth 2 -maxdepth 2 -xtype d  | sed s#$LOCAL_PORTAGE##"
+  alias ls_le="find $LOCAL_PORTAGE -mindepth 2 -maxdepth 2 -xtype d -and -not -path \"*/.git*\" | sed s#$LOCAL_PORTAGE##"
   alias ls_me="find $MASTER_PORTAGE -mindepth 2 -maxdepth 2 -xtype d  | sed s#$MASTER_PORTAGE##"
 fi
   
