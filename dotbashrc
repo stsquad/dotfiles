@@ -401,7 +401,7 @@ fi
 # PS Setup
 ########################
 
-ps_scm_f() {
+function ps_scm_f() {
     local s=
     if [[ -d ".svn" ]] ; then
         local r=$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )
@@ -472,7 +472,7 @@ export PS1="\A \u@\h/${ps_proc} [\W] >"
 
 
 # We want to extract the screen session name (if it exisits) from STY
-ps_xterm_f()
+function ps_xterm_f()
 {
     session_name=${STY/*./}
     if [ $session_name ]; then
