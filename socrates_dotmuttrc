@@ -11,6 +11,9 @@ set mask="!^\\.[^.]"
 set record="+.Sent"
 set postponed="+.Drafts"
 
+# Set the editor
+set editor="emacsclient -t"
+
 #
 # Make Mutt understand all the folders I have
 #
