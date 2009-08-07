@@ -141,8 +141,7 @@ function find_alternatives ()
 #
 # Lets see if we have a decent "grep"
 #
-unalias grep
-GREP=$(find_alternatives "ggrep" "grep")
+GREP=$(find_alternatives "ggrep" "grep" "/bin/grep")
 alias grep="$GREP"
 
 #
