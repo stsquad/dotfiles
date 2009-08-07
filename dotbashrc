@@ -141,6 +141,7 @@ function find_alternatives ()
 #
 # Lets see if we have a decent "grep"
 #
+unalias grep
 GREP=$(find_alternatives "ggrep" "grep")
 alias grep="$GREP"
 
@@ -205,40 +206,8 @@ alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
 # Environent Variables
 ######################
 
-# There is only one editor (although I can get to it in different ways)
-#
-# Anything that uses EDITOR/VISUAL probably wants to call emacsclient if it can.
-# The only other wrinkle being that in none X mode I'll be wanting to use multi-tty
-# support if it exists. Let's see if we can make sense of all that.
-
-# Only do this if the server is running
-if [ -e "${HOME}/.emacs_server" -o -e "/tmp/emacs${UID}/server" ]; then
-    if [[ "$DISPLAY" == "" ]]; then
-        # Can we use muti-tty?
-	emacsclient --help | grep "\-\-tty" > /dev/null
-	if [[ "$?" == "0" ]]; then
-    	    # Thats a yes
-	    EMACS_CMD="emacsclient --tty "
-	else
-	    # Hmmm, opening in another pane would be a pain?
-	    EMACS_CMD="emacs -nw "
-	fi
-    else
-	# For X the focusing of the new frame is problem for emacs, I should see it
-	EMACS_CMD="emacsclient -c"
-    fi
-else
-    # If we have no server running lets just call emacs
-    EMACS_CMD="emacs "
-fi
-
-export EDITOR=${EMACS_CMD}
-export VISUAL=${EMACS_CMD}
-# alternate is always straight emacs incase the server died
-export ALTERNATE_EDITOR=emacs
-
-# shortcut
-alias ec="${EMACS_CMD}"
+# One editor
+export EDITOR=emacs
 
 # set CFLAGS for debugging - autoconf usually picks it up.
 export CFLAGS=-g3
@@ -288,7 +257,7 @@ alias git-push='git push'
 
 export LANG=en_GB
 export LANGUAGE=en_GB
-export LC_ALL=C
+export LC_ALL=en_GB
 
 #
 # PATH hackage
@@ -511,6 +480,14 @@ ulimit -S -c unlimited
 # noise just gets in the way.
 
 if [ "$INTERACTIVE" == "true" ]; then
+
+  # If we have apt on this system I'll want some
+  # debian like shortcuts
+  EMACS=$(find_alternatives "emacs")
+  if [[ -f $EMACS && -f $HOME/.bashrc_emacs ]]; then
+    source $HOME/.bashrc_emacs
+  fi
+  unset EMACS
 
   # If we have apt on this system I'll want some
   # debian like shortcuts
