@@ -17,25 +17,47 @@ if [[ "$DISPLAY" == "" ]]; then
     emacsclient --help | grep "\-\-tty" > /dev/null
     if [[ "$?" == "0" ]]; then
         # Thats a yes
-	EMACS_CMD="emacsclient -a '' -t"
+	EMACS_CMD="emacsclient"
+	EMACS_ARGS="-a '' -t"
     else
         # Hmmm, opening in another pane would be a pain?
-        EMACS_CMD="emacs -nw "
+        EMACS_CMD="emacs"
+	EMACS_ARGS="-nw"
     fi
 else
     # otherwise don't wait and open a new frame
-    EMACS_CMD="emacsclient -n -a '' -c"
+    EMACS_CMD="emacsclient"
+    EMACS_ARG="-n -a '' -c"
 fi
 
 # Set the environment variables for the editors
-export EDITOR=${EMACS_CMD}
-export VISUAL=${EMACS_CMD}
+export EDITOR="${EMACS_CMD} ${EMACS_ARGS} "
+export VISUAL="${EMACS_CMD} ${EMACS_ARGS} "
 export ALTERNATE_EDITOR=emacs
 
 # shortcut
-alias ec="${EMACS_CMD}"
+alias ec="${EDITOR}"
+alias ect="emacsclient -a '' -t"
 
 # And finally lets get the status of the emacs server
 DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
-echo "loading .bashrc_emacs (server-running-p)=${DT}"
+
+#
+# If I've been using a screen session while physically next to
+# the box I'll have an EDITOR etc set up for new X frames. However
+# if I then login remotely I'll be wanting to spawn --tty frames
+# for new cases.
+#
+function switch_emacs_to_terminal()
+{
+    if [ "${EMACS_CMD}" == "emacsclient" ]; then
+	export EDITOR="${EMACS_CMD} -a '' -t "
+	export VISUAL="${EMACS_CMD} -a '' -t "
+	export ALTERNATE_EDITOR="emacs -nw"
+
+	echo "Emacs clients now in terminal mode"
+    fi
+}
+
+echo "loading .bashrc_emacs (Using: $EMACS_CMD and server-running-p=${DT})"
 
