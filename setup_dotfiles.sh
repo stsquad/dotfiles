@@ -9,25 +9,40 @@
 # to go to $HOME
 #
 
+# Link a file to an actual dotfile
+function link_dotfile
+{
+    orig_file=$1
+    dot_file=$2
+
+    #echo "orig_file: $orig_file: dot_file: $dot_file"
+
+    # If the dotfile is already linked we will skip
+    link=`pwd -P $dot_file`
+    if [[ $file -ef  $link ]] ; then
+	echo "skipping symlink at $dot_file (linked to $link)"
+    else
+	if [ -f $dot_file ] ; then
+	    echo "backing up $dot_file"
+	    mv $dot_file ${dot_file}.orig
+	fi
+
+	# If there is stuff left over then remove it
+	if [ -e $dot_file ] ; then
+	    rm $dot_file
+	fi
+	orig_link=`pwd`/$orig_file
+	echo "Linking $orig_link to $dot_file"
+	ln -s $orig_link $dot_file
+    fi
+}
+
 for file in dot*
 do
   dotfile=`echo $file | sed s/dot/\./`
   dotfilepath=$HOME/$dotfile
-  
 
-  # Don't save orig if it's already a link
-  if [ -L $dotfilepath ] ; then
-    linkdest=`ls -L $dotfilepath`
-    echo "skipping symlink at $dotfilepath"
-  else
-    if [ -f $dotfilepath ] ; then
-      echo "backing up $dotfilepath"
-      mv $dotfilepath $HOME/$dotfile.orig
-    fi
-    linkfile=`pwd`/$file
-    echo "Linking $linkfile to ~/$dotfile"
-    ln -s $linkfile ~/$dotfile
-  fi
+  link_dotfile $file $dotfilepath
 done
 
 #
@@ -37,19 +52,11 @@ done
 host=`hostname`
 for file in ${host}_dot*
 do
-  dotfile=`echo $file | sed s/${host}_dot/\./`
-  dotfilepath=$HOME/$dotfile
+#    echo "meep:$file"
+    if [ ! "$file" == "" ] ; then
+	dotfile=`echo $file | sed s/${host}_dot/\./`
+	dotfilepath=$HOME/$dotfile
 
-  if [ -L $dotfilepath ] ; then
-    linkdest=`ls -L $dotfilepath`
-    echo "skipping symlink at $dotfilepath"
-  else
-    if [ -f $dotfilepath ] ; then
-      echo "backing up $dotfilepath"
-      mv $dotfilepath $HOME/$dotfile.orig
+	link_dotfile $file $dotfilepath
     fi
-    linkfile=`pwd`/$file
-    echo "Linking $linkfile to ~/$dotfile"
-    ln -s $linkfile ~/$dotfile
-  fi
 done
