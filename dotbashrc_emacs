@@ -25,18 +25,21 @@ if [[ "$DISPLAY" == "" ]]; then
 	EMACS_ARGS="-nw"
     fi
 else
-    # otherwise don't wait and open a new frame
+    # otherwise open a new frame
     EMACS_CMD="emacsclient"
-    EMACS_ARG="-n -a '' -c"
+    EMACS_ARGS="-a '' -c"
+    # No wait only makes sense for interactive, GUI frame sessions
+    EMACS_NW="-n"
 fi
 
-# Set the environment variables for the editors
+# Set the environment variables for the editors, remember that programs like
+# git or crontab -e will get confused if they don't wait for the editor to return.
 export EDITOR="${EMACS_CMD} ${EMACS_ARGS} "
 export VISUAL="${EMACS_CMD} ${EMACS_ARGS} "
 export ALTERNATE_EDITOR=emacs
 
 # shortcut
-alias ec="${EDITOR}"
+alias ec="${EMACS_CMD} ${EMACS_NW} ${EMACS_ARGS}"
 alias ect="emacsclient -a '' -t"
 
 # And finally lets get the status of the emacs server
