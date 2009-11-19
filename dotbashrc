@@ -225,7 +225,7 @@ shopt -s histappend
 PROMPT_COMMAND='history -a'
 
 export HISTCONTROL=ignoredups
-export HISTIGNORE="rm*"
+export HISTIGNORE="rm *"
 export HISTFILESIZE=10000
 
 # I have stuff in ~/bin
@@ -249,6 +249,7 @@ alias git-diff='git diff'
 alias git-commit='git commit'
 alias git-log='git log'
 alias git-push='git push'
+alias git-grep='git grep'
 
 #
 # locales
