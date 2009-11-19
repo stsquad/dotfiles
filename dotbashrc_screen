@@ -11,3 +11,54 @@ SCREEN_DEAD=`screen -ls | grep -c Dead`
 
 echo "Currently $SCREEN_ATT Attached, $SCREEN_DET Detached and $SCREEN_DEAD Dead screens"
 
+
+#
+# Environment Hackage
+#
+# One of the biggest problems with screen is if the environment of
+# the GUI session you are running in has changed. Sure screen keeps
+# everything running but suddenly you can't spawn stuff that wants
+# DBUS connections and the like.
+#
+#
+ENV_DUMP_FILE="${HOME}/current_${HOSTNAME}.env"
+alias dump_env="env > ${ENV_DUMP_FILE}"
+
+# If in a GUI dump the current environment
+# This is not perfect, if you spawn an xterm out of your screen session it
+# vape your carefully stored environment, so don't do that.
+if [[ ${TERM} == "screen" ]]; then
+    echo "In a screen session - run restore_gui_env to pick up GUI vars"
+elif [[ ${TERM} == "linux" ]]; then
+    echo "In a console session"
+else
+    echo "In a GUI session - dumping env in ${ENV_DUMP_FILE}"
+    dump_env
+fi
+
+# Restore a single environment variable from ${ENV_DUMP_FILE}
+function restore_env_var
+{
+    if [[ "$1"  && -f ${ENV_DUMP_FILE} ]]
+    then
+	line=`grep $1 ${ENV_DUMP_FILE}`
+	delim=`expr index $line =`
+	value=${line:$delim}
+	echo "export $1=$value"
+	export $1=$value
+    fi
+}
+
+function restore_gui_env
+{
+    echo "Restoring GUI environment settings"
+    restore_env_var DBUS_SESSION_BUS_ADDRESS
+    restore_env_var XDG_SESSION_COOKIE
+    restore_env_var DISPLAY
+    restore_env_var SSH_AUTH_SOCK
+    restore_env_var GPG_AGENT_INFO
+    restore_env_var GNOME_KEYRING_SOCKET
+}
+
+
+
