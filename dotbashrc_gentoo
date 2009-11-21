@@ -56,7 +56,7 @@ function diff_ebuild()
 	if [[ "$group" && "$ebuild" ]]
 	then
 	    if [ -d $MASTER_PORTAGE/$group/$ebuild ]; then
-		diff -ub $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/$ebuild
+		diff -r -N -ub -x Manifest $MASTER_PORTAGE/$group/$ebuild $LOCAL_PORTAGE/$group/$ebuild
 	    else
 		echo "$group/$ebuild not in master portage"
 	    fi
