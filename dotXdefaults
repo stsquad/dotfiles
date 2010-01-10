@@ -1,0 +1,25 @@
+# A start at a .Xdefaults
+
+
+# URxvt Configuration
+# (nicked from ArchLinux)
+URxvt.buffered: true
+URxvt.background: black
+URxvt.foreground: white
+URxvt.cursorColor: green
+URxvt.underlineColor: yellow
+URxvt.font: xft:monospace:14:antialias=true
+URxvt.boldFont: xft:monospace:bold:14:antialias=true
+URxvt.perl-ext-common: default
+URxvt.title: ArchWiki Example
+
+#
+URxvt.scrollBar: false
+
+# Clickable URLS
+URxvt.perl-ext-common : default,matcher
+URxvt.urlLauncher     : /usr/bin/firefox
+URxvt.matcher.button  : 1
+	 
+# Position
+URxvt*geometry: 127x49+0+0

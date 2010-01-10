@@ -54,6 +54,7 @@ function restore_gui_env
     echo "Restoring GUI environment settings"
     restore_env_var DBUS_SESSION_BUS_ADDRESS
     restore_env_var XDG_SESSION_COOKIE
+    restore_env_var XAUTHORITY
     restore_env_var DISPLAY
     restore_env_var SSH_AUTH_SOCK
     restore_env_var GPG_AGENT_INFO
