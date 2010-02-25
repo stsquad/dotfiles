@@ -18,7 +18,7 @@ URxvt.scrollBar: false
 
 # Clickable URLS
 URxvt.perl-ext-common : default,matcher
-URxvt.urlLauncher     : /usr/bin/firefox
+URxvt.urlLauncher     : /usr/bin/chromium-browser
 URxvt.matcher.button  : 1
 	 
 # Position
