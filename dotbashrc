@@ -494,7 +494,7 @@ if [ "$INTERACTIVE" == "true" ]; then
 
   # If we have apt on this system I'll want some
   # debian like shortcuts
-  APT=$(find_alternatives "apt")
+  APT=$(find_alternatives "apt-get")
   if [[ -f $APT && -f $HOME/.bashrc_apt ]]; then
     echo "loading .bashrc_apt"
     source $HOME/.bashrc_apt
