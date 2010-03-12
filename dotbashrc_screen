@@ -9,8 +9,7 @@ SCREEN_ATT=`screen -ls | grep -c Attached`
 SCREEN_DET=`screen -ls | grep -c Detached`
 SCREEN_DEAD=`screen -ls | grep -c Dead`
 
-echo "Currently $SCREEN_ATT Attached, $SCREEN_DET Detached and $SCREEN_DEAD Dead screens"
-
+SCREEN_STATUS="$SCREEN_ATT att/$SCREEN_DET det/$SCREEN_DEAD dead"
 
 #
 # Environment Hackage
@@ -28,13 +27,15 @@ alias dump_env="env > ${ENV_DUMP_FILE}"
 # This is not perfect, if you spawn an xterm out of your screen session it
 # vape your carefully stored environment, so don't do that.
 if [[ ${TERM} == "screen" ]]; then
-    echo "In a screen session - run restore_gui_env to pick up GUI vars"
+    SCREEN_TERM="run restore_gui_env to pick up GUI vars"
 elif [[ ${TERM} == "linux" ]]; then
-    echo "In a console session"
+    SCREEN_TERM="in a console session"
 else
-    echo "In a GUI session - dumping env in ${ENV_DUMP_FILE}"
+    SCREEN_TERM="dumping env in ${ENV_DUMP_FILE}"
     dump_env
 fi
+
+echo "loading .bashrc_screen ($SCREEN_STATUS - $SCREEN_TERM)"
 
 # Restore a single environment variable from ${ENV_DUMP_FILE}
 function restore_env_var

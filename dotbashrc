@@ -494,7 +494,7 @@ if [ "$INTERACTIVE" == "true" ]; then
 
   # If we have apt on this system I'll want some
   # debian like shortcuts
-  APT=$(find_alternatives "apt")
+  APT=$(find_alternatives "apt-get")
   if [[ -f $APT && -f $HOME/.bashrc_apt ]]; then
     echo "loading .bashrc_apt"
     source $HOME/.bashrc_apt
@@ -519,6 +519,19 @@ if [ "$INTERACTIVE" == "true" ]; then
   fi
   unset KVM
   
+  # Screen Tweaks
+  SCREEN=$(find_alternatives "screen")
+  if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
+      source $HOME/.bashrc_screen
+  fi
+
+  # GPG Agent
+  SCREEN=$(find_alternatives "gpg-agent")
+  if [[ -f $SCREEN && -f $HOME/.bashrc_gpg ]]; then
+      source $HOME/.bashrc_gpg
+  fi
+  
+  
   # Any machine specific stuff
   HOST_BASHRC="$HOME/.bashrc_`hostname`"
   if [ -f $HOST_BASHRC ]; then
@@ -526,18 +539,10 @@ if [ "$INTERACTIVE" == "true" ]; then
     source $HOST_BASHRC
   fi
 
-  # Screen Tweaks
-  SCREEN=$(find_alternatives "screen")
-  if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
-      echo "loading .bashrc_screen"
-      source $HOME/.bashrc_screen
-  fi
-  
   # Generic local configs for work and stuff
   if [ -f $HOME/.bashrc_local ]; then
     echo "loading .bashrc_local"
     source $HOME/.bashrc_local
   fi
-
 
 fi
