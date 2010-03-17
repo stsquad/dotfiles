@@ -105,3 +105,10 @@ set crypt_replysignencrypted=yes
 set crypt_verify_sig=yes
 
 message-hook '!(~g|~G) ~b"^-----BEGIN\ PGP\ (SIGNED\ )?MESSAGE"' "exec check-traditional-pgp"
+
+#
+# Google Address Book
+#
+set query_command="goobook query '%s'"
+bind editor <Tab> complete-query
+macro index,pager a "<pipe-message>goobook add<return>" "add the sender address to Google contacts"
