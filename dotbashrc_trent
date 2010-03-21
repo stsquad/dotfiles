@@ -11,4 +11,8 @@ SOC_OPTS="-rav --delete-after"
 alias sync_socrates="rsync $SOC_OPTS $SOCRATES_SRC $SOCRATES_DST"
 
 # Android SDK
-PATH=/home/alex/android-sdk-linux_x86-1.6_r1/tools/:$PATH
+PATH=/home/alex/android-sdk-linux_86/tools/:$PATH
+
+# Disable touchpad while typing
+# GUI session
+#syndaemon -i 2 -d -K
