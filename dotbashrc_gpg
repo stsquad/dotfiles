@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Alex's .bashrc_gpg
+#
+
+if test -f $HOME/.gpg-agent-info && kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
+    GPG_MSG="exisiting agent"
+else
+    gpg-agent --daemon --write-env-file &> /dev/null
+    GPG_MSG="new agent"
+fi
+
+# Setup environment variables either way
+source $HOME/.gpg-agent-info
+export GPG_AGENT_INFO
+
+# Ensure prompts come to the correct TTY
+GPG_TTY=`tty`
+export GPG_TTY
+
+echo "loading .bashrc_gpg ($GPG_MSG on $GPG_TTY)"
+

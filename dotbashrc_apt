@@ -4,5 +4,28 @@
 #
 # Stuff useful when running on apt based systems
 
+#
+# Debian Stuff
+#
+export DEBFULLNAME='Alex Bennee' 
+export DEBEMAIL='alex@bennee.com'
+# This is typically set by "local" configs
+export DEBKEYID=''
+
 alias acs="apt-cache search"
 
+# A simple wrapper for dpkg-buildpackage
+function dpkg-build
+{
+    # Sanity
+    if [ -d `pwd`/debian ]; then
+	CMD="dpkg-buildpackage -rfakeroot"
+	if [ "${DEBKEYID}" != "" ]; then
+	    CMD="${CMD} -k${DEBKEYID}"
+	fi
+	echo "Running $CMD";
+	`$CMD`
+    else
+	echo "Not in a Debian source tree"
+    fi
+}
