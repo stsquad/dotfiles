@@ -1,0 +1,26 @@
+# Ensure we run a fresh login shell
+shell -${SHELL}
+
+# I want more scrollback
+defscrollback 2048
+
+# Set the caption to show:
+#   current window
+#   other windows
+#   date/time
+
+caption always "%{Rk}@%H%{kk} %{Yk} %n %t %{-b -s}%{kk} %{wb}%W %= %{kk} %{wB} %c %D %d %M "
+
+#caption always "%{= kw}%-w%{= BW}%n %t%{-}%+w %-= @%H - %LD %d %LM - %c"
+#  caption always "%{+b rk}%H%{gk} |%c %{yk}%d.%m.%Y | %{rw}%n%f %t %{bk} | %?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%? | %{rk} Load: %l %{wk}"
+
+
+# The hardstatus line goes at the bottom of the screen
+#hardstatus alwayslastline
+#hardstatus string '%-Lw  %50>%n%f* %t %+Lw%<  %-= %D %d %M %Y %c:%s%{-}'
+#hardstatus string '%w'
+
+screen -t system 0 bash
+screen -t htop 1 htop
+screen -t iotop 2 iotop
+screen -t powertop 3 powertop
