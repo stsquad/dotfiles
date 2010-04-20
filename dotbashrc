@@ -106,6 +106,9 @@ case "${cache_term_colours}" in
         ;;
 esac
 
+# Caps lock should be another Ctrl...
+setxkbmap -option "ctrl:nocaps"
+
 #############
 # Aliases
 #############
