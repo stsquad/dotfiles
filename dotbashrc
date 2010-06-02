@@ -3,6 +3,7 @@
 # Alexs .bashrc
 # loaded by bash when any non-login shell started
 
+set +x
 #
 # Source global definitions
 #
@@ -504,9 +505,11 @@ if [ "$INTERACTIVE" == "true" ]; then
   # Gentoo Stuff
   EMERGE=$(find_alternatives "emerge")
   if [[ -f $EMERGE && -f $HOME/.bashrc_gentoo ]]; then
-    if [ -d /usr/portage ]; then
+    if [[ -d /usr/portage && `whoami` != "root" ]]; then
       echo "loading .bashrc_gentoo"
       source $HOME/.bashrc_gentoo
+    else
+      unset CFLAGS
     fi
   fi
   unset EMERGE
