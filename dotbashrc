@@ -488,8 +488,7 @@ ulimit -S -c unlimited
 
 if [ "$INTERACTIVE" == "true" ]; then
 
-  # If we have apt on this system I'll want some
-  # debian like shortcuts
+  # If we have emacs on this system we have stuff we can do
   EMACS=$(find_alternatives "emacs")
   if [[ -f $EMACS && -f $HOME/.bashrc_emacs ]]; then
     source $HOME/.bashrc_emacs
