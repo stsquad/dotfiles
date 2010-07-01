@@ -3,6 +3,7 @@
 # Alexs .bashrc
 # loaded by bash when any non-login shell started
 
+set +x
 #
 # Source global definitions
 #
@@ -105,6 +106,9 @@ case "${cache_term_colours}" in
         eval unset ${!cache_colour_*}
         ;;
 esac
+
+# Caps lock should be another Ctrl...
+setxkbmap -option "ctrl:nocaps"
 
 #############
 # Aliases
@@ -484,8 +488,7 @@ ulimit -S -c unlimited
 
 if [ "$INTERACTIVE" == "true" ]; then
 
-  # If we have apt on this system I'll want some
-  # debian like shortcuts
+  # If we have emacs on this system we have stuff we can do
   EMACS=$(find_alternatives "emacs")
   if [[ -f $EMACS && -f $HOME/.bashrc_emacs ]]; then
     source $HOME/.bashrc_emacs
@@ -504,9 +507,11 @@ if [ "$INTERACTIVE" == "true" ]; then
   # Gentoo Stuff
   EMERGE=$(find_alternatives "emerge")
   if [[ -f $EMERGE && -f $HOME/.bashrc_gentoo ]]; then
-    if [ -d /usr/portage ]; then
+    if [[ -d /usr/portage && `whoami` != "root" ]]; then
       echo "loading .bashrc_gentoo"
       source $HOME/.bashrc_gentoo
+    else
+      unset CFLAGS
     fi
   fi
   unset EMERGE
