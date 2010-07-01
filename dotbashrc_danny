@@ -41,4 +41,4 @@ function sync_torrents
 export PATH=$PATH:/home/alex/tools/arm-elf/bin/
 
 # Backchannel
-alias start_backchan="autossh -2 -fN -R 10000:localhost:22 alex@bennee.com"
+alias start_backchan="autossh -2 -fN -M 0 -R 10000:localhost:22 alex@bennee.com"
