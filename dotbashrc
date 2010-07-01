@@ -209,7 +209,7 @@ alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
 export EDITOR=emacs
 
 # set CFLAGS for debugging - autoconf usually picks it up.
-export CFLAGS=-g3
+#export CFLAGS=-g3
 
 # CVS exports
 export CVS_RSH=ssh
