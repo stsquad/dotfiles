@@ -16,3 +16,8 @@ PATH=/home/alex/android-sdk-linux_86/tools/:$PATH
 # Disable touchpad while typing
 # GUI session
 #syndaemon -i 2 -d -K
+
+# AutoSSH
+#alias start_backchan="autossh -2 -fN -M 20000 -R 10001:localhost:22 alex@bennee.com"
+alias start_backchan="autossh -2 -fN -R 10001:localhost:22 alex@bennee.com"
+
