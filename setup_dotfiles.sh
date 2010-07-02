@@ -53,7 +53,7 @@ host=`hostname`
 for file in ${host}_dot*
 do
 #    echo "meep:$file"
-    if [ ! "$file" == "" ] ; then
+    if [ -e "$file" ] ; then
 	dotfile=`echo $file | sed s/${host}_dot/\./`
 	dotfilepath=$HOME/$dotfile
 

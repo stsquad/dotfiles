@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# .bashrc_pitcarin
+#
+
+# Sync ipod to music
+IPOD="/media/disk/music/"
+MUSIC="/media/music/music"
+
+alias sync_ipod_to_music="rsync -ra --size-only --delete-after $IPOD $MUSIC"
