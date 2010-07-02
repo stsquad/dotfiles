@@ -22,5 +22,6 @@ caption always "%{Rk}@%H%{kk} %{Yk} %n %t %{-b -s}%{kk} %{wb}%W %= %{kk} %{wB} %
 
 screen -t system 0 bash
 screen -t htop 1 htop
-screen -t iotop 2 iotop
+screen -t iotop 2 /export/src/iotop.git/iotop.py -P -o -d 30
 screen -t powertop 3 powertop
+
