@@ -11,7 +11,7 @@ URxvt.underlineColor: yellow
 URxvt.font: xft:monospace:14:antialias=true
 URxvt.boldFont: xft:monospace:bold:14:antialias=true
 URxvt.perl-ext-common: default
-URxvt.title: ArchWiki Example
+URxvt.title: Alex's Terminal
 
 #
 URxvt.scrollBar: false
@@ -23,3 +23,4 @@ URxvt.matcher.button  : 1
 	 
 # Position
 URxvt*geometry: 127x49+0+0
+
