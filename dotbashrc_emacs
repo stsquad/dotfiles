@@ -42,8 +42,22 @@ export ALTERNATE_EDITOR=emacs
 alias ec="${EMACS_CMD} ${EMACS_NW} ${EMACS_ARGS}"
 alias ect="emacsclient -a '' -t"
 
-# And finally lets get the status of the emacs server
-DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+# And finally lets get the status of the emacs server, this is a little racy
+# but better than it was before...
+EMACS_PROCS=`ps -u $USER -o time,command | grep "emacs"`
+RUNNING=`echo $EMACS_PROCS | wc -l`
+if [ "$RUNNING" == "0" ]; then
+    DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+else
+    # Check if emacs --daemon has already been invoked...
+    DAEMON=`echo $EMACS_PROCS | grep -c "\-\-daemon"`
+    if [ "$DAEMON" == "0" ]; then
+	DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+    else
+	# Otherwise don't spawn a new one if you can't connect
+	DT=`emacsclient -a '/bin/false' -e "(server-running-p)" 2> /dev/null`
+    fi
+fi    
 
 #
 # If I've been using a screen session while physically next to

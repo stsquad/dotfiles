@@ -11,14 +11,18 @@ URxvt.underlineColor: yellow
 URxvt.font: xft:monospace:14:antialias=true
 URxvt.boldFont: xft:monospace:bold:14:antialias=true
 URxvt.perl-ext-common: default
-URxvt.title: Alex's Terminal
+# Overridden by ps_xterm_f()
+URxvt.title: urxvt term
 
 #
 URxvt.scrollBar: false
 
 # Clickable URLS
 URxvt.perl-ext-common : default,matcher
-URxvt.urlLauncher     : /usr/bin/chromium-browser
+# Work
+#URxvt.urlLauncher     : /usr/bin/chromium-browser
+# Netbook
+URxvt.urlLauncher     : /opt/google/chrome/google-chrome
 URxvt.matcher.button  : 1
 	 
 # Position
