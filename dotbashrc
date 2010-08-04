@@ -8,6 +8,7 @@
 #
 
 #echo "Starting ajb's .bashrc $*"
+#set -x
 
 #For debuging when we are interactive or non-interactive (tty)
 #
@@ -341,12 +342,8 @@ function switch_world
 	export CURRENT_WORLD_LIB
 	export LD_LIBRARY_PATH=$CURRENT_WORLD_LIB:$ORIG_LD_PATH
     else
-	echo "No directory at $CURRENT_WORLD_LIB, giving up"
-	CURRENT_WORLD_ROOT=$OLD_WORLD_ROOT
-	CURRENT_WORLD_BIN=$OLD_WORLD_BIN
+	echo "No directory at $CURRENT_WORLD_LIB, not tweaking LD_LIBRARY_PATH"
 	CURRENT_WORLD_LIB=$OLD_WORLD_LIB
-	clear_world
-	return
     fi
 
 }
