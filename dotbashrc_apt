@@ -19,7 +19,7 @@ function dpkg-build
 {
     # Sanity
     if [ -d `pwd`/debian ]; then
-	CMD="dpkg-buildpackage -rfakeroot"
+	CMD="dpkg-buildpackage -tc -rfakeroot"
 	if [ "${DEBKEYID}" != "" ]; then
 	    CMD="${CMD} -k${DEBKEYID}"
 	fi
