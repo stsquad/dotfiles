@@ -30,6 +30,13 @@ if [ "$SSH_CLIENT" != "" ]; then
   fi
 fi
 
+# Assume that dumb terminal logins are from TRAMP
+if [ "${TERM}" != "" ]; then
+    if [ "${TERM}" == "dumb" ]; then
+	INTERACTIVE=false
+    fi
+fi
+
 #if [ "$INTERACTIVE" == "true" ]; then
 #  echo "Assuming interactive shell"
 #fi
@@ -441,8 +448,9 @@ ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
 
 
 # Setup the prompt to show who I am and on what machine, what processor and my SCM state
-export PS1="\A \u@\h/${ps_proc} [\W] >"
-
+if [ "$INTERACTIVE" == "true" ]; then
+    export PS1="\A \u@\h/${ps_proc} [\W] >"
+fi
 
 # We want to extract the screen session name (if it exisits) from STY
 function ps_xterm_f()
@@ -521,18 +529,17 @@ if [ "$INTERACTIVE" == "true" ]; then
   fi
   unset KVM
   
-  # Screen Tweaks
-  SCREEN=$(find_alternatives "screen")
-  if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
-      source $HOME/.bashrc_screen
-  fi
-
   # GPG Agent
   SCREEN=$(find_alternatives "gpg-agent")
   if [[ -f $SCREEN && -f $HOME/.bashrc_gpg ]]; then
       source $HOME/.bashrc_gpg
   fi
   
+  # Screen Tweaks
+  SCREEN=$(find_alternatives "screen")
+  if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
+      source $HOME/.bashrc_screen
+  fi
   
   # Any machine specific stuff
   HOST_BASHRC="$HOME/.bashrc_`hostname`"
