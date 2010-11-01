@@ -148,7 +148,6 @@ alias grep="$GREP"
 DIFF=$(find_alternatives "gdiff" "diff")
 alias diff="$DIFF"
 
-
 #
 # Some systems I use don't have a decent 'find' implentation so
 #
@@ -190,14 +189,8 @@ else
     alias sa="$FIND -L . -type f | xargs grep "
 fi    
 
-
-# create patches easily
-export DIFFIGNORE="-X~/.diffignore "
-alias mkpatch="diff -Naur $DIFFIGNORE "
-
-# Make creating an isofs easy
-alias mkcdimg="mkisofs -v -R -o ~/tmp/temp.iso "
-
+# Find a decent browser
+BROWSER=$(find_alternatives "chromium-browser" "chrome" "firefox-4.0" "firefox" "mozilla")
 
 ######################
 # Environent Variables
@@ -245,18 +238,6 @@ alias git-log='git log'
 alias git-push='git push'
 alias git-grep='git grep'
 
-#
-# locales
-#
-# It's all a bit of black art to me but if this is what Debian's reconfigure
-# can set /etc/default/locale then I guess it's good enough for my .bashrc
-#
-# LC_ALL has precendece over LANG
-#
-
-export LC_ALL=en_GB.UTF-8
-export LANG=en_GB.UTF-8
-export LANGUAGE=en_GB.UTF-8
 
 #
 # PATH hackage
