@@ -43,10 +43,12 @@ function restore_env_var
     if [[ "$1"  && -f ${ENV_DUMP_FILE} ]]
     then
 	line=`grep $1 ${ENV_DUMP_FILE}`
-	delim=`expr index $line =`
-	value=${line:$delim}
-	echo "export $1=$value"
-	export $1=$value
+	if [ "$line" ]; then
+	    delim=`expr index $line =`
+	    value=${line:$delim}
+	    echo "export $1=$value"
+	    export $1=$value
+	fi
     fi
 }
 
@@ -59,6 +61,7 @@ function restore_gui_env
     restore_env_var DISPLAY
     restore_env_var SSH_AUTH_SOCK
     restore_env_var GPG_AGENT_INFO
+    restore_env_var GPG_TTY
     restore_env_var GNOME_KEYRING_SOCKET
 }
 

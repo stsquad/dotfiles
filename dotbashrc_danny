@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# Specific Setups for Danny
+#
+
+
+function leftMonitorOn
+{
+    xrandr --output VGA --auto --left-of TMDS-1
+    gconftool-2 --set  /apps/panel/toplevels/bottom_panel_screen0/monitor --type int 1
+    gconftool-2 --set  /apps/panel/toplevels/top_panel_screen0/monitor --type int 1
+}
+
+function leftMonitorOff
+{
+    xrandr --output VGA --off
+}
+
+
+#
+# Sync IPOD
+#
+MUSIC_ROOT=$HOME/music/
+IPOD_ROOT=/media/iPod/music/
+
+alias sync_ipod="rsync -r --size-only $MUSIC_ROOT $IPOD_ROOT"
+
+#
+# Sync Torrents
+#
+
+function sync_torrents
+{
+    cd /home/alex/Downloads/bittorrent
+    rsync -rP alex@bennee.com:torrent/* .
+}
+
+#
+# Rockbox compiler
+#
+export PATH=$PATH:/home/alex/tools/arm-elf/bin/
+
+# Backchannel
+alias start_backchan="autossh -2 -fN -M 0 -R 10000:localhost:22 alex@bennee.com"

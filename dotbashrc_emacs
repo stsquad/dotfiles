@@ -12,25 +12,42 @@
 # one is not running
 #
 
-if [[ "$DISPLAY" == "" ]]; then
+# I don't want to bring up daemons on every machine
+
+EMACS_DAEMON=0
+machine=`hostname`
+for emacs_daemon_machine in pitcairn socrates danny trent vnms
+do
+    if [[ "$machine" == "$emacs_daemon_machine" ]]; then
+	EMACS_DAEMON=1
+    fi
+done
+
+if [[ "$EMACS_DAEMON"=="1" ]]; then 
+    if [[ "$DISPLAY" == "" ]]; then
     # Can we use muti-tty?
-    emacsclient --help | grep "\-\-tty" > /dev/null
-    if [[ "$?" == "0" ]]; then
+	emacsclient --help 2>1 | grep "\-\-tty" > /dev/null
+	if [[ "$?" == "0" ]]; then
         # Thats a yes
-	EMACS_CMD="emacsclient"
-	EMACS_ARGS="-a '' -t"
-    else
+	    EMACS_CMD="emacsclient"
+	    EMACS_ARGS="-a '' -t"
+	else
         # Hmmm, opening in another pane would be a pain?
-        EMACS_CMD="emacs"
-	EMACS_ARGS="-nw"
+            EMACS_CMD="emacs"
+	    EMACS_ARGS="-nw"
+	fi
+    else
+    # otherwise open a new frame
+	EMACS_CMD="emacsclient"
+	EMACS_ARGS="-a '' -c"
+    # No wait only makes sense for interactive, GUI frame sessions
+	EMACS_NW="-n"
     fi
 else
-    # otherwise open a new frame
-    EMACS_CMD="emacsclient"
-    EMACS_ARGS="-a '' -c"
-    # No wait only makes sense for interactive, GUI frame sessions
-    EMACS_NW="-n"
+    EMACS_CMD="emacs"
+    EMACS_ARGS="-nw"
 fi
+
 
 # Set the environment variables for the editors, remember that programs like
 # git or crontab -e will get confused if they don't wait for the editor to return.
@@ -42,8 +59,27 @@ export ALTERNATE_EDITOR=emacs
 alias ec="${EMACS_CMD} ${EMACS_NW} ${EMACS_ARGS}"
 alias ect="emacsclient -a '' -t"
 
-# And finally lets get the status of the emacs server
-DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+# And finally lets get the status of the emacs server, this is a little racy
+# but better than it was before...
+if [[ "$EMACS_DAEMON"=="1" ]]; then
+    EMACS_PROCS=`ps -u $USER -o time,command | grep "emacs"`
+    RUNNING=`echo $EMACS_PROCS | wc -l`
+    if [ "$RUNNING" == "0" ]; then
+	DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+    else
+    # Check if emacs --daemon has already been invoked...
+	DAEMON=`echo $EMACS_PROCS | grep -c "\-\-daemon"`
+	if [ "$DAEMON" == "0" ]; then
+	    DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+	else
+	# Otherwise don't spawn a new one if you can't connect
+	    DT=`emacsclient -a '/bin/false' -e "(server-running-p)" 2> /dev/null`
+	fi
+    fi
+    REPORT="server-running-p=${DT}"
+else
+    REPORT="not spawned a daemon"
+fi
 
 #
 # If I've been using a screen session while physically next to
@@ -62,5 +98,5 @@ function switch_emacs_to_terminal()
     fi
 }
 
-echo "loading .bashrc_emacs (Using: $EMACS_CMD and server-running-p=${DT})"
+echo "loading .bashrc_emacs (Using: $EMACS_CMD and $REPORT)"
 
