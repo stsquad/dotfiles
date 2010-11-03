@@ -24,7 +24,7 @@ function dpkg-build
 	    CMD="${CMD} -k${DEBKEYID}"
 	fi
 	echo "Running $CMD";
-	`$CMD`
+	$CMD
     else
 	echo "Not in a Debian source tree"
     fi
