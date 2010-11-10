@@ -11,12 +11,12 @@ set mask="!^\\.[^.]"
 set record="+.Sent"
 set postponed="+.Drafts"
 
+# Pager tweaks
+set markers=no
+#macro pager e "<edit-message>" "View message in emacs"
+
 # Set the editor
 set editor="emacsclient -t"
-#set pager="emacsclient -t"
-
-# I don't want to use emacs as a pager, but I may want to edit a viewed message in it
-#macro pager e "" "View message in emacs"
 
 #
 # Make Mutt understand all the folders I have
