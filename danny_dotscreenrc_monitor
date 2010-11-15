@@ -30,8 +30,8 @@ caption always "%{Rk}@%H%{kk} %{Yk} %n %t %{-b -s}%{kk} %{wb}%W %= %{kk} %{wB} %
 #hardstatus string '%-Lw  %50>%n%f* %t %+Lw%<  %-= %D %d %M %Y %c:%s%{-}'
 #hardstatus string '%w'
 
-screen -t system 0 bash
+# Create windows
+screen -t emerge 0 bash
 screen -t htop 1 htop
-screen -t iotop 2 /export/src/iotop.git/iotop.py -P -o -d 30
+screen -t iotop 2 iotop -o -d 5
 screen -t powertop 3 powertop
-
