@@ -9,4 +9,4 @@ MUSIC="/media/music/music"
 
 alias sync_ipod_to_music="rsync -ra --size-only --delete-after $IPOD $MUSIC"
 
-export REPREPRO_BASE_DIR=/eng/ajb/apt-repos
+export REPREPRO_BASE_DIR=/export/repository

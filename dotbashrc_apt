@@ -29,3 +29,19 @@ function dpkg-build
 	echo "Not in a Debian source tree"
     fi
 }
+
+# Same again for git-buildpackage
+function git-build
+{
+    # Sanity
+    if [ -d `pwd`/debian ]; then
+	CMD="git-buildpackage -sa -tc -rfakeroot"
+	if [ "${DEBKEYID}" != "" ]; then
+	    CMD="${CMD} -k${DEBKEYID}"
+	fi
+	echo "Running $CMD";
+	$CMD
+    else
+	echo "Not in a Debian source tree"
+    fi
+}
