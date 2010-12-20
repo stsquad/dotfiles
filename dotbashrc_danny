@@ -23,7 +23,7 @@ function leftMonitorOff
 MUSIC_ROOT=$HOME/music/
 IPOD_ROOT=/media/iPod/music/
 
-alias sync_ipod="rsync -r --size-only $MUSIC_ROOT $IPOD_ROOT"
+alias sync_ipod="rsync -rP --size-only $MUSIC_ROOT $IPOD_ROOT"
 
 #
 # Sync Torrents
@@ -38,7 +38,7 @@ function sync_torrents
 #
 # Rockbox compiler
 #
-export PATH=$PATH:/home/alex/tools/arm-elf/bin/
+export PATH=$PATH:/home/alex/src/rockbox/tools/bin
 
 # Backchannel
 alias start_backchan="autossh -2 -fN -M 0 -R 10000:localhost:22 alex@bennee.com"
