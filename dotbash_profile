@@ -431,8 +431,9 @@ function ps_xterm_f()
 }
 
 if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
-    # Too prevent confusion about line lengths we append this to the PROMPT_COMMAND
-    export PROMPT_COMMAND="$PROMPT_COMMAND; ps_xterm_f"
+    # We can't add this to PROMPT_COMMAND as it would break on child shells which
+    # don't inherit the parent functions, just call it now
+    ps_xterm_f
 fi
 
 # Screen can loose connections to the root ssh-agent. Either we could create and agent for
