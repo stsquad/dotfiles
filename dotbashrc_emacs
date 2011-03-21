@@ -26,7 +26,7 @@ done
 if [[ "$EMACS_DAEMON"=="1" ]]; then 
     if [[ "$DISPLAY" == "" ]]; then
     # Can we use muti-tty?
-	emacsclient --help 2> /dev/null | grep "\-\-tty" > /dev/null
+	emacsclient --help 2>&1 | grep "\-\-tty" > /dev/null
 	if [[ "$?" == "0" ]]; then
         # Thats a yes
 	    EMACS_CMD="emacsclient"
