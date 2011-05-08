@@ -18,9 +18,10 @@ fi
 # It's all a bit of black art to me but if this is what Debian's reconfigure
 # can set /etc/default/locale then I guess it's good enough for my .bashrc
 #
-# LC_ALL has precendece over LANG
+# LC_ALL has precendece over LANG, LC_CTYPE is needed for rxvt-unicode
 #
 
 export LC_ALL=en_GB.UTF-8
+export LC_CTYPE=en_GB.UTF-8
 export LANG=en_GB.UTF-8
 export LANGUAGE=en_GB.UTF-8
