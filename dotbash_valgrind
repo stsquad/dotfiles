@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Valgrind Customisations
+#
+
+VALGRIND=`which valgrind`
+alias valmem="$VALGRIND --leak-check=full --log-file=valgrind-mem.log "

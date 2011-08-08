@@ -35,7 +35,7 @@ else
     dump_env
 fi
 
-echo "loading .bashrc_screen ($SCREEN_STATUS - $SCREEN_TERM)"
+echo "loading .bash_screen ($SCREEN_STATUS - $SCREEN_TERM)"
 
 # Restore a single environment variable from ${ENV_DUMP_FILE}
 function restore_env_var

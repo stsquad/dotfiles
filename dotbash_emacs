@@ -97,5 +97,5 @@ function switch_emacs_to_terminal()
     fi
 }
 
-echo "loading .bashrc_emacs (Using: $EMACS_CMD and $REPORT)"
+echo "loading .bash_emacs (Using: $EMACS_CMD and $REPORT)"
 

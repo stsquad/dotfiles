@@ -451,71 +451,40 @@ find_ssh_agent()
 # I want core-dumps dammit
 ulimit -S -c unlimited
 
-#
-# Now source any local bashrc's which can overide stuff
-# or add stuff relevant to the system I am on
-#
-# We only want this for interactive shells as remote
-# noise just gets in the way.
 
-# If we have emacs on this system we have stuff we can do
-EMACS=$(find_alternatives "emacs")
-if [[ -f $EMACS && -f $HOME/.bashrc_emacs ]]; then
-    source $HOME/.bashrc_emacs
-fi
-unset EMACS
+# Helper function to load extra bits of profile that
+# are optional depending on the environment.
+function load_extra_module()
+{
+    module=$1
+    executable_check=$2
 
-  # If we have apt on this system I'll want some
-  # debian like shortcuts
-APT=$(find_alternatives "apt-get")
-if [[ -f $APT && -f $HOME/.bashrc_apt ]]; then
-    echo "loading .bashrc_apt"
-    source $HOME/.bashrc_apt
-fi
-unset APT
+    find_exes=$(find_alternatives "$2")
+    module_path=${HOME}/.bash_${module}
 
-  # Gentoo Stuff
-EMERGE=$(find_alternatives "emerge")
-if [[ -f $EMERGE && -f $HOME/.bashrc_gentoo ]]; then
-    if [[ -d /usr/portage && `whoami` != "root" ]]; then
-	echo "loading .bashrc_gentoo"
-	source $HOME/.bashrc_gentoo
-    else
-	unset CFLAGS
+#    echo "$find_exes:$module_path"
+    
+    if [[ -f $find_exes && -f $module_path ]]; then
+#	echo "doing $module_path"
+	source $module_path
     fi
-fi
-unset EMERGE
+}
 
-  # KVM Stuff
-KVM=$(find_alternatives "kvm")
-if [[ -f $KVM && -f $HOME/.bashrc_kvm ]]; then
-    echo "loading .bashrc_kvm"
-    source $HOME/.bashrc_kvm
-fi
-unset KVM
+load_extra_module emacs emacs
+load_extra_module apt apt-get
+load_extra_module kvm kvm
+load_extra_module gpg gpg-agent
+load_extra_module screen screen
+load_extra_module valgrind valgrind
+load_extra_module bitbake bitbake
 
-  # GPG Agent
-SCREEN=$(find_alternatives "gpg-agent")
-if [[ -f $SCREEN && -f $HOME/.bashrc_gpg ]]; then
-    source $HOME/.bashrc_gpg
-fi
-
-  # Screen Tweaks
-SCREEN=$(find_alternatives "screen")
-if [[ -f $SCREEN && -f $HOME/.bashrc_screen ]]; then
-    source $HOME/.bashrc_screen
+# Gentoo is special...
+if [[ `whoami` != "root" ]]; then
+    load_extra_module gentoo emerge
+else
+    unset CFLAGS
 fi
 
-  # Any machine specific stuff
-HOST_BASHRC="$HOME/.bashrc_`hostname`"
-if [ -f $HOST_BASHRC ]; then
-    echo "loading .bashrc_`hostname`"
-    source $HOST_BASHRC
-fi
-
-  # Generic local configs for work and stuff
-if [ -f $HOME/.bashrc_local ]; then
-    echo "loading .bashrc_local"
-    source $HOME/.bashrc_local
-fi
+load_extra_module `hostname` true
+load_extra_module local true
 
