@@ -5,3 +5,4 @@
 
 VALGRIND=`which valgrind`
 alias valmem="$VALGRIND --leak-check=full --log-file=valgrind-mem.log "
+alias valptr="$VALGRIND --tool=exp-ptrcheck --log-file=valgrind-ptr.log "
