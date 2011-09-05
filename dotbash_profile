@@ -80,6 +80,7 @@ case "${cache_term_colours}" in
         cache_colour_l_pink='\033[38;5;206m'
         cache_colour_m_teal='\033[38;5;38m'
         cache_colour_m_brwn='\033[38;5;130m'
+        cache_colour_m_red='\033[38;5;196m'
         cache_colour_end='\033[0;0m'
         ;;
     16)
@@ -414,9 +415,15 @@ if [ "$PROC" == "unknown" ]; then
 fi
 ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
 
+if [[ `whoami` == "root" ]]; then
+  ps_user="\[${cache_colour_m_red}\]\u\[${cache_colour_end}\]"
+else
+  ps_user="\u"
+fi
+
 
 # Setup the prompt to show who I am and on what machine, what processor and my SCM state
-export PS1="\A \u@\h/${ps_proc} [\W] >"
+export PS1="\A ${ps_user}@\h/${ps_proc} [\W] >"
 
 # We want to extract the screen session name (if it exisits) from STY
 function ps_xterm_f()
