@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Alexs .bash configuration
+#
+# tmux configuration
+
+echo "loading .bash_tmux (starting server)"
+tmux start-server
+
+if [[ `whoami` == "root" ]]; then
+    function sysmon()
+    {
+	if tmux has-session -t system; then
+	    tmux attach-session -t system;
+        else
+	    tmux new-session -s system
+ 	    tmux new-window -t system -n 'htop' 'htop'
+ 	    tmux new-window -t system -n 'iotop' 'iotop -P -o -d 30'
+ 	    tmux new-window -t system -n 'powertop' 'powertop'
+	fi
+    }
+fi
+
+

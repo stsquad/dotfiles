@@ -1,7 +1,11 @@
 #!/bin/bash
 #
-# Alexs .bashrc
-# loaded by bash when any non-login shell started
+# Alexs .bash_profile
+# Loaded by bash when any non-login shell started
+#
+# Normal environment variable tweaks should be hidden away in
+# the .bashrc (assuming they don't mess with ssh/tramp stuff)
+#
 
 set +x
 #
@@ -477,6 +481,7 @@ function load_extra_module()
     fi
 }
 
+load_extra_module tmux tmux
 load_extra_module emacs emacs
 load_extra_module apt apt-get
 load_extra_module kvm kvm
