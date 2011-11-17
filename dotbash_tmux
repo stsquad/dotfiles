@@ -5,6 +5,7 @@
 # tmux configuration
 
 echo "loading .bash_tmux (starting server)"
+export USING_TMUX=1
 tmux start-server
 
 if [[ `whoami` == "root" ]]; then
@@ -21,4 +22,6 @@ if [[ `whoami` == "root" ]]; then
     }
 fi
 
+alias tn="tmux new-session -s "
+alias ta="tmux attach-session -t "
 
