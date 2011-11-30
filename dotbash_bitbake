@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Alex's .bash_bitbake
+#
+# Handling for OpenEmbedded and bitbake
+#
+
+
+function select_bb_world()
+{
+    SOURCES=$1
+    BUILD=`pwd`
+
+    if [ ! -d ${BUILD}/conf ]; then
+	echo "Not in a OE build directory - ignoring"
+	return
+    else
+	BBPATH=${BUILD}
+    fi
+
+    if [ ! -d ${SOURCES}/conf ]; then
+	echo "Source path (${SOURCES}) not a OE source directory - ignoring"
+	return
+    else
+	BBPATH=$BBPATH:${SOURCES}
+    fi
+
+    export BBPATH
+    echo "BBPATH=$BBPATH"
+}

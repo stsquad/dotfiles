@@ -26,7 +26,7 @@ alias dump_env="env > ${ENV_DUMP_FILE}"
 # If in a GUI dump the current environment
 # This is not perfect, if you spawn an xterm out of your screen session it
 # vape your carefully stored environment, so don't do that.
-if [[ ${TERM} == "screen" ]]; then
+if [[ ${TERM} == "screen" || ${TERM} == "screen-256color" ]]; then
     SCREEN_TERM="run restore_gui_env to pick up GUI vars"
 elif [[ ${TERM} == "linux" ]]; then
     SCREEN_TERM="in a console session"
@@ -35,7 +35,7 @@ else
     dump_env
 fi
 
-echo "loading .bashrc_screen ($SCREEN_STATUS - $SCREEN_TERM)"
+echo "loading .bash_screen ($SCREEN_STATUS - $SCREEN_TERM)"
 
 # Restore a single environment variable from ${ENV_DUMP_FILE}
 function restore_env_var

@@ -18,5 +18,5 @@ export GPG_AGENT_INFO
 GPG_TTY=`tty`
 export GPG_TTY
 
-echo "loading .bashrc_gpg ($GPG_MSG on $GPG_TTY)"
+echo "loading .bash_gpg ($GPG_MSG on $GPG_TTY)"
 
