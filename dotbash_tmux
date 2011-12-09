@@ -4,9 +4,9 @@
 #
 # tmux configuration
 
-echo "loading .bash_tmux (starting server)"
-export USING_TMUX=1
 tmux start-server
+TMUX_SESSIONS=`tmux list-sessions | wc -l`
+TMUX_WINDOWS=`tmux list-windows | wc -l`
 
 if [[ `whoami` == "root" ]]; then
     function sysmon()
@@ -25,3 +25,5 @@ fi
 alias tn="tmux new-session -s "
 alias ta="tmux attach-session -t "
 
+echo "loading .bash_tmux ($TMUX_SESSIONS sessions, $TMUX_WINDOWS windows)"
+export USING_TMUX=1

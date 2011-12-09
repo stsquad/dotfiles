@@ -332,8 +332,52 @@ function switch_world
 
 }
 
-alias sw="switch_world"
+#
+# Unlike switch_world this assumes you want to permanently add something
+# to your search paths. It's also a lot quieter about it.
+#
+function add_to_world
+{
+    if [ "$1" ]
+    then
+	if [ "$1" = "." ]
+	then
+	    CURRENT_WORLD_ROOT=`pwd`
+	else
+	    CURRENT_WORLD_ROOT=$1
+	fi
+    else
+	CURRENT_WORLD_ROOT=`pwd`
+    fi
 
+    if [ -d ${CURRENT_WORLD_ROOT}/install ]
+    then
+        # Check the paths are valid
+	CURRENT_WORLD_BIN=${CURRENT_WORLD_ROOT}/install/bin
+	if [ -d "$CURRENT_WORLD_BIN" ]
+	then
+	    export PATH=$CURRENT_WORLD_BIN:$PATH
+	    RET=0
+	fi
+
+        # This *will not work* with suid binaries as it would
+	# open a massive security hole.
+
+	CURRENT_WORLD_LIB=${CURRENT_WORLD_ROOT}/install/lib
+	if [ -d "$CURRENT_WORLD_LIB" ]
+	then
+	    export LD_LIBRARY_PATH=$CURRENT_WORLD_LIB:$LD_LIBRARY_PATH
+	    RET=0
+	fi
+    else
+	RET=1
+    fi
+
+    return $RET
+}
+
+alias sw="switch_world"
+alias aw="add_to_world"
 
 #
 # surfraw, command line browser control

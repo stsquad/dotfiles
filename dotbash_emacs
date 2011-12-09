@@ -23,6 +23,11 @@ do
     fi
 done
 
+if [[ -d "/export/src/emacs/install" ]]; then
+    # add_to_world from main bash profile
+    add_to_world "/export/src/emacs"
+fi
+
 if [[ "${EMACS_DAEMON}" -gt 0 ]]; then
     if [[ "$DISPLAY" == "" ]]; then
     # Can we use muti-tty?
@@ -97,5 +102,5 @@ function switch_emacs_to_terminal()
     fi
 }
 
-echo "loading .bash_emacs (Using: $EMACS_CMD and $REPORT)"
+echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT)"
 
