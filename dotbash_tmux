@@ -4,24 +4,27 @@
 #
 # tmux configuration
 
-echo "loading .bash_tmux (starting server)"
-export USING_TMUX=1
-tmux start-server
+TMUX_SESSIONS=0
+TMUX_WINDOWS=0
+
+TMUX_SESSIONS=`tmux list-sessions | wc -l`
+TMUX_WINDOWS=`tmux list-windows | wc -l`
 
 if [[ `whoami` == "root" ]]; then
     function sysmon()
     {
-	if tmux has-session -t system; then
-	    tmux attach-session -t system;
-        else
-	    tmux new-session -s system
+	if ! tmux has-session -t system; then
+	    tmux new-session -d -s system
  	    tmux new-window -t system -n 'htop' 'htop'
  	    tmux new-window -t system -n 'iotop' 'iotop -P -o -d 30'
  	    tmux new-window -t system -n 'powertop' 'powertop'
 	fi
+	tmux attach-session -t system
     }
 fi
 
 alias tn="tmux new-session -s "
 alias ta="tmux attach-session -t "
 
+echo "loading .bash_tmux ($TMUX_SESSIONS sessions, $TMUX_WINDOWS windows)"
+export USING_TMUX=1
