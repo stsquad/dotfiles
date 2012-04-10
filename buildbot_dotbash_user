@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Buildbot specific dotfiles.
+#
+
+echo "loading .bash_user for Buildbot"
+export REPREPRO_BASE_DIR=/eng/buildbot/repo

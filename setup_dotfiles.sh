@@ -60,3 +60,17 @@ do
 	link_dotfile $file $dotfilepath
     fi
 done
+
+#
+# We also might want slightly different setups for user profiles
+#
+for file in ${USER}_dot*
+do
+#    echo "meep:$file"
+    if [ -e "$file" ] ; then
+	dotfile=`echo $file | sed s/${USER}_dot/\./`
+	dotfilepath=$HOME/$dotfile
+
+	link_dotfile $file $dotfilepath
+    fi
+done
