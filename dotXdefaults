@@ -22,7 +22,7 @@ URxvt.perl-ext-common : default,matcher
 # Work
 #URxvt.urlLauncher     : /usr/bin/chromium-browser
 # Netbook
-URxvt.urlLauncher     : /opt/google/chrome/google-chrome
+URxvt.urlLauncher     : /usr/bin/xdg-open
 URxvt.matcher.button  : 1
 	 
 # Position
