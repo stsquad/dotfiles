@@ -18,7 +18,7 @@ START_DAEMON=1
 EMACS_DAEMON=0
 machine=`hostname`
 
-if [[ -e "${DISPLAY}" ]]; then
+if [ "${DISPLAY}" ]; then
     for emacs_daemon_machine in sloy danny trent
     do
 	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
