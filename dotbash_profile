@@ -237,9 +237,9 @@ export PAGER=less
 #
 # GIT Stuff
 #
-export GIT_AUTHOR_NAME="Alex Bennee"
+export GIT_AUTHOR_NAME="Alex Bennée"
 export GIT_AUTHOR_EMAIL="alex@bennee.com"
-export GIT_COMMITTER_NAME="Alex Bennee"
+export GIT_COMMITTER_NAME="Alex Bennée"
 
 # Until I retrain my brain
 alias git-diff='git diff'
