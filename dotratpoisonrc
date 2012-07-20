@@ -1,0 +1,26 @@
+# Ratpoison Config File
+###########################################################
+# Workspaces
+exec /usr/bin/rpws init 6 -k
+
+# some ratpoison eye candy
+set border 0
+set barpadding 0 0 0 0
+set padding 0 0 0 0
+set fgcolor yellow
+set bgcolor black
+set font -xos4-terminus-medium-r-normal-*-*-140-*-*-c-*-iso8859-1
+# Rebind the escape to the Windows/Super key
+escape Super_L
+
+# BIND KEYS -- keep in alphabetical order
+# NOTE: can overwrite, just don't overwrite navigation n,p
+bind f exec firefox
+bind t exec /usr/bin/urxvtcd --loginShell
+
+# Alt-Tab switching
+definekey top M-Tab next
+definekey top M-ISO_Left_Tab prev
+
+# Alias - this not working
+alias term exec urxvtcd --loginShell
