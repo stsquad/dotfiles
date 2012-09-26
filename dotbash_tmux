@@ -43,8 +43,28 @@ function tmux_renumber
     done
 }
 
-alias tn="tmux new-session -s "
-alias ta="tmux attach-session -t "
+# Attach or create a new session
+function tmux_attach_or_new
+{
+    session=$1
+    tmux attach -t ${session} || tmux new -s ${session}
+}
+
+alias tn="tmux_attach_or_new "
+alias ta="tmux_attach_or_new "
+
+# Sync the environment of an existing shell
+#
+#  tmux already updates the environment according to
+#  the update-environment settings in the config. However
+#  for existing shells you need to sync from from tmux's view
+#  of the world.
+function tmux_sync_env
+{
+    external_env=`tmux showenv | grep -v "^-"`
+    export ${external_env}
+}
+alias se="tmux_sync_env"
 
 echo "loading .bash_tmux ($TMUX_SESSIONS sessions, $TMUX_WINDOWS windows)"
 export USING_TMUX=1
