@@ -237,9 +237,9 @@ export PAGER=less
 #
 # GIT Stuff
 #
-export GIT_AUTHOR_NAME="Alex Bennee"
+export GIT_AUTHOR_NAME="Alex Bennée"
 export GIT_AUTHOR_EMAIL="alex@bennee.com"
-export GIT_COMMITTER_NAME="Alex Bennee"
+export GIT_COMMITTER_NAME="Alex Bennée"
 
 # Until I retrain my brain
 alias git-diff='git diff'
@@ -273,6 +273,7 @@ function clear_world
 
 alias cw="clear_world"
 
+# Add a ../install world into our path, overwriting any PATH/LD_LIBRARY_PATH fiddles
 function switch_world
 {
     # Save the old state
@@ -329,7 +330,6 @@ function switch_world
 	echo "No directory at $CURRENT_WORLD_LIB, not tweaking LD_LIBRARY_PATH"
 	CURRENT_WORLD_LIB=$OLD_WORLD_LIB
     fi
-
 }
 
 #
