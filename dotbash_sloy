@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# .bashrc_pitcarin
+# .bashrc_sloy
 #
 
 # Sync ipod to music
@@ -8,6 +8,3 @@ IPOD="/media/iPod/music/"
 MUSIC="/media/music/music"
 
 alias sync_ipod_to_music="rsync -ra --size-only --delete-after $IPOD $MUSIC"
-
-export REPREPRO_BASE_DIR=/export/repository
-export JAVA_HOME=/usr/lib/jvm/java-6-openjdk

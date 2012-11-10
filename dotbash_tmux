@@ -23,8 +23,48 @@ if [[ `whoami` == "root" ]]; then
     }
 fi
 
-alias tn="tmux new-session -s "
-alias ta="tmux attach-session -t "
+# From: http://brainscraps.wikia.com/wiki/Renumbering_tmux_Windows
+function tmux_renumber
+{
+    for session in $(tmux ls | awk -F: '{print $1}') ;do
+	active_window=$(tmux lsw -t ${session} | awk -F: '/\(active\)$/ {print $1}')
+	inum=0
+	for window in $(tmux lsw -t ${session} | awk -F: '{print $1}') ;do
+	    if [ ${window} -gt ${inum} ] ;then
+		echo "${session}:${window} -> ${session}:${inum}"
+		tmux movew -d -s ${session}:${window} -t ${session}:${inum}
+	    fi
+	    if [ ${window} = ${active_window} ] ;then
+		new_active_window=${inum}
+	    fi
+	    inum=$((${inum}+1))
+	done
+	tmux select-window -t ${session}:${new_active_window}
+    done
+}
+
+# Attach or create a new session
+function tmux_attach_or_new
+{
+    session=$1
+    tmux attach -t ${session} || tmux new -s ${session}
+}
+
+alias tn="tmux_attach_or_new "
+alias ta="tmux_attach_or_new "
+
+# Sync the environment of an existing shell
+#
+#  tmux already updates the environment according to
+#  the update-environment settings in the config. However
+#  for existing shells you need to sync from from tmux's view
+#  of the world.
+function tmux_sync_env
+{
+    external_env=`tmux showenv | grep -v "^-"`
+    export ${external_env}
+}
+alias se="tmux_sync_env"
 
 echo "loading .bash_tmux ($TMUX_SESSIONS sessions, $TMUX_WINDOWS windows)"
 export USING_TMUX=1

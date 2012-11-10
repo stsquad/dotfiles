@@ -14,18 +14,30 @@
 
 # I don't want to bring up daemons on every machine
 
+START_DAEMON=1
 EMACS_DAEMON=0
 machine=`hostname`
-for emacs_daemon_machine in sloy pitcairn socrates danny trent vnms
-do
-    if [[ "$machine" == "$emacs_daemon_machine" ]]; then
-	EMACS_DAEMON=1
-    fi
-done
+
+if [ "${DISPLAY}" ]; then
+    for emacs_daemon_machine in sloy danny trent
+    do
+	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
+	    EMACS_DAEMON=1
+	fi
+    done
+else
+    for emacs_daemon_machine in pitcairn socrates vnms
+    do
+	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
+	    EMACS_DAEMON=1
+	fi
+    done
+fi
 
 if [[ -d "/export/src/emacs/install" ]]; then
     # add_to_world from main bash profile
     add_to_world "/export/src/emacs"
+    START_DAEMON=0
 fi
 
 if [[ "${EMACS_DAEMON}" -gt 0 ]]; then
@@ -69,15 +81,23 @@ if [[ "${EMACS_DAEMON}" -gt 0 ]]; then
     EMACS_PROCS=`ps -u $USER -o time,command | grep "emacs"`
     RUNNING=`echo $EMACS_PROCS | wc -l`
     if [ "$RUNNING" == "0" ]; then
-	DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
-    else
-    # Check if emacs --daemon has already been invoked...
-	DAEMON=`echo $EMACS_PROCS | grep -c "\-\-daemon"`
-	if [ "$DAEMON" == "0" ]; then
-	    DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+ 	if [[ "${START_DAEMON}" -gt 0 ]]; then
+		DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
 	else
-	# Otherwise don't spawn a new one if you can't connect
-	    DT=`emacsclient -a '/bin/false' -e "(server-running-p)" 2> /dev/null`
+		DT="Not checked"
+	fi
+    else
+        # Check if emacs --daemon has already been invoked...
+	DAEMON=`echo $EMACS_PROCS | grep -c "\-\-daemon"`
+ 	if [[ "${START_DAEMON}" -gt 0 ]]; then
+	    if [ "$DAEMON" == "0" ]; then
+		DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
+	    else
+                # Otherwise don't spawn a new one if you can't connect
+	        DT=`emacsclient -a '/bin/false' -e "(server-running-p)" 2> /dev/null`
+	    fi
+	else
+	    DT="Not checked (b)"
 	fi
     fi
     REPORT="server-running-p=${DT}"
