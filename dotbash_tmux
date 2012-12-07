@@ -47,7 +47,7 @@ function tmux_renumber
 function tmux_attach_or_new
 {
     session=$1
-    tmux attach -t ${session} || tmux new -s ${session}
+    tmux attach -d -t ${session} || tmux new -s ${session}
 }
 
 alias tn="tmux_attach_or_new "
