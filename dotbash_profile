@@ -141,7 +141,7 @@ function find_alternatives ()
 
 XKBMAP=$(find_alternatives "setxkbmap")
 if [ -e ${XKBMAP} ]; then
-    setxkbmap -option "ctrl:nocaps"
+    setxkbmap -layout gb -option "ctrl:nocaps"
 fi
 
 
