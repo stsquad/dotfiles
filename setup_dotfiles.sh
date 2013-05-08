@@ -15,12 +15,11 @@ function link_dotfile
     orig_file=$1
     dot_file=$2
 
-    #echo "orig_file: $orig_file: dot_file: $dot_file"
+    # echo "orig_file: $orig_file: dot_file: $dot_file"
 
     # If the dotfile is already linked we will skip
-    link=`pwd -P $dot_file`
-    if [[ $file -ef  $link ]] ; then
-	echo "skipping symlink at $dot_file (linked to $link)"
+    if [[ $orig_file -ef $dot_file ]] ; then
+	echo "skipping symlink at $dot_file (linked to $orig_file)"
     else
 	if [ -f $dot_file ] ; then
 	    echo "backing up $dot_file"
@@ -39,10 +38,11 @@ function link_dotfile
 
 for file in dot*
 do
-  dotfile=`echo $file | sed s/dot/\./`
-  dotfilepath=$HOME/$dotfile
-
-  link_dotfile $file $dotfilepath
+    if [ -f $file ]; then
+	dotfile=`echo $file | sed s/dot/\./`
+	dotfilepath=$HOME/$dotfile
+	link_dotfile $file $dotfilepath
+    fi
 done
 
 #
@@ -74,3 +74,14 @@ do
 	link_dotfile $file $dotfilepath
     fi
 done
+
+# Handle stuff in dotconfig which should be linked
+# to ~/.config/$APP/file...
+for file in $(find dotconfig -xtype f)
+do
+    dotfile=`echo $file | sed s#dotconfig#${HOME}/\.config#`
+    destdir=`dirname $dotfile`
+    mkdir -p $destdir
+    link_dotfile $file $dotfile
+done
+
