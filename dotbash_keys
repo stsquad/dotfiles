@@ -5,20 +5,37 @@
 # Generic handling for all keys, possibly using keychain if we have it.
 #
 
-if test -f $HOME/.gpg-agent-info && kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
-    GPG_MSG="exisiting agent"
+KEYCHAIN=$(find_alternatives keychain)
+KEYSMSG=""
+
+if [[ -x ${KEYCHAIN} ]]; then
+    eval `keychain -q -Q --eval`
+    KEYSMSG="Using keychain ("
+    if [[ -S ${SSH_AUTH_SOCK} ]]; then
+	KEYSMSG+=" ssh "
+    fi
+    if [[ "${GPG_AGENT_INFO}" ]]; then
+	KEYSMSG+=" gpg "
+    fi
+    KEYSMSG+=")"
 else
-    gpg-agent --daemon --write-env-file &> /dev/null
-    GPG_MSG="new agent"
+    if test -f $HOME/.gpg-agent-info && kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
+	GPG_MSG="exisiting agent"
+    else
+	gpg-agent --daemon --write-env-file &> /dev/null
+	GPG_MSG="new agent"
+    fi
+
+    # Setup environment variables either way
+    source $HOME/.gpg-agent-info
+    export GPG_AGENT_INFO
+
+    # Ensure prompts come to the correct TTY
+    GPG_TTY=`tty`
+    export GPG_TTY
+
+    KEYSMSG="$GPG_MSG on $GPG_TTY"
 fi
 
-# Setup environment variables either way
-source $HOME/.gpg-agent-info
-export GPG_AGENT_INFO
-
-# Ensure prompts come to the correct TTY
-GPG_TTY=`tty`
-export GPG_TTY
-
-echo "loading .bash_keys ($GPG_MSG on $GPG_TTY)"
+echo "loading .bash_keys ($KEYSMSG)"
 
