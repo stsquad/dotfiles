@@ -7,8 +7,8 @@
 TMUX_SESSIONS=0
 TMUX_WINDOWS=0
 
-TMUX_SESSIONS=`tmux list-sessions | wc -l`
-TMUX_WINDOWS=`tmux list-windows | wc -l`
+TMUX_SESSIONS=`tmux list-sessions 2> /dev/null | wc -l`
+TMUX_WINDOWS=`tmux list-windows 2> /dev/null | wc -l`
 
 if [[ `whoami` == "root" ]]; then
     function sysmon()
@@ -47,7 +47,7 @@ function tmux_renumber
 function tmux_attach_or_new
 {
     session=$1
-    tmux attach -t ${session} || tmux new -s ${session}
+    tmux attach -d -t ${session} || tmux new -s ${session}
 }
 
 alias tn="tmux_attach_or_new "
