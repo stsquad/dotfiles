@@ -491,15 +491,6 @@ if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
     ps_xterm_f
 fi
 
-# Screen can loose connections to the root ssh-agent. Either we could create and agent for
-# every screen or just try and dink it out again.
-
-find_ssh_agent()
-{
-    KEYS=`ssh-add -l`
-    
-}
-
 ########################
 # Miscelaneous Stuff
 ########################
@@ -512,9 +503,9 @@ ulimit -S -c unlimited
 function load_extra_module()
 {
     module=$1
-    executable_check=$2
+    shift
 
-    find_exes=$(find_alternatives "$2")
+    find_exes=$(find_alternatives $*)
     module_path=${HOME}/.bash_${module}
 
 #    echo "$find_exes:$module_path"
@@ -529,7 +520,7 @@ load_extra_module tmux tmux
 load_extra_module emacs emacs
 load_extra_module apt apt-get
 load_extra_module kvm kvm
-load_extra_module gpg gpg-agent
+load_extra_module keys ssh-agent gpg-agent keychain
 load_extra_module screen screen
 load_extra_module valgrind valgrind
 load_extra_module bitbake bitbake
