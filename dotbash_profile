@@ -149,7 +149,7 @@ fi
 #
 # Lets see if we have a decent "grep"
 #
-GREP=$(find_alternatives "ggrep" "grep" "/bin/grep")
+GREP=$(find_alternatives "ack-grep" "ggrep" "grep" "/bin/grep")
 alias grep="$GREP"
 
 #
@@ -200,7 +200,7 @@ else
 fi    
 
 # Find a decent browser
-BROWSER=$(find_alternatives "chromium-browser" "chrome" "firefox-4.0" "firefox" "mozilla")
+BROWSER=$(find_alternatives "chromium-browser" "google-chrome" "chrome" "firefox-4.0" "firefox" "mozilla")
 
 ######################
 # Environent Variables
