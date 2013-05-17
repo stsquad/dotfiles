@@ -149,7 +149,7 @@ fi
 #
 # Lets see if we have a decent "grep"
 #
-GREP=$(find_alternatives "ggrep" "grep" "/bin/grep")
+GREP=$(find_alternatives "ack-grep" "ggrep" "grep" "/bin/grep")
 alias grep="$GREP"
 
 #
@@ -200,7 +200,7 @@ else
 fi    
 
 # Find a decent browser
-BROWSER=$(find_alternatives "chromium-browser" "chrome" "firefox-4.0" "firefox" "mozilla")
+BROWSER=$(find_alternatives "chromium-browser" "google-chrome" "chrome" "firefox-4.0" "firefox" "mozilla")
 
 ######################
 # Environent Variables
@@ -516,23 +516,27 @@ function load_extra_module()
     fi
 }
 
-load_extra_module tmux tmux
-load_extra_module emacs emacs
-load_extra_module apt apt-get
-load_extra_module kvm kvm
-load_extra_module keys ssh-agent gpg-agent keychain
-load_extra_module screen screen
-load_extra_module valgrind valgrind
-load_extra_module bitbake bitbake
-
-# Gentoo is special...
-if [[ `whoami` != "root" ]]; then
-    load_extra_module gentoo emerge
+# If invoked as /bin/sh let's assume a minimal environment
+if [ "$SHELL" == "/bin/sh" ]; then
+    echo "Executing $SHELL under minmal environment"
 else
-    unset CFLAGS
+    load_extra_module tmux tmux
+    load_extra_module emacs emacs
+    load_extra_module apt apt-get
+    load_extra_module kvm kvm
+    load_extra_module keys ssh-agent gpg-agent keychain
+    load_extra_module screen screen
+    load_extra_module valgrind valgrind
+    load_extra_module bitbake bitbake
+
+    # Gentoo is special...
+    if [[ `whoami` != "root" ]]; then
+	load_extra_module gentoo emerge
+    else
+	unset CFLAGS
+    fi
+
+    load_extra_module `hostname` true
+    load_extra_module user true
+    load_extra_module local true
 fi
-
-load_extra_module `hostname` true
-load_extra_module user true
-load_extra_module local true
-
