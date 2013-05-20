@@ -30,7 +30,8 @@ bindsym $mod+Shift+Q kill
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run
 
-# screensaver and locking
+# background, screensaver and locking
+exec xsetroot -solid "#333333"
 exec xautolock -time 10 -locker 'i3lock -c 334433'
 bindsym $mod+l exec i3lock -c 334433
 
