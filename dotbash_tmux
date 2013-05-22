@@ -43,6 +43,26 @@ function tmux_renumber
     done
 }
 
+# Push the current window to the end of the stack
+function tmux_push_to_end
+{
+    focus_cmd=""
+    if [ "$1" == "" ]; then
+	active_window=$(tmux lsw | awk -F: '/\(active\)$/ {print $1}')
+    else
+	focus_cmd="-d"
+	active_window=$1
+    fi
+
+    inum=0
+    for window in $(tmux lsw | awk -F: '{print $1}') ;do
+	if [ ${window} -gt ${inum} ] ;then
+	    inum=${window}
+	fi
+    done
+    tmux movew ${focus_cmd} -s ${active_window} -t $((${inum}+1))
+}
+
 # Attach or create a new session
 function tmux_attach_or_new
 {
