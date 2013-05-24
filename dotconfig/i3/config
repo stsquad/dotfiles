@@ -35,6 +35,9 @@ exec xsetroot -solid "#333333"
 exec xautolock -time 10 -locker 'i3lock -c 334433'
 bindsym $mod+l exec i3lock -c 334433
 
+# If we have wireless start the applet
+exec "ifconfig | grep -q wlan && nm-applet"
+
 # Move focus
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
