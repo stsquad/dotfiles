@@ -131,5 +131,38 @@ function switch_emacs_to_terminal()
     fi
 }
 
+#
+# These two functions come from eproject/contrib/eproject.sh
+# and allow basic shell navigation based on current project or
+# finding the root of the current directory.
+#
+
+# Go to currently active project root in Emacs
+cdp() {
+    local EMACS_CWP=$(emacsclient -a false -e \
+        "(eproject-current-working-directory)" \
+        | sed 's/^"\(.*\)"$/\1/')
+    if [ -d "$EMACS_CWP" ]; then
+        cd "$EMACS_CWP"
+    else
+        return 1
+    fi
+}
+
+# Go to the top of the project root of the current directory
+cdtp() {
+    local tmp_dir=$(pwd)
+    local tmp_file=$(mktemp -p "$tmp_dir" -t ".cdeprj_XXXXX")
+    local elisp="(let ((tmp \"$tmp_file\")) (with-temp-file tmp (setq buffer-file-name tmp) (eproject-maybe-turn-on)))"
+    local EMACS_CWP=$(emacsclient -a false -e "${elisp}" | sed 's/^"\(.*\)"$/\1/')
+    rm -f ${tmp_file}
+    if [ -d "$EMACS_CWP" ]; then
+        cd "$EMACS_CWP"
+    else
+        return 1
+    fi
+}
+
+
 echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT)"
 
