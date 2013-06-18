@@ -3,3 +3,6 @@
 	email = alex@bennee.com
 [push]
         default = current
+[alias]
+	cp = cherry-pick
+	dfw = diff --ignore-space-change
