@@ -11,6 +11,18 @@
 
 set $mod Mod4
 
+#
+# Start-up apps, sometimes depending on machine it's on
+#
+exec "hostname | /bin/grep -q sloy && xrandr --output HDMI2 --primary && xrandr --output VGA1 --left-of HDMI2"
+
+# background, screensaver and locking
+exec xsetroot -solid "#333333"
+exec xautolock -time 10 -locker 'i3lock -c 334433'
+bindsym $mod+l exec i3lock -c 334433
+
+##### End of start-up apps #####
+
 # font for window titles. ISO 10646 = Unicode
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 
@@ -30,10 +42,6 @@ bindsym $mod+Shift+Q kill
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run
 
-# background, screensaver and locking
-exec xsetroot -solid "#333333"
-exec xautolock -time 10 -locker 'i3lock -c 334433'
-bindsym $mod+l exec i3lock -c 334433
 
 # Move focus
 bindsym $mod+Left focus left
