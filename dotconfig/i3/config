@@ -21,6 +21,9 @@ exec xsetroot -solid "#333333"
 exec xautolock -time 10 -locker 'i3lock -c 334433'
 bindsym $mod+l exec i3lock -c 334433
 
+# If we have wireless start the applet
+exec "ifconfig | grep -q wlan && nm-applet"
+
 ##### End of start-up apps #####
 
 # font for window titles. ISO 10646 = Unicode
@@ -41,9 +44,6 @@ bindsym $mod+Shift+Q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec i3-dmenu-desktop
-
-# If we have wireless start the applet
-exec "ifconfig | grep -q wlan && nm-applet"
 
 # Move focus
 bindsym $mod+Left focus left
