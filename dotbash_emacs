@@ -26,27 +26,25 @@ if [ "${DISPLAY}" ]; then
 	fi
     done
 else
-    for emacs_daemon_machine in pitcairn socrates vnms
+    for emacs_daemon_machine in socrates
     do
 	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
 	    EMACS_DAEMON=1
 	fi
     done
 fi
-COMPILED_EMACS_PATH="/export/src/emacs"
+COMPILED_EMACS_PATH="${HOME}/src/emacs"
 # I may already have the latest and greatest, so use whatever is appropriate
 if [[ -d "$COMPILED_EMACS_PATH" && -e "$COMPILED_EMACS_PATH/install/bin/emacs" ]]; then
     system_version=`emacs --version | head -n 1 | cut -d ' ' -f 3`
     compiled_version=`$COMPILED_EMACS_PATH/install/bin/emacs --version | head -n 1 | cut -d ' ' -f 3`
     $(vercomp $compiled_version $system_version)
     #echo "comparing $compiled_version to $system_version got $?"
-    if [[ "$?" == "2" ]]; then
-	# add_to_world from main bash exitprofile
+    if [[ "$?" == "1" ]]; then
+	# add_to_world from main bash profile
 	add_to_world $COMPILED_EMACS_PATH
 	START_DAEMON=0
     fi
-else
-    echo "system emacs"
 fi
 
 if [[ "${EMACS_DAEMON}" -gt 0 ]]; then

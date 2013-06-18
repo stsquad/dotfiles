@@ -16,6 +16,7 @@ set markers=no
 #macro pager e "<edit-message>" "View message in emacs"
 
 # Set the editor
+set edit_headers=yes
 set editor="emacsclient -t"
 
 #
@@ -101,7 +102,7 @@ set pgp_list_pubring_command="gpg --no-verbose --batch --quiet --with-colons --l
 set pgp_list_secring_command="gpg --no-verbose --batch --quiet --with-colons --list-secret-keys %r" 
 
 # specify the uid to use when encrypting/signing
-set pgp_sign_as=0xB8C253C1
+#set pgp_sign_as=0xB8C253C1
 
 set pgp_use_gpg_agent = yes
 

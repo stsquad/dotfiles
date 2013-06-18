@@ -42,6 +42,9 @@ bindsym $mod+Shift+Q kill
 # start dmenu (a program launcher)
 bindsym $mod+d exec i3-dmenu-desktop
 
+# If we have wireless start the applet
+exec "ifconfig | grep -q wlan && nm-applet"
+
 # Move focus
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
