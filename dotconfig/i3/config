@@ -149,3 +149,7 @@ bar {
 # Multimedia Keys
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 -- +10% && killall -SIGUSR1 i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -- -10% && killall -SIGUSR1 i3status
+
+# Find stuff
+bindsym $mod+question exec /home/ajb/src/i3-py.git/examples/winmenu.py
+bindsym $mod+Tab exec /home/ajb/src/i3-py.git/examples/winmenu.py
