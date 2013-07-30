@@ -6,3 +6,5 @@
 [alias]
 	cp = cherry-pick
 	dfw = diff --ignore-space-change
+[credential]
+	helper = cache --timeout=3600
