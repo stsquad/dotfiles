@@ -138,6 +138,19 @@ function find_alternatives ()
     echo "/alternative/not/found"
 }
 
+# Search though a list of directories, returning first match
+function find_directories ()
+{
+    for d in "$@"
+    do
+      if [ -d "$d" ]; then
+	  echo "$d"
+	  return
+      fi
+    done
+    echo "/alternative/not/found"
+}
+
 
 XKBMAP=$(find_alternatives "setxkbmap")
 if [ -e ${XKBMAP} ]; then
