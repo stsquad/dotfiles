@@ -37,5 +37,6 @@ else
     KEYSMSG="$GPG_MSG on $GPG_TTY"
 fi
 
+alias .keys=". ~/.bash_keys"
 echo "loading .bash_keys ($KEYSMSG)"
 
