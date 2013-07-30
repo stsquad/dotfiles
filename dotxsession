@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# For ultimate control I want to spawn i3 from a
+# custom xsession file. This allows be to ensure
+# X environment variables are set.
+#
+
+# Put everything that is cachable in /tmp (see .xsession)
+export XDG_CACHE_HOME=/tmp/$USER/cache
+mkdir -p $XDG_CACHE_HOME
+
+# debug
+echo ".xession has run" > ~/tmp/xsession-run
+env >> ~/tmp/xsession-run
+
+# and finally start the WM
+exec i3
+
+
+
