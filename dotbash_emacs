@@ -129,6 +129,26 @@ function switch_emacs_to_terminal()
     fi
 }
 
+function use_zile_for_visual()
+{
+    ZILE=$(find_alternatives "zile")
+    if [[ -x "${ZILE}" ]]; then
+	export EDITOR=${ZILE}
+	export VISUAL=${ZILE}
+	echo "Enabled VISUAL=${VISUAL}"
+    fi
+}
+
+function use_emacs_for_visual()
+{
+    ZILE=$(find_alternatives "zile")
+    if [[ -x "${ZILE}" ]]; then
+	export EDITOR="${EMACS_CMD} ${EMACS_ARGS} "
+	export VISUAL="${EMACS_CMD} ${EMACS_ARGS} "
+	echo "Enabled VISUAL=${VISUAL}"
+    fi
+}
+
 #
 # These two functions come from eproject/contrib/eproject.sh
 # and allow basic shell navigation based on current project or
@@ -162,5 +182,6 @@ cdtp() {
 }
 
 
+alias .emacs=". ~/.bash_emacs"
 echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT)"
 

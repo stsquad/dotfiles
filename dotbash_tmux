@@ -4,11 +4,8 @@
 #
 # tmux configuration
 
-TMUX_SESSIONS=0
-TMUX_WINDOWS=0
-
-TMUX_SESSIONS=`tmux list-sessions 2> /dev/null | wc -l`
-TMUX_WINDOWS=`tmux list-windows 2> /dev/null | wc -l`
+TMUX_SESSION_COUNT=`tmux list-sessions 2> /dev/null | wc -l`
+TMUX_SESSION_NAMES=`tmux ls | cut -d ':' -f 1 | sed ':a;N;$!ba;s/\n/ /g'`
 
 if [[ `whoami` == "root" ]]; then
     function sysmon()
@@ -86,5 +83,6 @@ function tmux_sync_env
 }
 alias se="tmux_sync_env"
 
-echo "loading .bash_tmux ($TMUX_SESSIONS sessions, $TMUX_WINDOWS windows)"
+alias .tmux=". ~/.bash_tmux"
+echo "loading .bash_tmux ($TMUX_SESSION_COUNT sessions - $TMUX_SESSION_NAMES)"
 export USING_TMUX=1
