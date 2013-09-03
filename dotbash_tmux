@@ -86,5 +86,6 @@ function tmux_sync_env
 }
 alias se="tmux_sync_env"
 
+alias .tmux=". ~/.bash_tmux"
 echo "loading .bash_tmux ($TMUX_SESSIONS sessions, $TMUX_WINDOWS windows)"
 export USING_TMUX=1
