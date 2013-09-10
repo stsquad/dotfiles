@@ -36,12 +36,29 @@ function link_dotfile
     fi
 }
 
-for file in dot*
+# Links files in a dot directory
+function link_dotdir
+{
+    dir=$1
+    for file in $(find $dir -xtype f)
+    do
+	dotfile=`echo $file | sed s#dot#${HOME}/\.#`
+	destdir=`dirname $dotfile`
+	mkdir -p $destdir
+	link_dotfile $file $dotfile
+    done
+}
+
+# Process all files/directories starting with dot:
+for x in dot*
 do
-    if [ -f $file ]; then
+    if [ -f $x ]; then
+	file=$x
 	dotfile=`echo $file | sed s/dot/\./`
 	dotfilepath=$HOME/$dotfile
 	link_dotfile $file $dotfilepath
+    elif [ -d $x ]; then
+	link_dotdir $x
     fi
 done
 
@@ -75,13 +92,4 @@ do
     fi
 done
 
-# Handle stuff in dotconfig which should be linked
-# to ~/.config/$APP/file...
-for file in $(find dotconfig -xtype f)
-do
-    dotfile=`echo $file | sed s#dotconfig#${HOME}/\.config#`
-    destdir=`dirname $dotfile`
-    mkdir -p $destdir
-    link_dotfile $file $dotfile
-done
 

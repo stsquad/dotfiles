@@ -8,9 +8,15 @@
 KEYCHAIN=$(find_alternatives keychain)
 KEYSMSG=""
 
+# If we are a login shell force flushing of credentials
+shopt -q login_shell && KEY_OPTS="--clear" || KEY_OPTS="-Q"
+
 if [[ -x ${KEYCHAIN} ]]; then
-    eval `keychain -q -Q --eval`
+    eval `keychain -q ${KEY_OPTS} --eval`
     KEYSMSG="Using keychain ("
+    if [[ "${KEY_OPTS}" == "--clear" ]]; then
+	KEYSMSG+=" flushed "
+    fi
     if [[ -S ${SSH_AUTH_SOCK} ]]; then
 	KEYSMSG+=" ssh "
     fi
