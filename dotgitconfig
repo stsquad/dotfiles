@@ -10,3 +10,14 @@
 	helper = cache --timeout=3600
 [color]
 	ui = auto
+[sendemail]
+	smtpserver = localhost
+	smtpserverport = 2500
+	confirm = auto
+	multiedit = false
+	suppresscc = all
+	chainreplyto = false
+	composeencoding = UTF-8
+	assume8bitEncoding = true
+[diff]
+	rename = true
