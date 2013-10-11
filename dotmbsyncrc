@@ -1,0 +1,50 @@
+# -*- conf -*-
+# mbsync config for Linaro email
+#
+        
+IMAPAccount linaro
+        Host imap.gmail.com
+        User alex.bennee@linaro.org
+        # Use SSL
+        UseIMAPS yes
+        CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore linaro-gmail
+        Account linaro
+
+MaildirStore linaro-local
+	Path	~/Maildir/linaro/
+	Inbox	~/Maildir/linaro/Inbox
+
+Channel linaro-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+        Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Create Both
+# Save the synchronization state files in the relevant directory
+        SyncState *
+
+IMAPAccount developer
+        Host imap.gmail.com
+        User developer@alexandfliss.com
+        # Use SSL
+        UseIMAPS yes
+        CertificateFile /etc/ssl/certs/ca-certificates.crt
+            
+IMAPStore developer-gmail
+        Account developer
+
+MaildirStore developer-local
+	Path	~/Maildir/developer/
+	Inbox	~/Maildir/developer/Inbox
+
+Channel developer-sync
+	Master	:developer-gmail:
+	Slave	:developer-local:
+        # Exclude everything apart from stuff I'm interested in ATM
+        Patterns !* mythreads follow follow-up emacs
+        Create Both
+        # Save the synchronization state files in the relevant directory
+        SyncState *
+         
