@@ -1,7 +1,35 @@
 # -*- conf -*-
-# mbsync config for Linaro email
+# mbsync config for all my IMAP mail
 #
-        
+# I've split this up into personal (mirror of my mail server)
+#                         linaro (work related email)
+#                         developer (my main mailing list archive)
+#
+
+# Connect via the SSH tunnel
+IMAPAccount personal
+        Host localhost
+        Port 1430
+        User alex
+        UseTLSv1 no
+        RequireSSL no
+        UseIMAPS no
+
+IMAPStore personal-imap
+        Account personal
+
+MaildirStore personal-local
+	Path	~/Maildir/personal/
+	Inbox	~/Maildir/personal/Inbox
+
+Channel personal-sync
+	Master	:personal-imap:
+	Slave	:personal-local:
+        # Include everything relevant, it's not very big
+        Patterns * INBOX/* !INBOX/Spam
+        Create Slave
+        SyncState *
+
 IMAPAccount linaro
         Host imap.gmail.com
         User alex.bennee@linaro.org
