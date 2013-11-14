@@ -7,7 +7,7 @@
 #
 # Debian Stuff
 #
-export DEBFULLNAME='Alex Bennee' 
+export DEBFULLNAME='Alex Bennée'
 export DEBEMAIL='alex@bennee.com'
 # This is typically set by "local" configs
 export DEBKEYID=''
