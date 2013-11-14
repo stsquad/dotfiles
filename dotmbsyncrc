@@ -11,6 +11,7 @@ IMAPAccount personal
         Host localhost
         Port 1430
         User alex
+        PassCmd "pass personal"
         UseTLSv1 no
         RequireSSL no
         UseIMAPS no
@@ -33,6 +34,7 @@ Channel personal-sync
 IMAPAccount linaro
         Host imap.gmail.com
         User alex.bennee@linaro.org
+        PassCmd "pass linaro"
         # Use SSL
         UseIMAPS yes
         CertificateFile /etc/ssl/certs/ca-certificates.crt
@@ -56,6 +58,7 @@ Channel linaro-sync
 IMAPAccount developer
         Host imap.gmail.com
         User developer@alexandfliss.com
+        PassCmd "pass developer"
         # Use SSL
         UseIMAPS yes
         CertificateFile /etc/ssl/certs/ca-certificates.crt
@@ -71,7 +74,7 @@ Channel developer-sync
 	Master	:developer-gmail:
 	Slave	:developer-local:
         # Exclude everything apart from stuff I'm interested in ATM
-        Patterns !* mythreads follow follow-up emacs
+        Patterns !* mythreads follow follow-up emacs emacs/*
         Create Both
         # Save the synchronization state files in the relevant directory
         SyncState *
