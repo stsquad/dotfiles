@@ -151,14 +151,6 @@ function find_directories ()
     echo "/alternative/not/found"
 }
 
-
-XKBMAP=$(find_alternatives "setxkbmap")
-if [ -e ${XKBMAP} ]; then
-    setxkbmap -layout gb -option "ctrl:nocaps"
-fi
-
-
-
 #
 # Lets see if we have a decent "grep"
 #
