@@ -580,3 +580,6 @@ else
     load_extra_module local true
     echo "Loaded$LOADED_MODULES"
 fi
+
+# Finally clean PATH (http://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem)
+PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
