@@ -14,7 +14,7 @@ set $mod Mod4
 #
 # Start-up apps, sometimes depending on machine it's on
 #
-exec "hostname | /bin/grep -q sloy && xrandr --output HDMI2 --primary && xrandr --output VGA1 --left-of HDMI2"
+exec "hostname | /bin/grep -q zen && xrandr --output HDMI1 --primary && xrandr --output VGA1 --left-of HDMI1"
 
 # background, screensaver and locking
 exec xsetroot -solid "#333333"
@@ -107,8 +107,8 @@ bindsym $mod+Shift+0 move container to workspace number 10
 # Move to primary output:
 
 # Move the current workspace to the next output
-bindsym $mod+p move container to output HDMI2
-bindsym $mod+Shift+p move workspace to output HDMI2
+bindsym $mod+p move container to output HDMI1
+bindsym $mod+Shift+p move workspace to output HDMI1
 bindsym $mod+s move container to output VGA1
 bindsym $mod+Shift+s move workspace to output VGA1
 
@@ -146,5 +146,5 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 -- +10
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -- -10% && killall -SIGUSR1 i3status
 
 # Find stuff
-bindsym $mod+question exec /home/ajb/src/i3-py.git/examples/winmenu.py
-bindsym $mod+Tab exec /home/ajb/src/i3-py.git/examples/winmenu.py
+bindsym $mod+question exec /home/alex/src/i3-py.git/examples/winmenu.py
+bindsym $mod+Tab exec /home/alex/src/i3-py.git/examples/winmenu.py
