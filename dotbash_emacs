@@ -19,7 +19,7 @@ EMACS_DAEMON=0
 machine=`hostname`
 
 if [ "${DISPLAY}" ]; then
-    for emacs_daemon_machine in sloy danny trent symbiot
+    for emacs_daemon_machine in zen danny trent symbiot
     do
 	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
 	    EMACS_DAEMON=1
