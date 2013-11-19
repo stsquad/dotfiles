@@ -589,3 +589,6 @@ else
     load_extra_module user true
     load_extra_module local true
 fi
+
+alias .profile=". ~/.bash_profile"
+
