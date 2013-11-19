@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# .bashrc_zen
+#
+# Local work related changes
+#
+
+QEMU_SRC=/home/alex/lsrc/qemu/qemu.git
+QEMU_ARCH=aarch64
+QEMU_BUILD=${QEMU_SRC}/${QEMU_ARCH}-linux-user
+QEMU_BIN=qemu-${QEMU_ARCH}
+QEMU_ARGS="-d unimp"
+
+# Root of all rootfs
+ROOT_ROOTFS=/home/alex/lsrc/qemu/rootfs
+CURRENT_ROOTFS=opensuse-arm64-rootfs
+
+function run_static_qemu
+{
+    ROOTFS=${ROOT_ROOTFS}/${CURRENT_ROOTFS}
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/"
+    sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${ROOTFS}/bin/
+    echo "Running: $@"
+    sudo chroot ${ROOTFS} /bin/${QEMU_BIN} ${QEMU_ARGS} $@
+}
+
+alias .zen=". ~/.bash_zen"
