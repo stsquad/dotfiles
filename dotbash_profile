@@ -151,14 +151,6 @@ function find_directories ()
     echo "/alternative/not/found"
 }
 
-
-XKBMAP=$(find_alternatives "setxkbmap")
-if [ -e ${XKBMAP} ]; then
-    setxkbmap -layout gb -option "ctrl:nocaps"
-fi
-
-
-
 #
 # Lets see if we have a decent "grep"
 #
@@ -549,6 +541,7 @@ ulimit -S -c unlimited
 
 # Helper function to load extra bits of profile that
 # are optional depending on the environment.
+LOADED_MODULES=""
 function load_extra_module()
 {
     module=$1
@@ -556,12 +549,9 @@ function load_extra_module()
 
     find_exes=$(find_alternatives $*)
     module_path=${HOME}/.bash_${module}
-
-#    echo "$find_exes:$module_path"
-    
     if [[ -f $find_exes && -f $module_path ]]; then
-#	echo "doing $module_path"
-	source $module_path
+        source $module_path
+        LOADED_MODULES="$LOADED_MODULES $module"
     fi
 }
 
@@ -580,15 +570,19 @@ else
 
     # Gentoo is special...
     if [[ `whoami` != "root" ]]; then
-	load_extra_module gentoo emerge
+        load_extra_module gentoo emerge
     else
-	unset CFLAGS
+        unset CFLAGS
     fi
 
     load_extra_module `hostname` true
     load_extra_module user true
     load_extra_module local true
+    echo "Loaded$LOADED_MODULES"
 fi
 
-alias .profile=". ~/.bash_profile"
+# Finally clean PATH (http://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem)
+PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
 
+# Alias for reloading
+alias .profile=". ~/.bash_profile"

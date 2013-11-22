@@ -74,7 +74,7 @@ Channel developer-sync
 	Master	:developer-gmail:
 	Slave	:developer-local:
         # Exclude everything apart from stuff I'm interested in ATM
-        Patterns !* mythreads follow follow-up emacs
+        Patterns !* mythreads follow follow-up emacs emacs/*
         Create Both
         # Save the synchronization state files in the relevant directory
         SyncState *

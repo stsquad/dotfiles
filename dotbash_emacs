@@ -149,6 +149,35 @@ function use_emacs_for_visual()
     fi
 }
 
+
+#
+# Handle key remapping
+#
+XCAPE_PATH=$(find_directories "${HOME}/src/emacs/xcape.git")
+if [[ -d "${XCAPE_PATH}" && -e "${XCAPE_PATH}/xcape" ]]; then
+    PATH=$XCAPE_PATH:$PATH
+fi
+
+XMODMAP=$(find_alternatives "xmodmap")
+XCAPE=$(find_alternatives "xcape")
+KEYMAPS=""
+
+if [ -e ${XMODMAP} ]; then
+    ${XMODMAP} -e 'remove Lock = Caps_Lock' 2> /dev/null
+    ${XMODMAP} -e 'keysym Caps_Lock = Control_L' 2> /dev/null
+    ${XMODMAP} -e 'add Control = Control_L'
+    KEYMAPS="${KEYMAPS} Caps->Ctrl"
+fi
+
+if [ -e ${XCAPE} ]; then
+    killall xcape 2> /dev/null
+    ${XMODMAP} -e 'keycode 36 = 0x1234'
+    ${XMODMAP} -e 'add control = 0x1234'
+    ${XMODMAP} -e 'keycode any = Return'
+    ${XCAPE} -e '0x1234=Return'
+    KEYMAPS="${KEYMAPS} StRet->Ctrl"
+fi
+
 #
 # These two functions come from eproject/contrib/eproject.sh
 # and allow basic shell navigation based on current project or
@@ -183,5 +212,5 @@ cdtp() {
 
 
 alias .emacs=". ~/.bash_emacs"
-echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT)"
+echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT $KEYMAPS)"
 
