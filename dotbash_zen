@@ -9,19 +9,33 @@ QEMU_SRC=/home/alex/lsrc/qemu/qemu.git
 QEMU_ARCH=aarch64
 QEMU_BUILD=${QEMU_SRC}/${QEMU_ARCH}-linux-user
 QEMU_BIN=qemu-${QEMU_ARCH}
-QEMU_ARGS="-d unimp"
+QEMU_ARGS="-d unimp,int,exec,cpu,op,out_asm"
 
 # Root of all rootfs
 ROOT_ROOTFS=/home/alex/lsrc/qemu/rootfs
 CURRENT_ROOTFS=opensuse-arm64-rootfs
 
+# Logging
+QEMU_LOGFILE=/tmp/qemu.log
+
 function run_static_qemu
 {
+    date > ${QEMU_LOGFILE}
+
     ROOTFS=${ROOT_ROOTFS}/${CURRENT_ROOTFS}
-    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/"
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
     sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${ROOTFS}/bin/
-    echo "Running: $@"
-    sudo chroot ${ROOTFS} /bin/${QEMU_BIN} ${QEMU_ARGS} $@
+    CMD="/bin/${QEMU_BIN} ${QEMU_ARGS} $@"
+    echo "Using chroot: ${ROOTFS}" | tee -a ${QEMU_LOGFILE}
+    echo "Running: ${CMD}" | tee -a ${QEMU_LOGFILE}
+    sudo chroot ${ROOTFS} ${CMD} 2> >(tee -a ${QEMU_LOGFILE} >&2)
+}
+
+function set_qemu_args
+{
+    OLD_QEMU_ARGS=${QEMU_ARGS}
+    QEMU_ARGS=$@
+    echo "Set args to ${QEMU_ARGS} (were ${OLD_QEMU_ARGS})"
 }
 
 alias .zen=". ~/.bash_zen"
