@@ -38,4 +38,16 @@ function set_qemu_args
     echo "Set args to ${QEMU_ARGS} (were ${OLD_QEMU_ARGS})"
 }
 
+function set_qemu_rootfs
+{
+    OLD_QEMU_ROOTFS=${CURRENT_ROOTFS}
+    CURRENT_PWD=`pwd`
+    cd ${ROOT_ROOTFS}
+    DIRS=`compgen -d`
+    read -e -p "dir ($DIRS):" > CURRENT_ROOTFS
+    echo "Set rootfs to ${CURRENT_ROOTFS} (was ${OLD_QEMU_ROOTFS})"
+    cd -
+}
+
+
 alias .zen=". ~/.bash_zen"
