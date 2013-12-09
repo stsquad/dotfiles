@@ -14,7 +14,7 @@ set history size 100
 #
 define i
     si
-    x/3i 
+    x/3i $pc
 end
 
 #
