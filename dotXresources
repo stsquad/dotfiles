@@ -1,8 +1,7 @@
-# A start at a .Xdefaults
+! A start at a .Xresources
 
-
-# URxvt Configuration
-# (nicked from ArchLinux)
+! URxvt Configuration
+! (nicked from ArchLinux)
 URxvt.buffered: true
 URxvt.background: black
 URxvt.foreground: white
@@ -11,20 +10,12 @@ URxvt.underlineColor: yellow
 URxvt.font: xft:monospace:14:antialias=true
 URxvt.boldFont: xft:monospace:bold:14:antialias=true
 URxvt.perl-ext-common: default
-# Overridden by ps_xterm_f()
+URxvt.scrollBar: false
+! Overridden by ps_xterm_f()
 URxvt.title: urxvt term
 
-#
-URxvt.scrollBar: false
-
-# Clickable URLS
+! Clickable URLS
 URxvt.perl-ext-common : default,matcher
-# Work
-#URxvt.urlLauncher     : /usr/bin/chromium-browser
-# Netbook
 URxvt.urlLauncher     : /usr/bin/xdg-open
 URxvt.matcher.button  : 1
-	 
-# Position
-URxvt*geometry: 127x49+0+0
 
