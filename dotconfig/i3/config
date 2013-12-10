@@ -14,7 +14,7 @@ set $mod Mod4
 #
 # Start-up apps, sometimes depending on machine it's on
 #
-exec ~/.config/i3/setup_display.sh
+exec --no-startup-id /home/alex/.config/i3/setup_display.sh
 
 # background, screensaver and locking
 exec xsetroot -solid "#333333"
