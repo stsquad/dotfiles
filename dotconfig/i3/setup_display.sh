@@ -22,3 +22,6 @@ case $HOST in
         echo "No display support for ${HOST}"
         ;;
 esac
+
+# Set background 
+xsetroot -solid "#333333"
