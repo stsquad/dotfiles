@@ -158,10 +158,12 @@ if [[ -d "${XCAPE_PATH}" && -e "${XCAPE_PATH}/xcape" ]]; then
     PATH=$XCAPE_PATH:$PATH
 fi
 
+XKBMAP=$(find_alternatives "setxkbmap")
 XMODMAP=$(find_alternatives "xmodmap")
 XCAPE=$(find_alternatives "xcape")
 KEYMAPS=""
 
+if [ "${DISPLAY}" ]; then
 if [ -e ${XMODMAP} ]; then
     ${XMODMAP} -e 'remove Lock = Caps_Lock' 2> /dev/null
     ${XMODMAP} -e 'keysym Caps_Lock = Control_L' 2> /dev/null
@@ -176,6 +178,12 @@ if [ -e ${XCAPE} ]; then
     ${XMODMAP} -e 'keycode any = Return'
     ${XCAPE} -e '0x1234=Return'
     KEYMAPS="${KEYMAPS} StRet->Ctrl"
+fi
+else
+    if [ -e ${XKBMAP} ]; then
+        setxkbmap -layout gb -option "ctrl:nocaps"
+        KEYMAPS="${KEYMAPS} Caps->Ctrl (console)"
+    fi
 fi
 
 #
