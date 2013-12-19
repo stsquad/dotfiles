@@ -1,0 +1,17 @@
+# Common rsync filter rules
+# Skip tarballs, unlikely to be important
+- *.tar
+- *.tar.gz
+- *.tar.bz2
+# Skip build directories
+- build/*
+- downloads/*
+# Skips anything in rootfs
+- rootfs/*
+# PDFs are generally not needed
+- *.pdf
+# Or image files
+- *.img
+- *.iso
+# Or any prefaced with nda
+- nda*
