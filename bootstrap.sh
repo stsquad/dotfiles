@@ -1,9 +1,9 @@
 #!/bin/bash
 # 
 # Bootstrap a new system
+# wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
 #
-#
-MYGITHUB=https://github.com/stsquad/
+MYGITHUB=https://github.com/stsquad
 
 # Currently assume apt based systems
 sudo apt-get update
