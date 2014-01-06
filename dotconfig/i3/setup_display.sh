@@ -15,6 +15,8 @@ case $HOST in
         xrandr --output VGA1 --left-of HDMI2
         ;;
     zen*)
+        xrandr --output HDMI1 --auto
+        xrandr --output VGA1 --auto
         xrandr --output HDMI1 --primary
         xrandr --output VGA1 --left-of HDMI1
         ;;
