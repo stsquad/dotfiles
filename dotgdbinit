@@ -6,7 +6,7 @@
 set history filename ~/.gdb_history
 set history save on
 set history expansion on
-set history size 100
+set history size 1000
 
 #
 # A simple instruction stepping macro that steps and then dumps the
