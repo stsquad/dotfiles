@@ -17,40 +17,45 @@ QEMU_SRC=/home/alex/lsrc/qemu/qemu.git
 QEMU_ARCH=aarch64
 QEMU_BUILD=${QEMU_SRC}/${QEMU_ARCH}-linux-user
 QEMU_BIN=qemu-${QEMU_ARCH}
-QEMU_LOGFILE=/tmp/qemu.log
 
 # Root of all rootfs
 ROOT_ROOTFS=/home/alex/lsrc/qemu/rootfs
 
-QEMU_ARGS="-d unimp"
-# unimp,int,exec,cpu,op,out_asm
 QEMU_PROFILE=""
 
 : ${CURRENT_ROOTFS:=${ROOT_ROOTFS}/opensuse-arm64-rootfs}
 
+# Actual QEMU paramters
+# you need to ensure sudo is configured to allow them through
+: ${QEMU_LOG_FILENAME:=/tmp/qemu.log}
+: ${QEMU_LOG:="unimp"}
+# unimp,int,exec,cpu,op,out_asm
+
 
 function run_static_qemu
 {
-    date > ${QEMU_LOGFILE}
-
-    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${CURRENT_ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${CURRENT_ROOTFS}/bin/"
     sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${CURRENT_ROOTFS}/bin/
-    CMD="/bin/${QEMU_BIN} -D ${QEMU_LOGFILE} ${QEMU_ARGS}"
-    echo "Using chroot: ${CURRENT_ROOTFS}" | tee -a ${QEMU_LOGFILE}
-    echo "Running: ${CMD} with $# args ($@)" | tee -a ${QEMU_LOGFILE}
+    CMD="/bin/${QEMU_BIN}"
+    echo "Using chroot: ${CURRENT_ROOTFS}"
+    export QEMU_LOG
+    export QEMU_LOG_FILENAME
+    echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    echo "Running: ${CMD} with $# args ($@)"
     sudo ${QEMU_PROFILE} chroot ${USERSPEC} ${CURRENT_ROOTFS} ${CMD} "$@"
 }
 
 function run_static_qemu_as_root
 {
-    date > ${QEMU_LOGFILE}
-
-    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${CURRENT_ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${CURRENT_ROOTFS}/bin/"
     sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${CURRENT_ROOTFS}/bin/
-    CMD="/bin/${QEMU_BIN} -D ${QEMU_LOGFILE} ${QEMU_ARGS}"
-    echo "Using chroot: ${CURRENT_ROOTFS}" | tee -a ${QEMU_LOGFILE}
-    echo "Running: ${CMD} with $# args ($@)" | tee -a ${QEMU_LOGFILE}
-    ${QEMU_PROFILE} sudo chroot ${CURRENT_ROOTFS} ${CMD} "$@"
+    CMD="/bin/${QEMU_BIN}"
+    echo "Using chroot: ${CURRENT_ROOTFS}"
+    export QEMU_LOG
+    export QEMU_LOG_FILENAME
+    echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    echo "Running: ${CMD} with $# args ($@)"
+    sudo ${QEMU_PROFILE} chroot ${CURRENT_ROOTFS} ${CMD} "$@"
 }
 
 
@@ -67,11 +72,11 @@ function set_qemu_profile
     echo "Using QEMU_PROFILE=${QEMU_PROFILE} (was ${OLD_QEMU_PROFILE})"
 }
 
-function set_qemu_args
+function set_qemu_log
 {
-    OLD_QEMU_ARGS=${QEMU_ARGS}
-    QEMU_ARGS=$@
-    echo "Set args to ${QEMU_ARGS} (were ${OLD_QEMU_ARGS})"
+    OLD_QEMU_LOG=${QEMU_LOG}
+    QEMU_LOG=$@
+    echo "Set args to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
 }
 
 function set_qemu_rootfs
