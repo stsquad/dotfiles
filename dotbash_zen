@@ -12,10 +12,13 @@ MY_USER=`id -u`
 MY_GRP=`id -g`
 USERSPEC="--userspec ${MY_USER}:${MY_GRP}"
 
+# General paramters
 QEMU_SRC=/home/alex/lsrc/qemu/qemu.git
 QEMU_ARCH=aarch64
 QEMU_BUILD=${QEMU_SRC}/${QEMU_ARCH}-linux-user
 QEMU_BIN=qemu-${QEMU_ARCH}
+QEMU_LOGFILE=/tmp/qemu.log
+
 # Root of all rootfs
 ROOT_ROOTFS=/home/alex/lsrc/qemu/rootfs
 
@@ -25,8 +28,6 @@ QEMU_PROFILE=""
 
 : ${CURRENT_ROOTFS:=opensuse-arm64-rootfs}
 
-# Logging
-QEMU_LOGFILE=/tmp/qemu.log
 
 function run_static_qemu
 {
@@ -35,11 +36,25 @@ function run_static_qemu
     ROOTFS=${ROOT_ROOTFS}/${CURRENT_ROOTFS}
     echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
     sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${ROOTFS}/bin/
-    CMD="/bin/${QEMU_BIN} ${QEMU_ARGS} $@"
+    CMD="/bin/${QEMU_BIN} -D ${QEMU_LOGFILE} ${QEMU_ARGS}"
     echo "Using chroot: ${ROOTFS}" | tee -a ${QEMU_LOGFILE}
-    echo "Running: ${CMD}" | tee -a ${QEMU_LOGFILE}
-    sudo chroot ${USERSPEC} ${ROOTFS} ${QEMU_PROFILE} ${CMD} 2> >(tee -a ${QEMU_LOGFILE} >&2)
+    echo "Running: ${CMD} with $# args ($@)" | tee -a ${QEMU_LOGFILE}
+    sudo ${QEMU_PROFILE} chroot ${USERSPEC} ${ROOTFS} ${CMD} "$@"
 }
+
+function run_static_qemu_as_root
+{
+    date > ${QEMU_LOGFILE}
+
+    ROOTFS=${ROOT_ROOTFS}/${CURRENT_ROOTFS}
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
+    sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${ROOTFS}/bin/
+    CMD="/bin/${QEMU_BIN} -D ${QEMU_LOGFILE} ${QEMU_ARGS}"
+    echo "Using chroot: ${ROOTFS}" | tee -a ${QEMU_LOGFILE}
+    echo "Running: ${CMD} with $# args ($@)" | tee -a ${QEMU_LOGFILE}
+    ${QEMU_PROFILE} sudo chroot ${ROOTFS} ${CMD} "$@"
+}
+
 
 function set_dynamic_qemu_args
 {
