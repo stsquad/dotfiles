@@ -26,33 +26,31 @@ QEMU_ARGS="-d unimp"
 # unimp,int,exec,cpu,op,out_asm
 QEMU_PROFILE=""
 
-: ${CURRENT_ROOTFS:=opensuse-arm64-rootfs}
+: ${CURRENT_ROOTFS:=${ROOT_ROOTFS}/opensuse-arm64-rootfs}
 
 
 function run_static_qemu
 {
     date > ${QEMU_LOGFILE}
 
-    ROOTFS=${ROOT_ROOTFS}/${CURRENT_ROOTFS}
-    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
-    sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${ROOTFS}/bin/
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${CURRENT_ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
+    sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${CURRENT_ROOTFS}/bin/
     CMD="/bin/${QEMU_BIN} -D ${QEMU_LOGFILE} ${QEMU_ARGS}"
-    echo "Using chroot: ${ROOTFS}" | tee -a ${QEMU_LOGFILE}
+    echo "Using chroot: ${CURRENT_ROOTFS}" | tee -a ${QEMU_LOGFILE}
     echo "Running: ${CMD} with $# args ($@)" | tee -a ${QEMU_LOGFILE}
-    sudo ${QEMU_PROFILE} chroot ${USERSPEC} ${ROOTFS} ${CMD} "$@"
+    sudo ${QEMU_PROFILE} chroot ${USERSPEC} ${CURRENT_ROOTFS} ${CMD} "$@"
 }
 
 function run_static_qemu_as_root
 {
     date > ${QEMU_LOGFILE}
 
-    ROOTFS=${ROOT_ROOTFS}/${CURRENT_ROOTFS}
-    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
-    sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${ROOTFS}/bin/
+    echo "Copying ${QEMU_BUILD}/${QEMU_BIN} to ${CURRENT_ROOTFS}/bin/" | tee -a ${QEMU_LOGFILE}
+    sudo cp ${QEMU_BUILD}/${QEMU_BIN} ${CURRENT_ROOTFS}/bin/
     CMD="/bin/${QEMU_BIN} -D ${QEMU_LOGFILE} ${QEMU_ARGS}"
-    echo "Using chroot: ${ROOTFS}" | tee -a ${QEMU_LOGFILE}
+    echo "Using chroot: ${CURRENT_ROOTFS}" | tee -a ${QEMU_LOGFILE}
     echo "Running: ${CMD} with $# args ($@)" | tee -a ${QEMU_LOGFILE}
-    ${QEMU_PROFILE} sudo chroot ${ROOTFS} ${CMD} "$@"
+    ${QEMU_PROFILE} sudo chroot ${CURRENT_ROOTFS} ${CMD} "$@"
 }
 
 
@@ -82,9 +80,33 @@ function set_qemu_rootfs
     CURRENT_PWD=`pwd`
     cd ${ROOT_ROOTFS}
     DIRS=`compgen -d`
-    read -e -p "dir:" CURRENT_ROOTFS
+    read -e -p "dir:" NEW_ROOTFS
+    CURRENT_ROOTFS=${ROOT_ROOTFS}/${NEW_ROOTFS}
     echo "Set rootfs to ${CURRENT_ROOTFS} (was ${OLD_QEMU_ROOTFS})"
     cd -
+}
+
+function setup_rootfs_mounts
+{
+    # TODO, protect against multiple mounts
+    echo "Ensuring mounts in place"
+    sudo mount -o bind /home ${CURRENT_ROOTFS}/home
+    mkdir -p ${CURRENT_ROOTFS}/root/risu
+    sudo mount -o bind /home/alex/lsrc/qemu/risu.git ${CURRENT_ROOTFS}/root/risu/
+    mkdir -p {$CURRENT_ROOTFS}/host-etc
+    sudo mount -o bind /etc ${CURRENT_ROOTFS}/host-etc
+    mkdir -p {$CURRENT_ROOTFS}/host-proc
+    sudo mount -o bind /proc ${CURRENT_ROOTFS}/host-proc
+    sudo mount -o bind /dev/pts ${CURRENT_ROOTFS}/dev/pts
+    sudo mount -o bind /tmp ${CURRENT_ROOTFS}/tmp
+}
+
+function kill_qemu
+{
+    QEMU_PID_CMD="ps -o comm,pid -C $QEMU_BIN | awk '\$1 == \"$QEMU_BIN\" { print \$2 }'"
+    echo "QEMU_PID_CMD=${QEMU_PID_CMD}"
+    QEMU_PID=`${QEMU_PID_CMD}`
+    echo "kill -9 $QEMU_PID"
 }
 
 
