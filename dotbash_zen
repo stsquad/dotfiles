@@ -16,13 +16,14 @@ QEMU_SRC=/home/alex/lsrc/qemu/qemu.git
 QEMU_ARCH=aarch64
 QEMU_BUILD=${QEMU_SRC}/${QEMU_ARCH}-linux-user
 QEMU_BIN=qemu-${QEMU_ARCH}
+# Root of all rootfs
+ROOT_ROOTFS=/home/alex/lsrc/qemu/rootfs
+
 QEMU_ARGS="-d unimp"
 # unimp,int,exec,cpu,op,out_asm
 QEMU_PROFILE=""
 
-# Root of all rootfs
-ROOT_ROOTFS=/home/alex/lsrc/qemu/rootfs
-CURRENT_ROOTFS=opensuse-arm64-rootfs
+: ${CURRENT_ROOTFS:=opensuse-arm64-rootfs}
 
 # Logging
 QEMU_LOGFILE=/tmp/qemu.log
