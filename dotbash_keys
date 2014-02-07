@@ -8,39 +8,47 @@
 KEYCHAIN=$(find_alternatives keychain)
 KEYSMSG=""
 
-# If we are a login shell force flushing of credentials
-shopt -q login_shell && KEY_OPTS="--clear" || KEY_OPTS="-Q"
 
-if [[ -x ${KEYCHAIN} ]]; then
-    eval `keychain -q ${KEY_OPTS} --eval`
-    KEYSMSG="Using keychain ("
-    if [[ "${KEY_OPTS}" == "--clear" ]]; then
-	KEYSMSG+=" flushed "
-    fi
-    if [[ -S ${SSH_AUTH_SOCK} ]]; then
-	KEYSMSG+=" ssh "
-    fi
-    if [[ "${GPG_AGENT_INFO}" ]]; then
-	KEYSMSG+=" gpg "
-    fi
-    KEYSMSG+=")"
-else
-    if test -f $HOME/.gpg-agent-info && kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
-	GPG_MSG="exisiting agent"
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    # If we are a login shell force flushing of credentials
+    shopt -q login_shell && KEY_OPTS="--clear" || KEY_OPTS="-Q"
+
+    if [[ -x ${KEYCHAIN} ]]; then
+        eval `keychain -q ${KEY_OPTS} --eval`
+	KEYSMSG="Using keychain ("
+ 	if [[ "${KEY_OPTS}" == "--clear" ]]; then
+	    KEYSMSG+=" flushed "
+    	fi
+        if [[ -S ${SSH_AUTH_SOCK} ]]; then
+	    KEYSMSG+=" ssh "
+        fi
+        if [[ "${GPG_AGENT_INFO}" ]]; then
+	    KEYSMSG+=" gpg "
+        fi
+        KEYSMSG+=")"
     else
-	gpg-agent --daemon --write-env-file &> /dev/null
-	GPG_MSG="new agent"
+        if test -f $HOME/.gpg-agent-info && kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
+	    GPG_MSG="exisiting agent"
+        else
+	    gpg-agent --daemon --write-env-file &> /dev/null
+	    GPG_MSG="new agent"
+        fi
+
+        # Setup environment variables either way
+        source $HOME/.gpg-agent-info
+        export GPG_AGENT_INFO
+
+        # Ensure prompts come to the correct TTY
+        GPG_TTY=`tty`
+        export GPG_TTY
+
+        KEYSMSG="$GPG_MSG on $GPG_TTY"
     fi
-
-    # Setup environment variables either way
-    source $HOME/.gpg-agent-info
-    export GPG_AGENT_INFO
-
-    # Ensure prompts come to the correct TTY
-    GPG_TTY=`tty`
-    export GPG_TTY
-
-    KEYSMSG="$GPG_MSG on $GPG_TTY"
+else
+    KEYSMSG="existing ssh"
+    if [ ! -z "$GPG_TTY" ]; then
+        KEYSMSG+=" gpg"
+    fi
 fi
 
 alias .keys=". ~/.bash_keys"
