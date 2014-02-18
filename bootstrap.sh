@@ -3,11 +3,21 @@
 # Bootstrap a new system
 # wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
 #
-MYGITHUB=https://github.com/stsquad
+
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    MYGITHUB=git@github.com:stsquad
+else
+    MYGITHUB=https://github.com/stsquad
+fi
 
 # Currently assume apt based systems
-sudo apt-get update
-sudo apt-get install -y git-core
+if [[ ! `dpkg-query --status git-core` ]]; then
+    echo "Fetching git"
+    sudo apt-get update
+    sudo apt-get install -y git-core
+else
+    echo "Already have git, good"
+fi
 
 # keep my stff here
 MYSRC=${HOME}/mysrc
@@ -15,15 +25,22 @@ mkdir -p ${MYSRC}
 cd ${MYSRC}
 
 # Clone dotfiles and elisp
-git clone ${MYGITHUB}/dotfiles.git dotfiles.git
-cd dotfiles.git
-./setup_dotfiles.sh
-cd -
+if [ ! -d dotfiles.git ]; then
+    echo "Fetching dotfiles"
+    git clone ${MYGITHUB}/dotfiles.git dotfiles.git
+    cd dotfiles.git
+    ./setup_dotfiles.sh
+    cd -
+fi
 
-git clone ${MYGITHUB}/my-emacs-stuff.git elisp.git
-cd elisp.git
-./setup_emacs.sh
-cd -
+if [ ! -d elisp.git ]; then
+    echo "Fetching elisp"
+    git clone ${MYGITHUB}/my-emacs-stuff.git elisp.git
+    cd elisp.git
+    ./setup_emacs.sh
+    cd -
+fi
+
 cd $HOME
 
 # Done (for now)
