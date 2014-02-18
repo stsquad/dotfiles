@@ -3,6 +3,7 @@
 # Bootstrap a new system
 # wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
 #
+set -e
 
 if [ -z "$SSH_AUTH_SOCK" ]; then
     MYGITHUB=git@github.com:stsquad
@@ -13,8 +14,13 @@ fi
 # Currently assume apt based systems
 if [[ ! `dpkg-query --status git-core` ]]; then
     echo "Fetching git"
-    sudo apt-get update
-    sudo apt-get install -y git-core
+    if [ `id -u` = 0 ] ; then
+        apt-get update
+        apt-get install -y git-core
+    else
+        sudo apt-get update
+        sudo apt-get install -y git-core
+    fi
 else
     echo "Already have git, good"
 fi
