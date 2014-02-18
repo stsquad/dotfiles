@@ -79,6 +79,20 @@ function set_qemu_log
     echo "Set args to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
 }
 
+function set_qemu_logfile
+{
+    OLD_QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}
+    QEMU_LOG_FILENAME=$@
+    echo "Set logfile to ${QEMU_LOG_FILENAME} (was ${OLD_QEMU_LOG_FILENAME})"
+}
+
+function set_qemu_debug
+{
+    OLD_QEMU_GDB=${QEMU_GDB}
+    QEMU_GDB=$@
+    echo "Set logfile to ${QEMU_GDB} (was ${OLD_QEMU_GDB})"
+}
+
 function set_qemu_rootfs
 {
     OLD_QEMU_ROOTFS=${CURRENT_ROOTFS}
@@ -95,13 +109,17 @@ function setup_rootfs_mounts
 {
     # TODO, protect against multiple mounts
     echo "Ensuring mounts in place"
+
+    # Useful host hooks
     sudo mount -o bind /home ${CURRENT_ROOTFS}/home
     mkdir -p ${CURRENT_ROOTFS}/root/risu
     sudo mount -o bind /home/alex/lsrc/qemu/risu.git ${CURRENT_ROOTFS}/root/risu/
     mkdir -p {$CURRENT_ROOTFS}/host-etc
     sudo mount -o bind /etc ${CURRENT_ROOTFS}/host-etc
-    mkdir -p {$CURRENT_ROOTFS}/host-proc
-    sudo mount -o bind /proc ${CURRENT_ROOTFS}/host-proc
+
+    # Magic dirs
+    sudo mount -o bind /proc ${CURRENT_ROOTFS}/proc
+    sudo mount -o bind /dev ${CURRENT_ROOTFS}/dev
     sudo mount -o bind /dev/pts ${CURRENT_ROOTFS}/dev/pts
     sudo mount -o bind /tmp ${CURRENT_ROOTFS}/tmp
 }
