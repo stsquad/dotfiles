@@ -8,7 +8,6 @@
 KEYCHAIN=$(find_alternatives keychain)
 KEYSMSG=""
 
-
 if [ -z "$SSH_AUTH_SOCK" ]; then
     # If we are a login shell force flushing of credentials
     shopt -q login_shell && KEY_OPTS="--clear" || KEY_OPTS="-Q"
@@ -46,8 +45,11 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     fi
 else
     KEYSMSG="existing ssh"
-    if [ ! -z "$GPG_TTY" ]; then
-        KEYSMSG+=" gpg"
+    if [[ -x ${KEYCHAIN} ]]; then
+        eval `keychain -q ${KEY_OPTS} --agents gpg --eval`
+        if [[ "${GPG_AGENT_INFO}" ]]; then
+	    KEYSMSG+=" keychain gpg"
+        fi
     fi
 fi
 
