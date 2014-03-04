@@ -114,7 +114,7 @@ function setup_rootfs_mounts
     sudo mount -o bind /home ${CURRENT_ROOTFS}/home
     mkdir -p ${CURRENT_ROOTFS}/root/risu
     sudo mount -o bind /home/alex/lsrc/qemu/risu.git ${CURRENT_ROOTFS}/root/risu/
-    mkdir -p {$CURRENT_ROOTFS}/host-etc
+    mkdir -p ${CURRENT_ROOTFS}/host-etc
     sudo mount -o bind /etc ${CURRENT_ROOTFS}/host-etc
 
     # Magic dirs
