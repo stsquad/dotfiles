@@ -68,29 +68,48 @@ function set_dynamic_qemu_args
 function set_qemu_profile
 {
     OLD_QEMU_PROFILE=${QEMU_PROFILE}
-    QEMU_PROFILE="$@"
-    echo "Using QEMU_PROFILE=${QEMU_PROFILE} (was ${OLD_QEMU_PROFILE})"
+    if [ -z "$@" ]; then
+        unset QEMU_PROFILE
+        echo "Disabled profiling of qemu"
+    else
+        QEMU_PROFILE="$@"
+        echo "Using QEMU_PROFILE=${QEMU_PROFILE} (was ${OLD_QEMU_PROFILE})"
+    fi
 }
 
 function set_qemu_log
 {
     OLD_QEMU_LOG=${QEMU_LOG}
-    QEMU_LOG=$@
-    echo "Set args to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
+    if [ -z "$@" ]; then
+        QEMU_LOG=unimp
+    else
+        QEMU_LOG=$@
+    fi
+    echo "Set QEMU_LOG to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
 }
 
 function set_qemu_logfile
 {
     OLD_QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}
-    QEMU_LOG_FILENAME=$@
-    echo "Set logfile to ${QEMU_LOG_FILENAME} (was ${OLD_QEMU_LOG_FILENAME})"
+    if [ -z "$@" ]; then
+        unset QEMU_LOG_FILENAME
+        echo "Disabled QEMU_LOG_FILENAME (debug will go to stderr)"
+    else
+        QEMU_LOG_FILENAME=$@
+        echo "Set QEMU_LOG_FILENAME to ${QEMU_LOG_FILENAME} (was ${OLD_QEMU_LOG_FILENAME})"
+    fi
 }
 
 function set_qemu_debug
 {
     OLD_QEMU_GDB=${QEMU_GDB}
-    QEMU_GDB=$@
-    echo "Set logfile to ${QEMU_GDB} (was ${OLD_QEMU_GDB})"
+    if [ -z "$@" ]; then
+        unset QEMU_GDB
+        echo "Disabled QEMU_DEBUG"
+    else
+        QEMU_GDB=$@
+        echo "Set QEMU_DEBUG to ${QEMU_GDB} (was ${OLD_QEMU_GDB})"
+    fi
 }
 
 function set_qemu_rootfs
