@@ -1,0 +1,175 @@
+#!/bin/bash
+#
+# .bashrc_devqemu
+#
+# Bash helpers for running development builds of QEMU
+#
+
+MY_USER=`id -u`
+MY_GRP=`id -g`
+USERSPEC="--userspec ${MY_USER}:${MY_GRP}"
+
+# General paramters - these don't use QEMU env variables
+DEVQEMU_SRC=/home/alex/lsrc/qemu/qemu.git
+DEVQEMU_ARCH=aarch64
+DEVQEMU_BUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-linux-user
+DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
+
+# Root of all rootfs
+DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs
+
+DEVQEMU_PROFILE=""
+
+: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/opensuse-arm64-rootfs}
+
+# Actual QEMU Environment Variables
+# you need to ensure sudo is configured to allow them through
+: ${QEMU_LOG_FILENAME:=/tmp/qemu.log}
+: ${QEMU_LOG:="unimp"}
+# unimp,int,exec,cpu,op,out_asm
+
+
+function devqemu_run
+{
+    echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
+    sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
+    CMD="/bin/${DEVQEMU_BIN}"
+    echo "Using chroot: ${DEVQEMU_ROOTFS}"
+    export QEMU_LOG
+    export QEMU_LOG_FILENAME
+    echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    echo "Running: ${CMD} with $# args ($@)"
+    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${CMD} "$@"
+}
+
+function run_static_qemu_as_root
+{
+    echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
+    sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
+    CMD="/bin/${DEVQEMU_BIN}"
+    echo "Using chroot: ${DEVQEMU_ROOTFS}"
+    export QEMU_LOG
+    export QEMU_LOG_FILENAME
+    echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    echo "Running: ${CMD} with $# args ($@)"
+    sudo ${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${CMD} "$@"
+}
+
+
+function set_dynamic_qemu_args
+{
+    export DEVQEMU_LD_PREFIX=${DEVQEMU_ROOTFS_ROOT}/${DEVQEMU_ROOTFS}
+    echo "Using DEVQEMU_LD_PREFIX=${DEVQEMU_LD_PREFIX}"
+}
+
+function devqemu_profile
+{
+    OLD_DEVQEMU_PROFILE=${DEVQEMU_PROFILE}
+    if [ -z "$@" ]; then
+        unset DEVQEMU_PROFILE
+        echo "Disabled profiling of qemu"
+    else
+        DEVQEMU_PROFILE="$@"
+        echo "Using DEVQEMU_PROFILE=${DEVQEMU_PROFILE} (was ${OLD_DEVQEMU_PROFILE})"
+    fi
+}
+
+function devqemu_log
+{
+    OLD_QEMU_LOG=${QEMU_LOG}
+    if [ -z "$@" ]; then
+        QEMU_LOG=unimp
+    else
+        QEMU_LOG=$@
+    fi
+    echo "Set QEMU_LOG to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
+}
+
+function devqemu_logfile
+{
+    OLD_QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}
+    if [ -z "$@" ]; then
+        unset QEMU_LOG_FILENAME
+        echo "Disabled QEMU_LOG_FILENAME (debug will go to stderr)"
+    else
+        QEMU_LOG_FILENAME=$@
+        echo "Set QEMU_LOG_FILENAME to ${QEMU_LOG_FILENAME} (was ${OLD_QEMU_LOG_FILENAME})"
+    fi
+}
+
+function devqemu_debug
+{
+    OLD_DEVQEMU_GDB=${DEVQEMU_GDB}
+    if [ -z "$@" ]; then
+        unset DEVQEMU_GDB
+        echo "Disabled DEVQEMU_DEBUG"
+    else
+        DEVQEMU_GDB=$@
+        echo "Set DEVQEMU_DEBUG to ${DEVQEMU_GDB} (was ${OLD_DEVQEMU_GDB})"
+    fi
+}
+
+function devqemu_rootfs
+{
+    OLD_DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS}
+    CURRENT_PWD=`pwd`
+    cd ${DEVQEMU_ROOTFS_ROOT}
+    DIRS=`compgen -d`
+    read -e -p "dir:" NEW_ROOTFS
+    DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS_ROOT}/${NEW_ROOTFS}
+    echo "Set rootfs to ${DEVQEMU_ROOTFS} (was ${OLD_DEVQEMU_ROOTFS})"
+    cd -
+}
+
+function devqemu_setup_mounts
+{
+    # TODO, protect against multiple mounts
+    echo "Ensuring mounts in place"
+
+    # Useful host hooks
+    sudo mount -o bind /home ${DEVQEMU_ROOTFS}/home
+    mkdir -p ${DEVQEMU_ROOTFS}/root/risu
+    sudo mount -o bind /home/alex/lsrc/qemu/risu.git ${DEVQEMU_ROOTFS}/root/risu/
+    mkdir -p ${DEVQEMU_ROOTFS}/host-etc
+    sudo mount -o bind /etc ${DEVQEMU_ROOTFS}/host-etc
+
+    # Magic dirs
+    sudo mount -o bind /proc ${DEVQEMU_ROOTFS}/proc
+    sudo mount -o bind /dev ${DEVQEMU_ROOTFS}/dev
+    sudo mount -o bind /dev/pts ${DEVQEMU_ROOTFS}/dev/pts
+    sudo mount -o bind /tmp ${DEVQEMU_ROOTFS}/tmp
+}
+
+function kill_qemu
+{
+    DEVQEMU_PID_CMD="ps -o comm,pid -C $DEVQEMU_BIN | awk '\$1 == \"$DEVQEMU_BIN\" { print \$2 }'"
+    echo "DEVQEMU_PID_CMD=${DEVQEMU_PID_CMD}"
+    DEVQEMU_PID=`${DEVQEMU_PID_CMD}`
+    echo "kill -9 $DEVQEMU_PID"
+}
+
+function devqemu_help
+{
+    $all_fns=`compgen -A function devqemu`
+    echo <<EOF
+The devqemu shell environment is a set of scripts for running development versions
+of QEMU from the shell. The following functions are available:
+
+$all_fns
+EOF
+
+}
+
+function devqemu
+{
+    $cmdfn=devqemu_$1
+    echo "testing: $cmdfn"
+    if [[ "type -t $cmdfn > /dev/null" ]]; then
+        $cmdfn
+    else
+        devqemu_help
+    fi
+}
+
+alias .qemu=". ~/.bash_devqemu"
+alias .devqemu=". ~/.bash_devqemu"
