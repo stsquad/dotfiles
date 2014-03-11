@@ -576,6 +576,7 @@ else
     fi
 
     load_extra_module `hostname` true
+    load_extra_module devqemu true
     load_extra_module user true
     load_extra_module local true
     echo "Loaded$LOADED_MODULES"
