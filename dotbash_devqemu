@@ -42,7 +42,7 @@ function devqemu_run
     sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${CMD} "$@"
 }
 
-function run_static_qemu_as_root
+function devqem_run_as_root
 {
     echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
     sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
@@ -55,11 +55,15 @@ function run_static_qemu_as_root
     sudo ${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${CMD} "$@"
 }
 
-
-function set_dynamic_qemu_args
+function devqemu_arch
 {
-    export DEVQEMU_LD_PREFIX=${DEVQEMU_ROOTFS_ROOT}/${DEVQEMU_ROOTFS}
-    echo "Using DEVQEMU_LD_PREFIX=${DEVQEMU_LD_PREFIX}"
+    echo "Current ARCH=${DEVQEMU_ARCH}"
+    read -e -p "ARCH:" NEW_ARCH
+    DEVQEMU_ARCH=${NEW_ARCH}
+    DEVQEMU_BUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-linux-user
+    DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
+    echo "New ARCH=${DEVQEMU_ARCH}"
+    echo "With ${DEVQEMU_BIN} from ${DEVQEMU_BUILD}"
 }
 
 function devqemu_profile
@@ -121,23 +125,34 @@ function devqemu_rootfs
     cd -
 }
 
+function do_bind_mount
+{
+    SRC=$1
+    DST=$2
+    for i in `cat /proc/mounts | cut -d' ' -f2`; do
+        if [ "x${DST}" = "x$i" ]; then
+            echo "Skipping already mounted ${DST}"
+            return
+        fi
+    done
+    sudo mount -o bind ${SRC} ${DST}
+}
+
+
 function devqemu_setup_mounts
 {
-    # TODO, protect against multiple mounts
-    echo "Ensuring mounts in place"
-
     # Useful host hooks
-    sudo mount -o bind /home ${DEVQEMU_ROOTFS}/home
+    do_bind_mount /home ${DEVQEMU_ROOTFS}/home
     mkdir -p ${DEVQEMU_ROOTFS}/root/risu
-    sudo mount -o bind /home/alex/lsrc/qemu/risu.git ${DEVQEMU_ROOTFS}/root/risu/
+    do_bind_mount /home/alex/lsrc/qemu/risu.git ${DEVQEMU_ROOTFS}/root/risu/
     mkdir -p ${DEVQEMU_ROOTFS}/host-etc
-    sudo mount -o bind /etc ${DEVQEMU_ROOTFS}/host-etc
+    do_bind_mount /etc ${DEVQEMU_ROOTFS}/host-etc
 
     # Magic dirs
-    sudo mount -o bind /proc ${DEVQEMU_ROOTFS}/proc
-    sudo mount -o bind /dev ${DEVQEMU_ROOTFS}/dev
-    sudo mount -o bind /dev/pts ${DEVQEMU_ROOTFS}/dev/pts
-    sudo mount -o bind /tmp ${DEVQEMU_ROOTFS}/tmp
+    do_bind_mount /proc ${DEVQEMU_ROOTFS}/proc
+    do_bind_mount /dev ${DEVQEMU_ROOTFS}/dev
+    do_bind_mount /dev/pts ${DEVQEMU_ROOTFS}/dev/pts
+    do_bind_mount /tmp ${DEVQEMU_ROOTFS}/tmp
 }
 
 function kill_qemu
