@@ -6,6 +6,7 @@
 [alias]
 	cp = cherry-pick
 	dfw = diff --ignore-space-change
+	pps = format-patch --cover-letter --summary origin/master..HEAD
 [credential]
 	helper = cache --timeout=3600
 [color]
