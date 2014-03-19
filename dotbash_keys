@@ -53,6 +53,22 @@ else
     fi
 fi
 
+#
+# When I log on remotely I only have console mode and as such I need to reset
+# gpg-agent so it won't leave passphrase prompts on the X session. The killalls
+# unwedge any gpg passphrase requests that might be running before reloading.
+#
+function reset_gpg_agent
+{
+    if [[ -x ${KEYCHAIN} ]]; then
+        keychain --agents gpg --stop all
+        killall -9 gpg2 pinentry 2> /dev/null
+        sleep 1
+        killall -9 gpg2 pinentry 2> /dev/null
+        . ~/.bash_keys
+    fi
+}
+
 alias .keys=". ~/.bash_keys"
 echo "loading .bash_keys ($KEYSMSG)"
 
