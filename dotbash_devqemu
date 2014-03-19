@@ -42,7 +42,7 @@ function devqemu_run
     sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${CMD} "$@"
 }
 
-function devqem_run_as_root
+function devqemu_run_as_root
 {
     echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
     sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
