@@ -1,12 +1,16 @@
 [user]
 	name = Alex Bennée
-	email = alex@bennee.com
+	email = alex.bennee@linaro.org
+[sendemail]
+	from = Alex Bennée <alex.bennee@linaro.org>
+	aliasfiletype = mailrc
+	aliasesfile = /home/alex/.mailrc
 [push]
         default = current
 [alias]
 	cp = cherry-pick
 	dfw = diff --ignore-space-change
-	pps = format-patch --cover-letter --summary origin/master..HEAD
+	pps = format-patch --cover-letter --summary
 [credential]
 	helper = cache --timeout=3600
 [color]
@@ -16,9 +20,10 @@
 	smtpserverport = 2500
 	confirm = auto
 	multiedit = false
-	suppresscc = all
 	chainreplyto = false
 	composeencoding = UTF-8
 	assume8bitEncoding = true
 [diff]
 	rename = true
+[gitreview]
+	username = ajb
