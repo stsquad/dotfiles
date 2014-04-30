@@ -8,7 +8,7 @@
 KEYCHAIN=$(find_alternatives keychain)
 KEYSMSG=""
 
-if [[ -z "$SSH_AUTH_SOCK" || ! -p "$SSH_AUTH_SOCK" ]]; then
+if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
     # If we are a login shell force flushing of credentials
     shopt -q login_shell && KEY_OPTS="--clear" || KEY_OPTS="-Q"
 
