@@ -155,6 +155,26 @@ function devqemu_setup_mounts
     do_bind_mount /tmp ${DEVQEMU_ROOTFS}/tmp
 }
 
+function devqemu_clear_mounts
+{
+    sudo umount ${DEVQEMU_ROOTFS}/home
+    sudo umount ${DEVQEMU_ROOTFS}/root/risu/
+    sudo umount ${DEVQEMU_ROOTFS}/host-etc
+    sudo umount ${DEVQEMU_ROOTFS}/proc
+    sudo umount ${DEVQEMU_ROOTFS}/dev
+    sudo umount ${DEVQEMU_ROOTFS}/dev/pts
+    sudo umount ${DEVQEMU_ROOTFS}/tmp
+}
+
+function devqemu_clear_all_mounts
+{
+    for i in `cat /proc/mounts | cut -d' ' -f2`; do
+        if [[ $i == ${DEVQEMU_ROOTFS_ROOT}* ]]; then
+            sudo umount $i
+        fi
+    done
+}
+
 function kill_qemu
 {
     DEVQEMU_PID_CMD="ps -o comm,pid -C $DEVQEMU_BIN | awk '\$1 == \"$DEVQEMU_BIN\" { print \$2 }'"
