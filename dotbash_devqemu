@@ -97,11 +97,12 @@ function devqemu_log
 {
     OLD_QEMU_LOG=${QEMU_LOG}
     if [ -z "$@" ]; then
-        QEMU_LOG=unimp
+        unset QEMU_LOG
+        echo "Disabled QEMU_LOG"
     else
         QEMU_LOG=$@
+        echo "Set QEMU_LOG to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
     fi
-    echo "Set QEMU_LOG to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
 }
 
 function devqemu_logfile
