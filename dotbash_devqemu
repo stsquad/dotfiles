@@ -19,6 +19,7 @@ DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
 DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs
 
 DEVQEMU_PROFILE=""
+DEVQEMU_VALGRIND=""
 
 : ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/opensuse-arm64-rootfs}
 
@@ -39,7 +40,7 @@ function devqemu_run
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
     echo "Running: ${CMD} with $# args ($@)"
-    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${CMD} "$@"
+    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${DEVQEMU_VALGRIND} ${CMD} "$@"
 }
 
 function devqemu_run_as_root
@@ -52,7 +53,9 @@ function devqemu_run_as_root
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
     echo "Running: ${CMD} with $# args ($@)"
-    sudo ${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${CMD} "$@"
+    FINAL_CMD="${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${DEVQEMU_VALGRIND} ${CMD} $@"
+    echo "sudo ${FINAL_CMD}"
+    sudo ${FINAL_CMD}
 }
 
 function devqemu_arch
@@ -75,6 +78,18 @@ function devqemu_profile
     else
         DEVQEMU_PROFILE="$@"
         echo "Using DEVQEMU_PROFILE=${DEVQEMU_PROFILE} (was ${OLD_DEVQEMU_PROFILE})"
+    fi
+}
+
+function devqemu_valgrind
+{
+    OLD_DEVQEMU_VALGRIND="${DEVQEMU_VALGRIND}"
+    if [[ -z "$@" ]]; then
+        unset DEVQEMU_VALGRIND
+        echo "Disabled valgrinding of qemu"
+    else
+        DEVQEMU_VALGRIND="$@"
+        echo "Using DEVQEMU_VALGRIND=${DEVQEMU_VALGRIND} (was ${OLD_DEVQEMU_VALGRIND})"
     fi
 }
 
