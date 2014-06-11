@@ -133,10 +133,14 @@ function devqemu_rootfs
 {
     OLD_DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS}
     CURRENT_PWD=`pwd`
-    cd ${DEVQEMU_ROOTFS_ROOT}
-    DIRS=`compgen -d`
-    read -e -p "dir:" NEW_ROOTFS
-    DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS_ROOT}/${NEW_ROOTFS}
+    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
+        DEVQEMU_ROOTFS=${CURRENT_PWD}/$1
+    else
+        cd ${DEVQEMU_ROOTFS_ROOT}
+        DIRS=`compgen -d`
+        read -e -p "dir:" NEW_ROOTFS
+        DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS_ROOT}/${NEW_ROOTFS}
+    fi
     echo "Set rootfs to ${DEVQEMU_ROOTFS} (was ${OLD_DEVQEMU_ROOTFS})"
     cd -
 }
