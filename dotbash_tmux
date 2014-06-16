@@ -7,6 +7,9 @@
 TMUX_SESSION_COUNT=`tmux list-sessions 2> /dev/null | wc -l`
 TMUX_SESSION_NAMES=`tmux ls | cut -d ':' -f 1 | sed ':a;N;$!ba;s/\n/ /g'`
 
+# Stop C-s triggering flow control
+stty -ixon
+
 if [[ `whoami` == "root" ]]; then
     function sysmon()
     {
