@@ -5,7 +5,7 @@
 #
 set -e
 
-if [ -z "$SSH_AUTH_SOCK" ]; then
+if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ] && [ "ssh-add -l > /dev/null" ]; then
     MYGITHUB=git@github.com:stsquad
 else
     MYGITHUB=https://github.com/stsquad
