@@ -223,17 +223,30 @@ export CVSEDITOR=ec
 
 # Setup history control - hard to get right, could do with
 # bashcompletion as well. Just make sure I don't repeatedly delete stuff
+# See: http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#3055135
 
 # append (as I use lots of shells)
 shopt -s histappend
 
-# Dump history to the file each prompt
-PROMPT_COMMAND='history -a'
-
-export HISTCONTROL=ignoredups
+export HISTCONTROL=ignoredups:erasedups
 export HISTIGNORE="rm *"
-export HISTFILESIZE=10000
+export HISTSIZE=100000
+export HISTFILESIZE=${HISTSIZE}
 
+history() {
+  _bash_history_sync
+  builtin history "$@"
+}
+
+_bash_history_sync() {
+  builtin history -a         #1
+  HISTFILESIZE=$HISTSIZE     #2
+  builtin history -c         #3
+  builtin history -r         #4
+}
+
+# fixup 
+export PROMPT_COMMAND=_bash_history_sync
 
 # GNU systems usually use less by default for
 # man pages, however not all unix-a-likes do
