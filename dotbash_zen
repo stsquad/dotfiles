@@ -8,4 +8,7 @@
 # Override Author
 export GIT_AUTHOR_EMAIL="alex.bennee@linaro.org"
 
+# My local repo
+export REPREPRO_BASE_DIR=/home/alex/public_html/repo
+
 alias .zen=". ~/.bash_zen"
