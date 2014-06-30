@@ -220,6 +220,10 @@ cdtp() {
     fi
 }
 
+if [ ! -d ~/.emacs.d/elpa ]; then
+    REPORT="no packages"
+    alias bootstrap_emacs="emacs -q --batch -l ~/.emacs.d/my-elisp/my-package.el -f my-packages-reset"
+fi
 
 alias .emacs=". ~/.bash_emacs"
 echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT $KEYMAPS)"
