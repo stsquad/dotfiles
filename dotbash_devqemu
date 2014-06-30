@@ -22,7 +22,7 @@ DEVQEMU_PROFILE=""
 DEVQEMU_VALGRIND=""
 DEVQEMU_BINFMT=0
 
-: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/opensuse-arm64-rootfs}
+: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/debian-sid}
 
 # Actual QEMU Environment Variables
 # you need to ensure sudo is configured to allow them through
@@ -152,16 +152,16 @@ function devqemu_rootfs
     OLD_DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS}
     CURRENT_PWD=`pwd`
     if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
-        DEVQEMU_ROOTFS=${CURRENT_PWD}/$1
+        DEVQEMU_ROOTFS=${CURRENT_PWD}/${1%/}
     else
         cd ${DEVQEMU_ROOTFS_ROOT}
         DIRS=`compgen -d`
         read -e -p "dir:" NEW_ROOTFS
         DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS_ROOT}/${NEW_ROOTFS}
+        cd -
     fi
     echo "Set rootfs to ${DEVQEMU_ROOTFS} (was ${OLD_DEVQEMU_ROOTFS})"
-    cd -
-}
+} 
 
 function do_bind_mount
 {
@@ -173,7 +173,9 @@ function do_bind_mount
             return
         fi
     done
+    mkdir -p ${DST}
     sudo mount -o bind ${SRC} ${DST}
+    echo "Mounted ${SRC} to ${DST}"
 }
 
 
@@ -186,6 +188,27 @@ function devqemu_setup_mounts
     mkdir -p ${DEVQEMU_ROOTFS}/host-etc
     do_bind_mount /etc ${DEVQEMU_ROOTFS}/host-etc
 
+    # Multi-arch bits
+    mkdir -p ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
+    do_bind_mount /lib/x86_64-linux-gnu ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
+    mkdir -p ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
+    do_bind_mount /usr/lib/x86_64-linux-gnu ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
+
+    echo "Setting up ld-linux loaders"
+    mkdir -p ${DEVQEMU_ROOTFS}/lib64
+    for link in /lib64/*; do
+        linkname=`basename $link`
+        linkpath=`readlink $link`
+        echo "linking ${DEVQEMU_ROOTFS}/lib64/$linkname to $linkpath"
+        ln -s $linkpath ${DEVQEMU_ROOTFS}/lib64/$linkname
+    done
+
+    if [ -n "$DEVQEMU_VALGRIND" ]; then
+       echo "Copying valgrind"
+       mkdir -p ${DEVQEMU_ROOTFS}/usr/bin
+       cp /usr/bin/valgrind* ${DEVQEMU_ROOTFS}/usr/bin
+    fi
+    
     # Magic dirs
     do_bind_mount /proc ${DEVQEMU_ROOTFS}/proc
     do_bind_mount /dev ${DEVQEMU_ROOTFS}/dev
@@ -198,6 +221,10 @@ function devqemu_clear_mounts
     sudo umount ${DEVQEMU_ROOTFS}/home
     sudo umount ${DEVQEMU_ROOTFS}/root/risu/
     sudo umount ${DEVQEMU_ROOTFS}/host-etc
+
+    sudo umount ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
+    sudo umount ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
+    
     sudo umount ${DEVQEMU_ROOTFS}/proc
     sudo umount ${DEVQEMU_ROOTFS}/dev
     sudo umount ${DEVQEMU_ROOTFS}/dev/pts
