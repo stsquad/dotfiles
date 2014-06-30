@@ -20,6 +20,7 @@ DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs
 
 DEVQEMU_PROFILE=""
 DEVQEMU_VALGRIND=""
+DEVQEMU_BINFMT=0
 
 : ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/opensuse-arm64-rootfs}
 
@@ -33,8 +34,14 @@ DEVQEMU_VALGRIND=""
 function devqemu_run
 {
     echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
+    mkdir -p ${DEVQEMU_ROOTFS}/bin
     sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
-    CMD="/bin/${DEVQEMU_BIN}"
+    if [ ${DEVQEMU_BINFMT} -eq 0 ]; then
+        CMD="/bin/${DEVQEMU_BIN}"
+    else
+        CMD=$1
+        shift
+    fi
     echo "Using chroot: ${DEVQEMU_ROOTFS}"
     export QEMU_LOG
     export QEMU_LOG_FILENAME
@@ -79,6 +86,17 @@ function devqemu_profile
         DEVQEMU_PROFILE="$@"
         echo "Using DEVQEMU_PROFILE=${DEVQEMU_PROFILE} (was ${OLD_DEVQEMU_PROFILE})"
     fi
+}
+
+function devqemu_binfmt
+{
+    if [ ${DEVQEMU_BINFMT} -eq 0 ]; then
+        DEVQEMU_BINFMT=1
+    else
+        DEVQEMU_BINFMT=0
+    fi
+
+    echo "DEVQEMU_BINFMT=${DEVQEMU_BINFMT}"
 }
 
 function devqemu_valgrind
