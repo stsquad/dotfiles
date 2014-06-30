@@ -4,5 +4,8 @@
 #
 
 VALGRIND=`which valgrind`
-alias valmem="$VALGRIND --leak-check=full --log-file=valgrind-mem.log "
-alias valptr="$VALGRIND --tool=exp-ptrcheck --log-file=valgrind-ptr.log "
+alias valmem="$VALGRIND --smc-check=all --leak-check=full --log-file=valgrind-mem.log "
+alias valchk="$VALGRIND --smc-check=all --leak-check=no --log-file=valgrind-chk.log "
+alias valdrd="$VALGRIND --smc-check=all --tool=drd --log-file=valgrind-drd.log"
+
+alias .valgrind=". ~/.bash_valgrind"
