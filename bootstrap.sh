@@ -56,6 +56,12 @@ fi
 
 cd $HOME
 
+# Account for running under sudo
+if [ ! -z "${SUDO_USER}" ]; then
+    echo "Fixing up ${HOME} permissions to ${SUDO_USER}:${SUDO_GID}"
+    chown -R ${SUDO_USER}:${SUDO_GID} ${HOME}
+fi
+
 # Done (for now)
 echo "Done!"
 
