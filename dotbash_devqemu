@@ -173,7 +173,7 @@ function do_bind_mount
             return
         fi
     done
-    mkdir -p ${DST}
+    sudo mkdir -p ${DST}
     sudo mount -o bind ${SRC} ${DST}
     echo "Mounted ${SRC} to ${DST}"
 }
@@ -183,24 +183,20 @@ function devqemu_setup_mounts
 {
     # Useful host hooks
     do_bind_mount /home ${DEVQEMU_ROOTFS}/home
-    mkdir -p ${DEVQEMU_ROOTFS}/root/risu
     do_bind_mount /home/alex/lsrc/qemu/risu.git ${DEVQEMU_ROOTFS}/root/risu/
-    mkdir -p ${DEVQEMU_ROOTFS}/host-etc
     do_bind_mount /etc ${DEVQEMU_ROOTFS}/host-etc
 
     # Multi-arch bits
-    mkdir -p ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
     do_bind_mount /lib/x86_64-linux-gnu ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
-    mkdir -p ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
     do_bind_mount /usr/lib/x86_64-linux-gnu ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
 
     echo "Setting up ld-linux loaders"
-    mkdir -p ${DEVQEMU_ROOTFS}/lib64
+    sudo mkdir -p ${DEVQEMU_ROOTFS}/lib64
     for link in /lib64/*; do
         linkname=`basename $link`
         linkpath=`readlink $link`
         echo "linking ${DEVQEMU_ROOTFS}/lib64/$linkname to $linkpath"
-        ln -s $linkpath ${DEVQEMU_ROOTFS}/lib64/$linkname
+        sudo ln -s $linkpath ${DEVQEMU_ROOTFS}/lib64/$linkname
     done
 
     if [ -n "$DEVQEMU_VALGRIND" ]; then
