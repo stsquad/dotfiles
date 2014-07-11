@@ -67,6 +67,17 @@ bindsym $mod+h split h
 # toggle tiling / floating
 bindsym $mod+space floating toggle
 
+# Scratchpad operations
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+Shift+XF86HomePage move scratchpad
+bindsym $mod+Shift+XF86Calculator move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+bindsym $mod+XF86HomePage scratchpad show
+bindsym $mod+XF86Calculator scratchpad show
+
 # focus the parent container
 bindsym $mod+Home focus parent
 
