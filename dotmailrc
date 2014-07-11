@@ -1,0 +1,26 @@
+#
+# Alex's .mailrc file
+#
+
+# Mailing lists
+alias qemu qemu-devel@nongnu.org
+
+# Linaro patch work
+alias patches patches@linaro.org
+
+# Linaro people working on A64
+alias a64 peter.maydell@linaro.org rob.herring@linaro.org
+
+# SuSE A64 people
+alias suse-a64 agraf@suse.de matz@suse.de
+
+# QEMU tracing people
+alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
+
+# Process state
+alias arm-pstate peter.maydell@linaro.org greg.bellows@linaro.org edgar.iglesias@xilinx.com
+
+# LKML and ARM
+alias kvmarm kvmarm@lists.cs.columbia.edu linux-arm-kernel@lists.infradead.org
+alias kvm kvm@vger.kernel.org
+
