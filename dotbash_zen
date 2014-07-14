@@ -11,4 +11,23 @@ export GIT_AUTHOR_EMAIL="alex.bennee@linaro.org"
 # My local repo
 export REPREPRO_BASE_DIR=/home/alex/public_html/repo
 
+# Move lsrc code to the slower moving disk part
+#  mv buildroot-armv7.git ~/lsrc/disk
+#  ln -s ~/lsrc/disk/buildroot-armv7.git buildroot-armv7.git
+
+ZEN_DISK_PARTITION=/home/alex/lsrc/disk
+
+function move_to_disk {
+    CURRENT_PWD=`pwd`
+    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
+        local dir=${CURRENT_PWD}/${1%/}
+        local base=`basename ${dir}`
+        mv ${dir} ${ZEN_DISK_PARTITION}
+        ln -s ${ZEN_DISK_PARTITION}/${base} ${base}
+    else
+        echo "${dir} not a directory"
+        return
+    fi
+}
+
 alias .zen=". ~/.bash_zen"
