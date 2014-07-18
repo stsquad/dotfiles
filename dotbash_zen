@@ -11,6 +11,22 @@ export GIT_AUTHOR_EMAIL="alex.bennee@linaro.org"
 # My local repo
 export REPREPRO_BASE_DIR=/home/alex/public_html/repo
 
+# LTTNG Dumping
+LTTNG_HOME=/tmp/alex/lttng-traces
+mkdir -p ${LTTNG_HOME}
+alias clear-lttng-traces="rm -rf ${LTTNG_HOME}/*"
+LTTNG_EVENTS=qemu:qemu:tb_flush_all_jump_cache,qemu:translate_block,qemu:tb_find_slow
+
+function lttng_prepare {
+    local dir=basename `pwd`
+    trace_name="$dir-trace-`date +"%Y%m%d%H%M"`"
+    lttng create ${trace_name} -o ${LTTNG_HOME}/${trace_name}
+    lttng enable-channel --subbuf-size 262144 --num-subbuf 128 -u channel0
+    lttng enable-event ${LTTNG_EVENTS} -u
+    lttng start
+    echo "Started lttng $trace_name with ${LTTNG_EVENTS}"
+}
+
 # Move lsrc code to the slower moving disk part
 #  mv buildroot-armv7.git ~/lsrc/disk
 #  ln -s ~/lsrc/disk/buildroot-armv7.git buildroot-armv7.git
