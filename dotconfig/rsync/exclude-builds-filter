@@ -4,8 +4,9 @@
 - *.tar.gz
 - *.tar.bz2
 # Skip build directories
-- build/*
-- downloads/*
+- out/
+- build/
+- downloads/
 # Skips anything in rootfs
 - rootfs/*
 # PDFs are generally not needed
