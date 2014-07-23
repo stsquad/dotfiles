@@ -18,67 +18,53 @@ alias git-push='git push'
 alias git-grep='git grep'
 
 # PS function, currently unused due to performance
-function ps_scm_f() {
+function ps_git_f() {
     local s=
-    if [[ -d ".svn" ]] ; then
-        local r=$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )
-        s="(r$r$(svn status | grep -q -v '^?' && echo -n "*" ))"
-    else
-        local d=$(git rev-parse --git-dir 2>/dev/null ) b= r= a= c=
-        if [[ -n "${d}" ]] ; then
-            if [[ -d "${d}/../.dotest" ]] ; then
-                if [[ -f "${d}/../.dotest/rebase" ]] ; then
-                    r="rebase"
-                elif [[ -f "${d}/../.dotest/applying" ]] ; then
-                    r="am"
-                else
-                    r="???"
-                fi
-                b=$(git symbolic-ref HEAD 2>/dev/null )
-            elif [[ -f "${d}/.dotest-merge/interactive" ]] ; then
-                r="rebase-i"
-                b=$(<${d}/.dotest-merge/head-name)
-            elif [[ -d "${d}/../.dotest-merge" ]] ; then
-                r="rebase-m"
-                b=$(<${d}/.dotest-merge/head-name)
-            elif [[ -f "${d}/MERGE_HEAD" ]] ; then
-                r="merge"
-                b=$(git symbolic-ref HEAD 2>/dev/null )
-            elif [[ -f "${d}/BISECT_LOG" ]] ; then
-                r="bisect"
-                b=$(git symbolic-ref HEAD 2>/dev/null )"???"
+    local d=$(git rev-parse --git-dir 2>/dev/null ) b= r= a= c=
+    if [[ -n "${d}" ]] ; then
+        if [[ -d "${d}/../.dotest" ]] ; then
+            if [[ -f "${d}/../.dotest/rebase" ]] ; then
+                r="rebase"
+            elif [[ -f "${d}/../.dotest/applying" ]] ; then
+                r="am"
             else
-                r=""
-                b=$(git symbolic-ref HEAD 2>/dev/null )
+                r="???"
             fi
- 
-            if git status | grep -q '^# Changed but not updated:' ; then
-                a="${a}*"
-            fi
- 
-            if git status | grep -q '^# Changes to be committed:' ; then
-                a="${a}+"
-            fi
- 
-            if git status | grep -q '^# Untracked files:' ; then
-                a="${a}?"
-            fi
- 
-            b=${b#refs/heads/}
-            b=${b// }
-            [[ -n "${b}" ]] && c="$(git config "branch.${b}.remote" 2>/dev/null )"
-            [[ -n "${r}${b}${c}${a}" ]] && s="(${r:+${r}:}${b}${c:+@${c}}${a:+ ${a}})"
+            b=$(git symbolic-ref HEAD 2>/dev/null )
+        elif [[ -f "${d}/.dotest-merge/interactive" ]] ; then
+            r="rebase-i"
+            b=$(<${d}/.dotest-merge/head-name)
+        elif [[ -d "${d}/../.dotest-merge" ]] ; then
+            r="rebase-m"
+            b=$(<${d}/.dotest-merge/head-name)
+        elif [[ -f "${d}/MERGE_HEAD" ]] ; then
+            r="merge"
+            b=$(git symbolic-ref HEAD 2>/dev/null )
+        elif [[ -f "${d}/BISECT_LOG" ]] ; then
+            r="bisect"
+            b=$(git symbolic-ref HEAD 2>/dev/null )"???"
+        else
+            r=""
+            b=$(git symbolic-ref HEAD 2>/dev/null )
         fi
+        
+        b=${b#refs/heads/}
+        b=${b// }
+        [[ -n "${b}" ]] && c="$(git config "branch.${b}.remote" 2>/dev/null )"
+        [[ -n "${r}${b}${c}${a}" ]] && s="/${r:+${r}:}${b}${c:+@${c}}${a:+ ${a}}"
     fi
     echo -n "$s"
 }
 
 cache_colour_scm=${cache_colour_m_orng}
-ps_scm="\[${cache_colour_scm}\]\$(ps_scm_f)\[${cache_colour_end}\]"
+ps_scm="\[${cache_colour_scm}\]\$(ps_git_f)\[${cache_colour_end}\]"
 
+export PS1="\A ${ps_user}@\h/${ps_proc} [\W${ps_scm}] >"
 
-function git_find_old_branches
+function git_find_old_remotes
 {
+    local remote=$1
+    
     echo "TO DO"
 }
 
