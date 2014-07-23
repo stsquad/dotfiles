@@ -3,12 +3,17 @@
 - *.tar
 - *.tar.gz
 - *.tar.bz2
+- *.tar.xz2
+- *.tgz
+- *.zip
 # Skip build directories
 - out/
 - build/
 - downloads/
 # Skips anything in rootfs
 - rootfs/*
+# skip music
+- music/*
 # PDFs are generally not needed
 - *.pdf
 # Or image files

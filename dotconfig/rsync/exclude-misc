@@ -1,0 +1,3 @@
+# rsync exclude misc files
+# Anything in prebuilts
+- prebuilts/*

@@ -1,0 +1,6 @@
+# Rsync filter rules for build components
+- *.o
+- .tmp_vmlinux*
+# TAG files
+- GRTAGS
+- GTAGS
