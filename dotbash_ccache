@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# .bashrc_ccache
+#
+# ccache specific tweaks
+#
+
+export CCACHE_DIR="/tmp/${USER}/ccache"
+mkdir -p ${CCACHE_DIR}
+
+if [ -d /usr/lib/ccache ]; then
+    export PATH=/usr/lib/ccache:$PATH
+fi 
+
+# for the benefit of Android
+export USE_CCACHE=1
+
+alias .ccache=". ~/.bash_ccache"
+echo "loading .bash_ccache (using ${CCACHE_DIR})"

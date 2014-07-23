@@ -509,6 +509,7 @@ else
     load_extra_module screen screen
     load_extra_module valgrind valgrind
     load_extra_module bitbake bitbake
+    load_extra_module ccache ccache
 
     # Gentoo is special...
     if [[ `whoami` != "root" ]]; then
