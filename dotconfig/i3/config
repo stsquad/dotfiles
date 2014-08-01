@@ -134,8 +134,8 @@ bindsym $mod+r mode "resize"
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 	bindsym Left  resize shrink width 10 px or 10 ppt
-        bindsym Up    resize grow height 10 px or 10 ppt
-        bindsym Down  resize shrink height 10 px or 10 ppt
+        bindsym Up    resize shrink height 10 px or 10 ppt
+        bindsym Down  resize grow height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
         # back to normal: Enter or Escape
