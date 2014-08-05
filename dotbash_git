@@ -61,6 +61,17 @@ ps_scm="\[${cache_colour_scm}\]\$(ps_git_f)\[${cache_colour_end}\]"
 
 export PS1="\A ${ps_user}@\h/${ps_proc} [\W${ps_scm}] >"
 
+function git_branches_touching
+{
+    local file=$1
+    local branches=()
+    eval "$(git for-each-ref --shell --format='branches+=(%(refname))' refs/heads/)"
+    for branch in "${branches[@]}"; do
+        echo "Checking $branch"
+        git log origin/master..$branch -- $file
+    done
+}
+
 function git_find_old_remotes
 {
     local remote=$1
