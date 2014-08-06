@@ -3,11 +3,26 @@
 - *.tar
 - *.tar.gz
 - *.tar.bz2
-- *.tar.xz2
+- *.tar.xz
 - *.tgz
 - *.zip
+- *.gzip
+- *.gz
+# Random executables
+- *.nexe
+- *.jar
+# Kernel builds
+- vmlinux
+- vmlinux.bz2
+- boot/Image
+- boot/Image.gz
+- *.axf
+# QEMU builds
+- qemu-system-*
+- *-linux-user/qemu-*
 # Skip build directories
 - out/
+- output/
 - build/
 - downloads/
 # Skips anything in rootfs
@@ -18,6 +33,7 @@
 - *.pdf
 # Or image files
 - *.img
+- *.img.gz
 - *.iso
 # Or any prefaced with nda
 - nda*

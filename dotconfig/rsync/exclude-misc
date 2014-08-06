@@ -1,3 +1,33 @@
 # rsync exclude misc files
+# debug symbols
+- .debug/*
 # Anything in prebuilts
 - prebuilts/*
+# .mu indexes can be rebuilt
+- .mu/*
+# ignore debug syms
+- .debug/*
+# random core dumps
+- core
+- *.core
+- valgrind*.core.*
+# Log files
+- *.log
+- *.trace
+# igore perf data
+- perf.data*
+# ignore disassembly
+- *.dis
+# public_html is mirrored elsewhere
+- public_html/*
+- Downloads/*
+# Anything inside .repo
+- .repo/*
+# Multimedia
+- *.mp4
+- *.mp3
+- *.ogg
+- *.3gp
+- *.ts
+- *.wav
+
