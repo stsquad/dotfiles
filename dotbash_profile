@@ -223,36 +223,34 @@ export CVSEDITOR=ec
 
 # Setup history control - hard to get right, could do with
 # bashcompletion as well. Just make sure I don't repeatedly delete stuff
+# See: http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#3055135
 
 # append (as I use lots of shells)
 shopt -s histappend
 
-# Dump history to the file each prompt
-PROMPT_COMMAND='history -a'
-
-export HISTCONTROL=ignoredups
+export HISTCONTROL=ignoredups:erasedups
 export HISTIGNORE="rm *"
-export HISTFILESIZE=10000
+export HISTSIZE=100000
+export HISTFILESIZE=${HISTSIZE}
 
+history() {
+  _bash_history_sync
+  builtin history "$@"
+}
+
+_bash_history_sync() {
+  builtin history -a         #1
+  HISTFILESIZE=$HISTSIZE     #2
+  builtin history -c         #3
+  builtin history -r         #4
+}
+
+# fixup 
+export PROMPT_COMMAND=_bash_history_sync
 
 # GNU systems usually use less by default for
 # man pages, however not all unix-a-likes do
 export PAGER=less
-
-#
-# GIT Stuff
-#
-export GIT_AUTHOR_NAME="Alex Bennée"
-export GIT_AUTHOR_EMAIL="alex@bennee.com"
-export GIT_COMMITTER_NAME="Alex Bennée"
-
-# Until I retrain my brain
-alias git-diff='git diff'
-alias git-commit='git commit'
-alias git-log='git log'
-alias git-push='git push'
-alias git-grep='git grep'
-
 
 #
 # PATH hackage
@@ -439,63 +437,6 @@ fi
 # PS Setup
 ########################
 
-function ps_scm_f() {
-    local s=
-    if [[ -d ".svn" ]] ; then
-        local r=$(svn info | sed -n -e '/^Revision: \([0-9]*\).*$/s//\1/p' )
-        s="(r$r$(svn status | grep -q -v '^?' && echo -n "*" ))"
-    else
-        local d=$(git rev-parse --git-dir 2>/dev/null ) b= r= a= c=
-        if [[ -n "${d}" ]] ; then
-            if [[ -d "${d}/../.dotest" ]] ; then
-                if [[ -f "${d}/../.dotest/rebase" ]] ; then
-                    r="rebase"
-                elif [[ -f "${d}/../.dotest/applying" ]] ; then
-                    r="am"
-                else
-                    r="???"
-                fi
-                b=$(git symbolic-ref HEAD 2>/dev/null )
-            elif [[ -f "${d}/.dotest-merge/interactive" ]] ; then
-                r="rebase-i"
-                b=$(<${d}/.dotest-merge/head-name)
-            elif [[ -d "${d}/../.dotest-merge" ]] ; then
-                r="rebase-m"
-                b=$(<${d}/.dotest-merge/head-name)
-            elif [[ -f "${d}/MERGE_HEAD" ]] ; then
-                r="merge"
-                b=$(git symbolic-ref HEAD 2>/dev/null )
-            elif [[ -f "${d}/BISECT_LOG" ]] ; then
-                r="bisect"
-                b=$(git symbolic-ref HEAD 2>/dev/null )"???"
-            else
-                r=""
-                b=$(git symbolic-ref HEAD 2>/dev/null )
-            fi
- 
-            if git status | grep -q '^# Changed but not updated:' ; then
-                a="${a}*"
-            fi
- 
-            if git status | grep -q '^# Changes to be committed:' ; then
-                a="${a}+"
-            fi
- 
-            if git status | grep -q '^# Untracked files:' ; then
-                a="${a}?"
-            fi
- 
-            b=${b#refs/heads/}
-            b=${b// }
-            [[ -n "${b}" ]] && c="$(git config "branch.${b}.remote" 2>/dev/null )"
-            [[ -n "${r}${b}${c}${a}" ]] && s="(${r:+${r}:}${b}${c:+@${c}}${a:+ ${a}})"
-        fi
-    fi
-    echo -n "$s"
-}
-
-cache_colour_scm=${cache_colour_m_orng}
-ps_scm="\[${cache_colour_scm}\]\$(ps_scm_f)\[${cache_colour_end}\]"
 
 # Hangover from the Transitive days, but I do like seeing my processor
 PROC=`uname -m`
@@ -561,12 +502,14 @@ if [ "$SHELL" == "/bin/sh" ]; then
 else
     load_extra_module tmux tmux
     load_extra_module emacs emacs
+    load_extra_module git git
     load_extra_module apt apt-get
     load_extra_module kvm kvm
     load_extra_module keys ssh-agent gpg-agent keychain
     load_extra_module screen screen
     load_extra_module valgrind valgrind
     load_extra_module bitbake bitbake
+    load_extra_module ccache ccache
 
     # Gentoo is special...
     if [[ `whoami` != "root" ]]; then
@@ -577,6 +520,7 @@ else
 
     load_extra_module `hostname` true
     load_extra_module devqemu true
+    
     load_extra_module user true
     load_extra_module local true
     echo "Loaded$LOADED_MODULES"

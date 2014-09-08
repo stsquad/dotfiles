@@ -1,0 +1,13 @@
+# Rsync filter rules for build components
+- *.o
+- *.a
+- *.so
+- .tmp_vmlinux*
+- *.d
+# Random otherOS bits
+- *.dll
+# TAG files
+- GRTAGS
+- GTAGS
+- GSYMS
+

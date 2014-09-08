@@ -165,6 +165,8 @@ KEYMAPS=""
 
 if [ "${DISPLAY}" ]; then
     if [ -e ${XMODMAP} ]; then
+        # if this dies you may need to replace the Caps_Lock keydef
+        # xmodmap -e "keycode 66 = Caps_Lock"
         ${XMODMAP} -e 'remove Lock = Caps_Lock' 2> /dev/null
         ${XMODMAP} -e 'keysym Caps_Lock = Control_L' 2> /dev/null
         ${XMODMAP} -e 'add Control = Control_L'
@@ -218,6 +220,10 @@ cdtp() {
     fi
 }
 
+if [ ! -d ~/.emacs.d/elpa ]; then
+    REPORT="no packages"
+    alias bootstrap_emacs="emacs -q --batch -l ~/.emacs.d/my-elisp/my-package.el -f my-packages-reset"
+fi
 
 alias .emacs=". ~/.bash_emacs"
 echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT $KEYMAPS)"

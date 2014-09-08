@@ -19,8 +19,10 @@ DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
 DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs
 
 DEVQEMU_PROFILE=""
+DEVQEMU_VALGRIND=""
+DEVQEMU_BINFMT=0
 
-: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/opensuse-arm64-rootfs}
+: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/debian-sid}
 
 # Actual QEMU Environment Variables
 # you need to ensure sudo is configured to allow them through
@@ -32,14 +34,20 @@ DEVQEMU_PROFILE=""
 function devqemu_run
 {
     echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
+    mkdir -p ${DEVQEMU_ROOTFS}/bin
     sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
-    CMD="/bin/${DEVQEMU_BIN}"
+    if [ ${DEVQEMU_BINFMT} -eq 0 ]; then
+        CMD="/bin/${DEVQEMU_BIN}"
+    else
+        CMD=$1
+        shift
+    fi
     echo "Using chroot: ${DEVQEMU_ROOTFS}"
     export QEMU_LOG
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
     echo "Running: ${CMD} with $# args ($@)"
-    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${CMD} "$@"
+    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${DEVQEMU_VALGRIND} ${CMD} "$@"
 }
 
 function devqemu_run_as_root
@@ -52,7 +60,9 @@ function devqemu_run_as_root
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
     echo "Running: ${CMD} with $# args ($@)"
-    sudo ${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${CMD} "$@"
+    FINAL_CMD="${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${DEVQEMU_VALGRIND} ${CMD} $@"
+    echo "sudo ${FINAL_CMD}"
+    sudo ${FINAL_CMD}
 }
 
 function devqemu_arch
@@ -78,15 +88,39 @@ function devqemu_profile
     fi
 }
 
+function devqemu_binfmt
+{
+    if [ ${DEVQEMU_BINFMT} -eq 0 ]; then
+        DEVQEMU_BINFMT=1
+    else
+        DEVQEMU_BINFMT=0
+    fi
+
+    echo "DEVQEMU_BINFMT=${DEVQEMU_BINFMT}"
+}
+
+function devqemu_valgrind
+{
+    OLD_DEVQEMU_VALGRIND="${DEVQEMU_VALGRIND}"
+    if [[ -z "$@" ]]; then
+        unset DEVQEMU_VALGRIND
+        echo "Disabled valgrinding of qemu"
+    else
+        DEVQEMU_VALGRIND="$@"
+        echo "Using DEVQEMU_VALGRIND=${DEVQEMU_VALGRIND} (was ${OLD_DEVQEMU_VALGRIND})"
+    fi
+}
+
 function devqemu_log
 {
     OLD_QEMU_LOG=${QEMU_LOG}
     if [ -z "$@" ]; then
-        QEMU_LOG=unimp
+        unset QEMU_LOG
+        echo "Disabled QEMU_LOG"
     else
         QEMU_LOG=$@
+        echo "Set QEMU_LOG to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
     fi
-    echo "Set QEMU_LOG to ${QEMU_LOG} (were ${OLD_QEMU_LOG})"
 }
 
 function devqemu_logfile
@@ -117,13 +151,17 @@ function devqemu_rootfs
 {
     OLD_DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS}
     CURRENT_PWD=`pwd`
-    cd ${DEVQEMU_ROOTFS_ROOT}
-    DIRS=`compgen -d`
-    read -e -p "dir:" NEW_ROOTFS
-    DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS_ROOT}/${NEW_ROOTFS}
+    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
+        DEVQEMU_ROOTFS=${CURRENT_PWD}/${1%/}
+    else
+        cd ${DEVQEMU_ROOTFS_ROOT}
+        DIRS=`compgen -d`
+        read -e -p "dir:" NEW_ROOTFS
+        DEVQEMU_ROOTFS=${DEVQEMU_ROOTFS_ROOT}/${NEW_ROOTFS}
+        cd -
+    fi
     echo "Set rootfs to ${DEVQEMU_ROOTFS} (was ${OLD_DEVQEMU_ROOTFS})"
-    cd -
-}
+} 
 
 function do_bind_mount
 {
@@ -135,7 +173,9 @@ function do_bind_mount
             return
         fi
     done
+    sudo mkdir -p ${DST}
     sudo mount -o bind ${SRC} ${DST}
+    echo "Mounted ${SRC} to ${DST}"
 }
 
 
@@ -143,11 +183,28 @@ function devqemu_setup_mounts
 {
     # Useful host hooks
     do_bind_mount /home ${DEVQEMU_ROOTFS}/home
-    mkdir -p ${DEVQEMU_ROOTFS}/root/risu
     do_bind_mount /home/alex/lsrc/qemu/risu.git ${DEVQEMU_ROOTFS}/root/risu/
-    mkdir -p ${DEVQEMU_ROOTFS}/host-etc
     do_bind_mount /etc ${DEVQEMU_ROOTFS}/host-etc
 
+    # Multi-arch bits
+    do_bind_mount /lib/x86_64-linux-gnu ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
+    do_bind_mount /usr/lib/x86_64-linux-gnu ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
+
+    echo "Setting up ld-linux loaders"
+    sudo mkdir -p ${DEVQEMU_ROOTFS}/lib64
+    for link in /lib64/*; do
+        linkname=`basename $link`
+        linkpath=`readlink $link`
+        echo "linking ${DEVQEMU_ROOTFS}/lib64/$linkname to $linkpath"
+        sudo ln -s $linkpath ${DEVQEMU_ROOTFS}/lib64/$linkname
+    done
+
+    if [ -n "$DEVQEMU_VALGRIND" ]; then
+       echo "Copying valgrind"
+       mkdir -p ${DEVQEMU_ROOTFS}/usr/bin
+       cp /usr/bin/valgrind* ${DEVQEMU_ROOTFS}/usr/bin
+    fi
+    
     # Magic dirs
     do_bind_mount /proc ${DEVQEMU_ROOTFS}/proc
     do_bind_mount /dev ${DEVQEMU_ROOTFS}/dev
@@ -160,6 +217,10 @@ function devqemu_clear_mounts
     sudo umount ${DEVQEMU_ROOTFS}/home
     sudo umount ${DEVQEMU_ROOTFS}/root/risu/
     sudo umount ${DEVQEMU_ROOTFS}/host-etc
+
+    sudo umount ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
+    sudo umount ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
+    
     sudo umount ${DEVQEMU_ROOTFS}/proc
     sudo umount ${DEVQEMU_ROOTFS}/dev
     sudo umount ${DEVQEMU_ROOTFS}/dev/pts

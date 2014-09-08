@@ -23,6 +23,7 @@
 	chainreplyto = false
 	composeencoding = UTF-8
 	assume8bitEncoding = true
+	aliasfile = /home/alex/.mailrc
 [diff]
 	rename = true
 [gitreview]
