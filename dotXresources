@@ -1,21 +1,63 @@
 ! A start at a .Xresources
+! (the newer xrdb replacement for .Xdefaults: see http://superuser.com/questions/243914/xresources-or-xdefaults)
+! reload: xrdb ~/.Xresources
 
 ! URxvt Configuration
-! (nicked from ArchLinux)
-URxvt.buffered: true
-URxvt.background: black
-URxvt.foreground: white
-URxvt.cursorColor: green
-URxvt.underlineColor: yellow
-URxvt.font: xft:monospace:14:antialias=true
-URxvt.boldFont: xft:monospace:bold:14:antialias=true
-URxvt.perl-ext-common: default
-URxvt.scrollBar: false
+! Display tweaks
+URxvt*buffered: true
+URxvt*scrollBar: false
 ! Overridden by ps_xterm_f()
 URxvt.title: urxvt term
 
+! Fading shades the terminal down a bit when we lose focus
+URxvt*fading: 30
+
+! Font settings
+URxvt.font: xft:monospace:14:antialias=true
+URxvt.boldFont: xft:monospace:bold:14:antialias=true
+
+! apt-get install xfonts-terminus does not work
+! URxvt*font:  xft:terminus:pixelsize:12
+! URxvt*boldFont:  xft:terminus:bold:pixelsize:12
+
+! Colours
+URxvt*background:       #2E3436
+URxvt*foreground:       #888A85
+URxvt.cursorColor: green
+URxvt.underlineColor: yellow
+
+!black
+URxvt*color0:      #000000
+URxvt*color8:      #555753
+!red
+URxvt*color1:      #CC0000
+URxvt*color9:      #EF2929
+!green
+URxvt*color2:      #4E9A06
+URxvt*color10:     #8AE234
+!yellow
+URxvt*color3:      #C4A000
+URxvt*color11:     #FCE94F
+!blue
+URxvt*color4:      #3465A4
+URxvt*color12:     #729FCF
+!magenta
+URxvt*color5:      #75507B
+URxvt*color13:     #AD7FA8
+!cyan
+URxvt*color6:      #06989A
+URxvt*color14:     #34E2E2
+!white
+URxvt*color7:      #D3D7CF
+URxvt*color15:     #ECEDEE
+
+! for the benefit of manpages
+URxvt.colorIT:      #87af5f
+URxvt.colorBD:      #d7d7d7
+URxvt.colorUL:      #87afd7
+
 ! Clickable URLS
-URxvt.perl-ext-common : default,matcher
-URxvt.urlLauncher     : /usr/bin/xdg-open
+URxvt*perl-ext-common : default,matcher
+URxvt*url-launcher     : /usr/bin/xdg-open
 URxvt.matcher.button  : 1
 
