@@ -21,6 +21,9 @@ alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
 alias arm-pstate peter.maydell@linaro.org greg.bellows@linaro.org edgar.iglesias@xilinx.com
 
 # LKML and ARM
+alias kernel linux-kernel@vger.kernel.org linux-arm-kernel@lists.infradead.org
 alias kvmarm kvmarm@lists.cs.columbia.edu linux-arm-kernel@lists.infradead.org
 alias kvm kvm@vger.kernel.org
 
+# Buildroot patches
+alias buildroot buildroot@busybox.net
