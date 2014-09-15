@@ -2,6 +2,10 @@
 # Alex's .mailrc file
 #
 
+# Peter and Christoffer
+alias pm peter.maydell@linaro.org
+alias cdall christoffer.dall@linaro.org
+
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
 
@@ -24,6 +28,9 @@ alias arm-pstate peter.maydell@linaro.org greg.bellows@linaro.org edgar.iglesias
 alias kernel linux-kernel@vger.kernel.org linux-arm-kernel@lists.infradead.org
 alias kvmarm kvmarm@lists.cs.columbia.edu linux-arm-kernel@lists.infradead.org
 alias kvm kvm@vger.kernel.org
+
+# cc list for kvm debug api
+alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com marc.zyngier@arm.com bp@suse.de pbonzini@redhat.com
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net
