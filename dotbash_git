@@ -59,8 +59,11 @@ function ps_git_f() {
 cache_colour_scm=${cache_colour_m_orng}
 ps_scm="\[${cache_colour_scm}\]\$(ps_git_f)\[${cache_colour_end}\]"
 
-export PS1="\A ${ps_user}@\h/${ps_proc} [\W${ps_scm}] >"
+update_ps1 "\W$ps_scm"
 
+#
+# Report git log for a given file across all branches in the system
+#
 function git_branches_touching
 {
     local file=$1

@@ -38,74 +38,6 @@ if [ -f $HOME/.bashrc ]; then
     source $HOME/.bashrc
 fi
 
-
-#######################################################################
-# Terminal Setup 
-#
-# via http://github.com/ciaranm/dotfiles-ciaranm/tree/master/bashrc
-#
-# The Apple Terminal doesn't seem to handle 256 colours very well so we
-# limit it to a 16 colour display
-#######################################################################
-
-case "${TERM}" in
-    xterm*)
-#        export TERM=xterm-256color
-	case "${TERM_PROGRAM}" in
-	    Apple_Terminal)
-		cache_term_colours=16
-		;;
-	    *)
-		cache_term_colours=256
-		;;
-	esac
-        ;;
-    screen)
-        cache_term_colours=256
-        ;;
-    dumb)
-        cache_term_colours=2
-        ;;
-    *)
-        cache_term_colours=16
-        ;;
-esac
- 
-case "${cache_term_colours}" in
-    256)
-        cache_colour_l_blue='\033[38;5;33m'
-        cache_colour_d_blue='\033[38;5;21m'
-        cache_colour_m_purp='\033[38;5;69m'
-        cache_colour_l_yell='\033[38;5;229m'
-        cache_colour_m_yell='\033[38;5;227m'
-        cache_colour_m_gren='\033[38;5;35m'
-        cache_colour_m_grey='\033[38;5;245m'
-        cache_colour_m_orng='\033[38;5;208m'
-        cache_colour_l_pink='\033[38;5;206m'
-        cache_colour_m_teal='\033[38;5;38m'
-        cache_colour_m_brwn='\033[38;5;130m'
-        cache_colour_m_red='\033[38;5;196m'
-        cache_colour_end='\033[0;0m'
-        ;;
-    16)
-        cache_colour_l_blue='\033[1;34m'
-        cache_colour_d_blue='\033[0;32m'
-        cache_colour_m_purp='\033[0;35m'
-        cache_colour_l_yell='\033[1;33m'
-        cache_colour_m_yell='\033[0;33m'
-        cache_colour_m_gren='\033[0;32m'
-        cache_colour_m_grey='\033[0;37m'
-        cache_colour_m_orng='\033[1;31m'
-        cache_colour_l_pink='\033[1;35m'
-        cache_colour_m_teal='\033[0;36m'
-        cache_colour_m_brwn='\033[0;31m'
-        cache_colour_end='\033[0;0m'
-        ;;
-    *)
-        eval unset ${!cache_colour_*}
-        ;;
-esac
-
 #############
 # Aliases
 #############
@@ -434,46 +366,6 @@ if [[ -f $SURFRAW ]]; then
 fi
 
 ########################
-# PS Setup
-########################
-
-
-# Hangover from the Transitive days, but I do like seeing my processor
-PROC=`uname -m`
-if [ "$PROC" == "unknown" ]; then
-  PROC=`uname -m`
-fi
-ps_proc="\[${cache_colour_m_purp}\]$PROC\[${cache_colour_end}\]"
-
-if [[ `whoami` == "root" ]]; then
-  ps_user="\[${cache_colour_m_red}\]\u\[${cache_colour_end}\]"
-else
-  ps_user="\u"
-fi
-
-
-# Setup the prompt to show who I am and on what machine, what processor and my SCM state
-export PS1="\A ${ps_user}@\h/${ps_proc} [\W] >"
-
-# We want to extract the screen session name (if it exisits) from STY
-function ps_xterm_f()
-{
-    session_name=${STY/*./}
-    if [ $session_name ]; then
-	session_name="${session_name}@`hostname`"
-    else
-	session_name="`pwd`@`hostname`"
-    fi
-    echo -n -e "\e]2;${session_name}\a"
-}
-
-if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
-    # We can't add this to PROMPT_COMMAND as it would break on child shells which
-    # don't inherit the parent functions, just call it now
-    ps_xterm_f
-fi
-
-########################
 # Miscelaneous Stuff
 ########################
 # I want core-dumps dammit
@@ -500,6 +392,7 @@ function load_extra_module()
 if [ "$SHELL" == "/bin/sh" ]; then
     echo "Executing $SHELL under minmal environment"
 else
+    load_extra_module ps1 true
     load_extra_module tmux tmux
     load_extra_module emacs emacs
     load_extra_module git git
