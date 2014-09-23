@@ -45,8 +45,8 @@ if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
     fi
 else
     KEYSMSG="existing ssh"
-    keychain -q ${KEY_OPTS} --agents ssh --inherit any
     if [[ -x ${KEYCHAIN} ]]; then
+        eval `keychain -q ${KEY_OPTS} --agents ssh --inherit any --eval`
         eval `keychain -q ${KEY_OPTS} --agents gpg --eval`
         if [[ "${GPG_AGENT_INFO}" ]]; then
 	    KEYSMSG+=" keychain gpg"
