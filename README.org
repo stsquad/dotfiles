@@ -1,0 +1,13 @@
+Like many Unix hackers who move around from machine to machine I often
+found I spent a lot of time messing around setting up my environment.
+Eventually I moved all my dotfiles into version control and scripted
+up some quick set-up instructions.
+
+* Bootstrapping
+This basically runs un-trusted shell script from the internet. You
+shouldn't do it unless you are confident it won't hose your system. I
+offer no such guarantees ;-)
+#+name: How to bootstrap my set-up
+#+begin_src sh 
+wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
+#+end_src
