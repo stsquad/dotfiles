@@ -92,4 +92,16 @@ do
     fi
 done
 
+#
+# We also might want slightly different setups for user profiles
+#
+mkdir -p $HOME/bin
+cd bin
+for file in *
+do
+    if [ -e "$file" ] ; then
+        link_dotfile $file $HOME/bin/$file
+    fi
+done
+cd -
 
