@@ -100,7 +100,7 @@ cd bin
 for file in *
 do
     if [ -e "$file" ] ; then
-        link_dotfile $file $HOME/bin/$file
+        link_dotfile $file $HOME/bin/${file%%.sh}
     fi
 done
 cd -
