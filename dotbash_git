@@ -59,16 +59,18 @@ function ps_git_f() {
 cache_colour_scm=${cache_colour_m_orng}
 ps_scm="\[${cache_colour_scm}\]\$(ps_git_f)\[${cache_colour_end}\]"
 
-export PS1="\A ${ps_user}@\h/${ps_proc} [\W${ps_scm}] >"
+update_ps1 "\W$ps_scm"
 
+#
+# Report git log for a given file across all branches in the system
+# See: http://stackoverflow.com/questions/25135102/finding-an-old-patch-in-one-of-many-git-topic-branches
+#
 function git_branches_touching
 {
-    local file=$1
-    local branches=()
-    eval "$(git for-each-ref --shell --format='branches+=(%(refname))' refs/heads/)"
-    for branch in "${branches[@]}"; do
-        echo "Checking $branch"
-        git log origin/master..$branch -- $file
+    local hashes="`git log --format=format:"%H" --branches ^origin/master -- ${1}`"
+    for h in ${hashes}; do
+        local branches=`git branch --contains $h`
+        git log --oneline --format=format:"%C(auto)%h (%Cgreen${branches##  }%Creset, %cr) %s" $h^..$h
     done
 }
 

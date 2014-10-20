@@ -1,0 +1,39 @@
+Like many Unix hackers who move around from machine to machine I often
+found I spent a lot of time messing around setting up my environment.
+Eventually I moved all my dotfiles into version control and scripted
+up some quick set-up instructions.
+
+* Bootstrapping
+This basically runs un-trusted shell script from the internet. You
+shouldn't do it unless you are confident it won't hose your system. I
+offer no such guarantees ;-)
+#+name: How to bootstrap my set-up
+#+begin_src sh 
+wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
+#+end_src
+* Layout
+This repository contains "dotfiles" for bash and a whole bunch of
+other bits and pieces. The script [[file:setup_dotfiles.sh][setup_dotfiles.sh]] will symlink all
+the files in their correct place. Currently if you add new files it
+needs to be re-run.
+** Bash files
+Each "dotbash_${FEATURE}" file is translated to ~/.bash_${FEATURE}.
+The main [[file:dotbash_profile][.bash_profile]] code runs some basic tests to see if it's worth
+loading the snippet:
+#+name: Example feature check for loading dotbash_keys
+#+begin_src sh 
+load_extra_module keys ssh-agent gpg-agent keychain
+#+end_src
+** ~/.config
+Files in [[file:dotconfig/][dotconfig]] are treated the same although the sub-directory is
+created for them by the setup script.
+** Per-user or machine files
+Sometimes you want to only have certain setups for different users or
+machines. This is dealt with by pre-pending the dotfile with ${USER} or
+${HOSTNAME}. Currently dotconfig directories are not supported.
+* TODO Things I want to fixup one day [0/2]
+** TODO Make .bash_profile search the repository
+There is no reason the sub-modules couldn't be kept in a directory in
+the repository to avoid cluttering up ~
+** TODO Make the dotfiles work with zsh
+In theory it should be compatible, I need to try this out.
