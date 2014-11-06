@@ -4,8 +4,9 @@
 #
 # tmux configuration
 
-TMUX_SESSION_COUNT=`tmux list-sessions 2> /dev/null | wc -l`
-TMUX_SESSION_NAMES=`tmux ls | cut -d ':' -f 1 | sed ':a;N;$!ba;s/\n/ /g'`
+# we supress TMUX to work nicely with TMATE
+TMUX_SESSION_COUNT=`TMUX="" tmux list-sessions 2> /dev/null | wc -l`
+TMUX_SESSION_NAMES=`TMUX="" tmux ls | cut -d ':' -f 1 | sed ':a;N;$!ba;s/\n/ /g'`
 
 # Stop C-s triggering flow control
 stty -ixon
@@ -67,7 +68,11 @@ function tmux_push_to_end
 function tmux_attach_or_new
 {
     session=$1
-    tmux attach -d -t ${session} || tmux new -s ${session}
+    if [[ $TMUX == *tmate* ]]; then
+        TMUX="" tmux attach -d -t ${session}
+    else
+        tmux attach -d -t ${session} || tmux new -s ${session}
+    fi
 }
 
 alias tn="tmux_attach_or_new "
