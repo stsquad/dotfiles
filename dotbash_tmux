@@ -91,6 +91,19 @@ function tmux_sync_env
 }
 alias se="tmux_sync_env"
 
-alias .tmux=". ~/.bash_tmux && tmux source-file ~/.tmux.conf"
-echo "loading .bash_tmux ($TMUX_SESSION_COUNT sessions - $TMUX_SESSION_NAMES)"
+if [[ $TMUX == *tmate* ]]; then
+    TMATE_MSG="inside TMATE"
+    function tmate_session
+    {
+        tmate show-messages | grep "Remote session:"
+    }
+    function tmate_ro_session
+    {
+        clear
+        tmate show-messages | grep "Remote session read only:"
+    }
+fi
+
+alias .tmux=". ~/.bash_tmux && TMUX="" tmux source-file ~/.tmux.conf 2> /dev/null"
+echo "loading .bash_tmux ($TMUX_SESSION_COUNT sessions - $TMUX_SESSION_NAMES) $TMATE_MSG"
 export USING_TMUX=1
