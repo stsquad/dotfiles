@@ -120,6 +120,17 @@ if [[ "$TERM" == "xterm" || "$TERM" == "screen" ]]; then
 fi
 
 #
+# Return a summary string which indicates if any import build affecting variables are set
+#
+function ps_important_env()
+{
+    extra=""
+    [ ! -z "$ARCH" ] && extra="${extra}A"
+    [ ! -z "$CROSS_COMPILE" ] && extra="${extra}C"
+    [ ! -z "extra" ] && echo "$extra"
+}
+
+#
 # Update the PS1, with optional tail end
 #
 function update_ps1()
@@ -130,12 +141,12 @@ function update_ps1()
         final="\W"
     fi
 
-    if [[ "$TERM" == "vt100" || "$TERM" == "vt102" ]]; then
+    if [[ "$TERM" == "dumb" || "$TERM" == "vt100" || "$TERM" == "vt102" ]]; then
         # Dumb serial line, don't confuse LAVA
         export PS1="${ps_user}@\h:\w\$"
     else
         # Setup the prompt to show who I am and on what machine, what processor and my SCM state
-        export PS1="\A ${ps_user}@\h/${ps_proc} [$final] >"
+        export PS1="\A ${ps_user}@\h/${ps_proc} \`ps_important_env\` [$final] >"
     fi
 }
 

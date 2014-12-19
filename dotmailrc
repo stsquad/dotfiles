@@ -5,9 +5,12 @@
 # Peter and Christoffer
 alias pm peter.maydell@linaro.org
 alias cdall christoffer.dall@linaro.org
+alias agraf agraf@suse.de
+alias maz marc.zyngier@arm.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
+alias qemu-trivial qemu-trivial@nongnu.org
 
 # Linaro patch work
 alias patches patches@linaro.org
@@ -25,12 +28,14 @@ alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
 alias arm-pstate peter.maydell@linaro.org greg.bellows@linaro.org edgar.iglesias@xilinx.com
 
 # LKML and ARM
-alias kernel linux-kernel@vger.kernel.org linux-arm-kernel@lists.infradead.org
-alias kvmarm kvmarm@lists.cs.columbia.edu linux-arm-kernel@lists.infradead.org
+alias kernel linux-kernel@vger.kernel.org
+alias kernelarm linux-arm-kernel@lists.infradead.org
 alias kvm kvm@vger.kernel.org
+alias kvmarm kvm kernelarm kvmarm@lists.cs.columbia.edu cdall maz
 
 # cc list for kvm debug api
-alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com marc.zyngier@arm.com bp@suse.de pbonzini@redhat.com
+alias kvm-debug kvmarm pm agraf drjones@redhat.com pbonzini@redhat.com 
+alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com bp@suse.de 
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net

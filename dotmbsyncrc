@@ -12,9 +12,7 @@ IMAPAccount personal
         Port 1430
         User alex
         PassCmd "pass personal"
-        UseTLSv1 no
-        RequireSSL no
-        UseIMAPS no
+        SSLType none
 
 IMAPStore personal-imap
         Account personal
@@ -31,12 +29,15 @@ Channel personal-sync
         Create Slave
         SyncState *
 
+#
+# Linaro accounts
+#
 IMAPAccount linaro
         Host imap.gmail.com
         User alex.bennee@linaro.org
         PassCmd "pass linaro"
         # Use SSL
-        UseIMAPS yes
+        SSLType IMAPS
         CertificateFile /etc/ssl/certs/ca-certificates.crt
 
 IMAPStore linaro-gmail
@@ -46,21 +47,48 @@ MaildirStore linaro-local
 	Path	~/Maildir/linaro/
 	Inbox	~/Maildir/linaro/Inbox
 
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
 Channel linaro-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-# Exclude everything under the internal [Gmail] folder, except the interesting folders
         Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
-# Save the synchronization state files in the relevant directory
         SyncState *
 
+# A minimal inbox/mythreads sync for when time/diskspace it tight
+Channel linaro-inbox-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns !* INBOX/* !INBOX/Spam mythreads team "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Create Both
+        SyncState *
+
+# Exclude everything apart from kernel related stuff
+Channel linaro-kernel-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns !* kernel*
+        Create Both
+        SyncState *
+
+# Exclude everything apart from virtualization related stuff
+Channel linaro-virt-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns !* virtualization*
+        Create Both
+        SyncState *
+
+
+#
+# Developer Archive - no longer recieving email
+#
 IMAPAccount developer
         Host imap.gmail.com
         User developer@alexandfliss.com
         PassCmd "pass developer"
         # Use SSL
-        UseIMAPS yes
+        SSLType IMAPS
         CertificateFile /etc/ssl/certs/ca-certificates.crt
             
 IMAPStore developer-gmail

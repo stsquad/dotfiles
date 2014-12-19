@@ -20,41 +20,45 @@ URxvt.boldFont: xft:monospace:bold:14:antialias=true
 ! URxvt*font:  xft:terminus:pixelsize:12
 ! URxvt*boldFont:  xft:terminus:bold:pixelsize:12
 
-! Colours
-URxvt*background:       #2E3436
-URxvt*foreground:       #888A85
-URxvt.cursorColor: green
-URxvt.underlineColor: yellow
+! Terminal Colour theme
+! This is a Tangoesque scheme using wildcards to hopefully work
+! with other terminal programs.
 
-!black
-URxvt*color0:      #000000
-URxvt*color8:      #555753
-!red
-URxvt*color1:      #CC0000
-URxvt*color9:      #EF2929
-!green
-URxvt*color2:      #4E9A06
-URxvt*color10:     #8AE234
-!yellow
-URxvt*color3:      #C4A000
-URxvt*color11:     #FCE94F
-!blue
-URxvt*color4:      #3465A4
-URxvt*color12:     #729FCF
-!magenta
-URxvt*color5:      #75507B
-URxvt*color13:     #AD7FA8
-!cyan
-URxvt*color6:      #06989A
-URxvt*color14:     #34E2E2
-!white
-URxvt*color7:      #D3D7CF
-URxvt*color15:     #ECEDEE
+*background: #111111
+*foreground: #babdb6
+! Black (not tango) + DarkGrey
+*color0:  #000000
+*color8:  #555753
+! DarkRed + Red
+*color1:  #ff6565
+*color9:  #ff8d8d
+! DarkGreen + Green
+*color2:  #93d44f
+*color10: #c8e7a8
+! DarkYellow + Yellow
+*color3:  #eab93d
+*color11: #ffc123
+! DarkBlue + Blue
+*color4:  #204a87
+*color12: #3465a4
+! DarkMagenta + Magenta
+*color5:  #ce5c00
+*color13: #f57900
+!DarkCyan + Cyan (both not tango)
+*color6:  #89b6e2
+*color14: #46a4ff
+! LightGrey + White
+*color7:  #cccccc
+*color15: #ffffff
 
 ! for the benefit of manpages
 URxvt.colorIT:      #87af5f
 URxvt.colorBD:      #d7d7d7
 URxvt.colorUL:      #87afd7
+
+! additional URxvt specific
+URxvt.cursorColor: green
+URxvt.underlineColor: yellow
 
 ! Clickable URLS
 URxvt*perl-ext-common : default,matcher
