@@ -3,20 +3,6 @@
 # Specific Setups for Danny
 #
 
-
-function leftMonitorOn
-{
-    xrandr --output VGA --auto --left-of TMDS-1
-    gconftool-2 --set  /apps/panel/toplevels/bottom_panel_screen0/monitor --type int 1
-    gconftool-2 --set  /apps/panel/toplevels/top_panel_screen0/monitor --type int 1
-}
-
-function leftMonitorOff
-{
-    xrandr --output VGA --off
-}
-
-
 #
 # Sync IPOD
 #
@@ -36,9 +22,21 @@ function sync_torrents
 }
 
 #
+# Push files to NAS
+#
+function copy_to_nas
+{
+    scp $* admin@nas:/volume1/video/
+}
+
+#
 # Rockbox compiler
 #
 export PATH=$PATH:/home/alex/src/rockbox/tools/bin
 
 # Backchannel
 alias start_backchan="autossh -2 -fN -M 0 -R 10000:localhost:22 alex@bennee.com"
+
+# Reload
+alias .danny=". ~/.bash_danny"
+
