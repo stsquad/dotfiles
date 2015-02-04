@@ -2,12 +2,14 @@
 #
 # GIT Specific hacks
 #
+GIT_MSG=""
 
 #
 # GIT Stuff
 #
 export GIT_AUTHOR_NAME="Alex Bennée"
-export GIT_AUTHOR_EMAIL="alex@bennee.com" # over-ride with .bash_${host} for work
+: ${GIT_AUTHOR_EMAIL:="alex@bennee.com"}
+export GIT_AUTHOR_EMAIL # over-ride with .bash_${host} for work
 export GIT_COMMITTER_NAME="Alex Bennée"
 
 # Until I retrain my brain
@@ -17,7 +19,7 @@ alias git-log='git log'
 alias git-push='git push'
 alias git-grep='git grep'
 
-# PS function, currently unused due to performance
+# PS function
 function ps_git_f() {
     local s=
     local d=$(git rev-parse --git-dir 2>/dev/null ) b= r= a= c=
@@ -47,7 +49,7 @@ function ps_git_f() {
             r=""
             b=$(git symbolic-ref HEAD 2>/dev/null )
         fi
-        
+
         b=${b#refs/heads/}
         b=${b// }
         [[ -n "${b}" ]] && c="$(git config "branch.${b}.remote" 2>/dev/null )"
@@ -74,14 +76,17 @@ function git_branches_touching
     done
 }
 
-function git_find_old_remotes
-{
-    local remote=$1
-    
-    echo "TO DO"
-}
-
+#
+# Do we want completion?
+#
+GIT_SRC=$(find_directories "${HOME}/src/git.git")
+if [[ -f "${GIT_SRC}/contrib/completion/git-completion.bash" ]]; then
+    GIT_MSG="git.git completions"
+    source ${GIT_SRC}/contrib/completion/git-completion.bash
+fi
 # lets not get fancy for now
 #echo "\$BASH_SOURCE ${BASH_SOURCE[@]}"
 alias .git=". ~/.bash_git"
-
+if [[ ! -z $GIT_MSG ]]; then
+    echo "loading .bash_git (Using: $GIT_MSG)"
+fi
