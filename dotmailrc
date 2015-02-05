@@ -4,7 +4,10 @@
 
 # Peter and Christoffer
 alias pm peter.maydell@linaro.org
+alias pm215 peter.maydell@linaro.org
 alias cdall christoffer.dall@linaro.org
+alias chazy christoffer.dall@linaro.org
+alias greg greg.bellows@linaro.org
 alias agraf agraf@suse.de
 alias maz marc.zyngier@arm.com
 
@@ -24,8 +27,16 @@ alias suse-a64 agraf@suse.de matz@suse.de
 # QEMU tracing people
 alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
 
+# QEMU binfmt
+# Mike Frysinger <vapier@gentoo.org>
+#
+alias qemu-binfmt vapier@gentoo.org eblake@redhat.com afaerber@suse.de laurent@vivier.eu
+
 # Process state
 alias arm-pstate peter.maydell@linaro.org greg.bellows@linaro.org edgar.iglesias@xilinx.com
+
+# Android hackers
+alias test1 peter.maydell@linaro.org greg.bellows@linaro.org christoffer.dall@linaro.org
 
 # LKML and ARM
 alias kernel linux-kernel@vger.kernel.org
