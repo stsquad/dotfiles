@@ -116,8 +116,10 @@ bindsym $mod+Shift+9 move container to workspace number 9
 # Move to primary output:
 
 # Move the current workspace to the next output
-bindsym $mod+p move container to output HDMI1
-bindsym $mod+Shift+p move workspace to output HDMI1
+# anoyingly it's HDMI2 on dannym HDMI1 at work
+# but $mod+shift+right works
+bindsym $mod+p move container to output HDMI2
+bindsym $mod+Shift+p move workspace to output HDMI2
 bindsym $mod+s move container to output VGA1
 bindsym $mod+Shift+s move workspace to output VGA1
 

@@ -9,6 +9,8 @@
 export XDG_CACHE_HOME=/tmp/$USER/cache
 mkdir -p $XDG_CACHE_HOME
 
+xrdb -merge ~/.Xresources
+
 # debug
 echo ".xession has run" > ~/tmp/xsession-run
 env >> ~/tmp/xsession-run
