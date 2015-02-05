@@ -161,7 +161,8 @@ export CVSEDITOR=ec
 shopt -s histappend
 
 export HISTCONTROL=ignoredups:erasedups
-export HISTIGNORE="rm *"
+#export HISTIGNORE="rm *"
+export HISTIGNORE="&:rm *ls:[bf]g:exit"
 export HISTSIZE=100000
 export HISTFILESIZE=${HISTSIZE}
 
@@ -315,7 +316,7 @@ function add_to_world
 	then
 	    CURRENT_WORLD_ROOT=`pwd`
 	else
-	    CURRENT_WORLD_ROOT=$1
+	    CURRENT_WORLD_ROOT=`realpath $1`
 	fi
     else
 	CURRENT_WORLD_ROOT=`pwd`
@@ -341,7 +342,9 @@ function add_to_world
 	    RET=0
 	fi
     else
-	RET=1
+        echo "Just adding $CURRENT_WORLD_ROOT to PATH"
+        export PATH=$CURRENT_WORLD_ROOT:$PATH
+	RET=0
     fi
 
     return $RET
