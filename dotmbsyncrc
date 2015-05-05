@@ -71,6 +71,7 @@ Channel linaro-kernel-sync
         Create Both
         SyncState *
 
+
 # Exclude everything apart from virtualization related stuff
 Channel linaro-virt-sync
 	Master	:linaro-gmail:
@@ -79,6 +80,12 @@ Channel linaro-virt-sync
         Create Both
         SyncState *
 
+Channel linaro-kvmarm-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns !* virtualization/kvm-arm
+        Create Both
+        SyncState *
 
 #
 # Developer Archive - no longer recieving email
