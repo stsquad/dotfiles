@@ -10,7 +10,7 @@
 [alias]
 	cp = cherry-pick
 	dfw = diff --ignore-space-change
-	pps = format-patch --cover-letter --summary
+	pps = format-patch --stat --cover-letter --summary
 [credential]
 	helper = cache --timeout=3600
 [color]
