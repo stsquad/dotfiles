@@ -34,8 +34,19 @@ if [ -f /etc/bash.bashrc ]; then
     source /etc/bash.bashrc
 fi
 
-if [ -f $HOME/.bashrc ]; then
-    source $HOME/.bashrc
+#
+# Calculate the root directory of this script
+#
+THIS_SCRIPT="${BASH_SOURCE[0]}"
+while [ -h "$THIS_SCRIPT" ]; do
+    DIR="$( cd -P "$( dirname "$THIS_SCRIPT" )" && pwd )"
+    THIS_SCRIPT="$(readlink "$THIS_SCRIPT")"
+    [[ $THIS_SCRIPT != /* ]] && THIS_SCRIPT="$DIR/$THIS_SCRIPT"
+done
+DOTFILES_DIR=$( cd -P "$( dirname "$THIS_SCRIPT" )" && pwd)
+
+if [ -f $DOTFILES_DIR/dotbashrc ]; then
+    source $DOTFILES_DIR/dotbashrc
 fi
 
 #############
@@ -161,7 +172,8 @@ export CVSEDITOR=ec
 shopt -s histappend
 
 export HISTCONTROL=ignoredups:erasedups
-export HISTIGNORE="rm *"
+#export HISTIGNORE="rm *"
+export HISTIGNORE="&:rm *ls:[bf]g:exit"
 export HISTSIZE=100000
 export HISTFILESIZE=${HISTSIZE}
 
@@ -315,7 +327,7 @@ function add_to_world
 	then
 	    CURRENT_WORLD_ROOT=`pwd`
 	else
-	    CURRENT_WORLD_ROOT=$1
+	    CURRENT_WORLD_ROOT=`realpath $1`
 	fi
     else
 	CURRENT_WORLD_ROOT=`pwd`
@@ -341,7 +353,9 @@ function add_to_world
 	    RET=0
 	fi
     else
-	RET=1
+        echo "Just adding $CURRENT_WORLD_ROOT to PATH"
+        export PATH=$CURRENT_WORLD_ROOT:$PATH
+	RET=0
     fi
 
     return $RET
@@ -381,7 +395,7 @@ function load_extra_module()
     shift
 
     find_exes=$(find_alternatives $*)
-    module_path=${HOME}/.bash_${module}
+    module_path=${DOTFILES_DIR}/dotbash_${module}
     if [[ -f $find_exes && -f $module_path ]]; then
         source $module_path
         LOADED_MODULES="$LOADED_MODULES $module"
