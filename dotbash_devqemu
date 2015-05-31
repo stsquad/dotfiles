@@ -22,7 +22,7 @@ DEVQEMU_PROFILE=""
 DEVQEMU_VALGRIND=""
 DEVQEMU_BINFMT=0
 
-: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/debian-sid}
+: ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/debian-unstable.arm64}
 
 # Actual QEMU Environment Variables
 # you need to ensure sudo is configured to allow them through
@@ -33,11 +33,11 @@ DEVQEMU_BINFMT=0
 
 function devqemu_run
 {
-    echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
-    mkdir -p ${DEVQEMU_ROOTFS}/bin
-    sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
     if [ ${DEVQEMU_BINFMT} -eq 0 ]; then
         CMD="/bin/${DEVQEMU_BIN}"
+        echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
+        mkdir -p ${DEVQEMU_ROOTFS}/bin
+        sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
     else
         CMD=$1
         shift
@@ -79,7 +79,7 @@ function devqemu_arch
 function devqemu_profile
 {
     OLD_DEVQEMU_PROFILE=${DEVQEMU_PROFILE}
-    if [ -z "$@" ]; then
+    if [[ -z "$@" ]]; then
         unset DEVQEMU_PROFILE
         echo "Disabled profiling of qemu"
     else
@@ -176,6 +176,21 @@ function do_bind_mount
     sudo mkdir -p ${DST}
     sudo mount -o bind ${SRC} ${DST}
     echo "Mounted ${SRC} to ${DST}"
+}
+
+# Helper function to bind system dirs to a rootfs, also useful for general chroot stuff
+function devqemu_bind_system
+{
+    local chroot=$1
+    if [ -d $chroot ]; then
+        # Kernel pseudo filesystems
+        do_bind_mount /proc ${chroot}/proc
+        do_bind_mount /sys ${chroot}/sys
+        do_bind_mount /dev ${chroot}/dev
+        do_bind_mount /dev/pts ${chroot}/dev/pts
+    else
+        echo "need to specify a rootfs"
+    fi
 }
 
 
