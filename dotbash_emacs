@@ -14,7 +14,6 @@
 
 # I don't want to bring up daemons on every machine
 
-START_DAEMON=1
 EMACS_DAEMON=0
 machine=`hostname`
 
@@ -43,7 +42,6 @@ if [[ -d "$COMPILED_EMACS_PATH" && -e "$COMPILED_EMACS_PATH/install/bin/emacs" ]
     if [[ "$?" == "1" || "$?" == "0" ]]; then
 	# add_to_world from main bash profile
 	add_to_world $COMPILED_EMACS_PATH
-	START_DAEMON=0
     fi
 fi
 
@@ -52,25 +50,29 @@ if [[ "${EMACS_DAEMON}" -gt 0 ]]; then
     # Can we use muti-tty?
 	emacsclient --help 2>&1 | grep "\-\-tty" > /dev/null
 	if [[ "$?" == "0" ]]; then
-        # Thats a yes
+            # Thats a yes
 	    EMACS_CMD="emacsclient"
 	    EMACS_ARGS="-a '' -t"
+            REPORT="with multi-tty"
 	else
-        # Hmmm, opening in another pane would be a pain?
+            # Hmmm, opening in another pane would be a pain?
             EMACS_CMD="emacs"
 	    EMACS_ARGS="-nw"
+            REPORT="standalone"
 	fi
     else
-    # otherwise open a new frame
+        # otherwise open a new frame
 	EMACS_CMD="emacsclient"
 	EMACS_ARGS="-a '' -c"
-    # No wait only makes sense for interactive, GUI frame sessions
+        # No wait only makes sense for interactive, GUI frame sessions
 	EMACS_NW="-n"
+        REPORT="with X"
     fi
     alias ect="emacsclient -a '' -t"
 else
     EMACS_CMD="emacs"
     EMACS_ARGS="-nw"
+    REPORT="standalone"
 fi
 
 # Set the environment variables for the editors, remember that programs like
@@ -81,36 +83,6 @@ export ALTERNATE_EDITOR=emacs
 
 # shortcut
 alias ec="${EMACS_CMD} ${EMACS_NW} ${EMACS_ARGS}"
-
-# And finally lets get the status of the emacs server, this is a little racy
-# but better than it was before...
-if [[ "${EMACS_DAEMON}" -gt 0 ]]; then
-    EMACS_PROCS=`ps -u $USER -o time,command | grep "emacs"`
-    RUNNING=`echo $EMACS_PROCS | wc -l`
-    if [ "$RUNNING" == "0" ]; then
- 	if [[ "${START_DAEMON}" -gt 0 ]]; then
-		DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
-	else
-		DT="Not checked"
-	fi
-    else
-        # Check if emacs --daemon has already been invoked...
-	DAEMON=`echo $EMACS_PROCS | grep -c "\-\-daemon"`
- 	if [[ "${START_DAEMON}" -gt 0 ]]; then
-	    if [ "$DAEMON" == "0" ]; then
-		DT=`emacsclient -a '' -e "(server-running-p)" 2> /dev/null`
-	    else
-                # Otherwise don't spawn a new one if you can't connect
-	        DT=`emacsclient -a '/bin/false' -e "(server-running-p)" 2> /dev/null`
-	    fi
-	else
-	    DT="Not checked (b)"
-	fi
-    fi
-    REPORT="server-running-p=${DT}"
-else
-    REPORT="not spawned a daemon"
-fi
 
 #
 # If I've been using a screen session while physically next to
@@ -221,10 +193,9 @@ cdtp() {
 }
 
 if [ ! -d ~/.emacs.d/elpa ]; then
-    REPORT="no packages"
+    REPORT="$REPORT (no packages)"
     alias bootstrap_emacs="emacs -q --batch -l ~/.emacs.d/my-elisp/my-package.el -f my-packages-reset"
 fi
 
 alias .emacs=". ~/.bash_emacs"
-echo "loading .bash_emacs (Using: `which $EMACS_CMD` and $REPORT $KEYMAPS)"
-
+echo "loading .bash_emacs (Using: `which $EMACS_CMD` $REPORT $KEYMAPS)"
