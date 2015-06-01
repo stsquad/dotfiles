@@ -143,7 +143,7 @@ function update_ps1()
 
     if [[ "$TERM" == "dumb" || "$TERM" == "vt100" || "$TERM" == "vt102" ]]; then
         # Dumb serial line, don't confuse LAVA
-        export PS1="${ps_user}@\h:\w\$ "
+        export PS1="${ps_user}@\h:\w\\$ "
     else
         # Setup the prompt to show who I am and on what machine, what processor and my SCM state
         export PS1="\A ${ps_user}@\h/${ps_proc} \`ps_important_env\` [$final] >"
