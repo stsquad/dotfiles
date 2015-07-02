@@ -10,6 +10,7 @@ alias chazy christoffer.dall@linaro.org
 alias greg greg.bellows@linaro.org
 alias agraf agraf@suse.de
 alias maz marc.zyngier@arm.com
+alias drew drjones@redhat.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
