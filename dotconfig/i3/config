@@ -49,6 +49,9 @@ bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
+# focus the parent container
+bindsym $mod+Home focus parent
+
 # Move window
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
@@ -78,8 +81,6 @@ bindsym $mod+minus scratchpad show
 bindsym $mod+XF86HomePage scratchpad show
 bindsym $mod+XF86Calculator scratchpad show
 
-# focus the parent container
-bindsym $mod+Home focus parent
 
 # focus the child container
 #bindcode $mod+d focus child

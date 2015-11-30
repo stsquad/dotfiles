@@ -9,6 +9,17 @@ URxvt*scrollBar: false
 ! Overridden by ps_xterm_f()
 URxvt.title: urxvt term
 
+! Keyboard Remapping
+! For some reason the urxvt defaults for Home/End get squashed so
+! I reset them here.
+URxvt.keysym.Home:          \033[1~
+URxvt.keysym.End:           \033[4~
+
+! Clickable URLS
+URxvt*perl-ext-common : default,matcher
+URxvt*url-launcher     : /usr/bin/xdg-open
+URxvt.matcher.button  : 1
+
 ! Fading shades the terminal down a bit when we lose focus
 URxvt*fading: 30
 
@@ -60,8 +71,4 @@ URxvt.colorUL:      #87afd7
 URxvt.cursorColor: green
 URxvt.underlineColor: yellow
 
-! Clickable URLS
-URxvt*perl-ext-common : default,matcher
-URxvt*url-launcher     : /usr/bin/xdg-open
-URxvt.matcher.button  : 1
 
