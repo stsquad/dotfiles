@@ -1,0 +1,198 @@
+#!/bin/bash
+#
+# PATH manipulations
+#
+# This was getting hairy enough it was worth splitting out into its own fragement.
+#
+# I like to quickly setup my local LD_LIBRARY_PATH and PATH for
+# non-root installs and testing. This will break if you attempt to do
+# things like suid in code your testing as LD_LIBRARY_PATH isn't
+# usually exported to suid binaries for obvious security reasons.
+#
+
+# Save the PATH/LD_LIBRARY_PATH
+: ${ORIG_PATH:=${PATH}}
+: ${ORIG_LD_PATH:=${LD_LIBRARY_PATH}}
+export ORIG_PATH
+export ORIG_LD_PATH
+
+function clear_world
+{
+    export PATH=$ORIG_PATH
+    export LD_LIBRARY_PATH=$ORIG_LD_PATH
+    echo "Reset to"
+    echo "PATH=$PATH"
+    echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+}
+
+alias cw="clear_world"
+
+# Add a ../install world into our path, overwriting any PATH/LD_LIBRARY_PATH fiddles
+function switch_world
+{
+    # Save the old state
+    OLD_WORLD_ROOT=$CURRENT_WORLD_ROOT
+    OLD_WORLD_BIN=$CURRENT_WORLD_BIN
+    OLD_WORLD_LIB=$CURRENT_WORLD_LIB
+    OLD_WORLD_SRC=$CURRENT_WORLD_SRC
+
+    if [ "$1" ]
+    then
+	# Reset
+	if [ "$1" = "-" ]
+	then
+	    PATH=$ORIG_PATH
+	    LD_LIBRARY_PATH=$ORIG_LD_PATH
+	    echo "PATH=$PATH"
+	    echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+	    return
+	elif [ "$1" = "." ]
+	then
+	    CURRENT_WORLD_ROOT=`pwd`
+	else
+	    CURRENT_WORLD_ROOT=$1
+	fi
+    else
+	CURRENT_WORLD_ROOT=`pwd`
+    fi
+
+    # Check the paths are valid
+    CURRENT_WORLD_BIN=${CURRENT_WORLD_ROOT}/install/bin
+    if [ -d "$CURRENT_WORLD_BIN" ]
+    then
+	echo "Setting CURRENT_WORLD_BIN=$CURRENT_WORLD_BIN"
+	export CURRENT_WORLD_BIN
+	export PATH=$CURRENT_WORLD_BIN:$ORIG_PATH
+    else
+	echo "No directory at $CURRENT_WORLD_BIN, giving up"
+	CURRENT_WORLD_ROOT=$OLD_WORLD_ROOT
+	CURRENT_WORLD_BIN=$OLD_WORLD_BIN
+	return
+    fi
+
+    # The lib path needs to point at the libs we use, we overide LD_LIBRARY_PATH
+    # so the correct libs are loaded. This *will not work* with suid binaries as it opens
+    # a massive security hole
+
+    CURRENT_WORLD_LIB=${CURRENT_WORLD_ROOT}/install/lib
+    if [ -d "$CURRENT_WORLD_LIB" ]
+    then
+	echo "Setting CURRENT_WORLD_LIB=$CURRENT_WORLD_LIB"
+	export CURRENT_WORLD_LIB
+	export LD_LIBRARY_PATH=$CURRENT_WORLD_LIB:$ORIG_LD_PATH
+    else
+	echo "No directory at $CURRENT_WORLD_LIB, not tweaking LD_LIBRARY_PATH"
+	CURRENT_WORLD_LIB=$OLD_WORLD_LIB
+    fi
+}
+
+
+#
+# Bash version comparison routines
+# from: http://stackoverflow.com/questions/4023830/bash-how-compare-two-strings-in-version-format
+#
+vercomp () {
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+
+#
+# Unlike switch_world this assumes you want to permanently add something
+# to your search paths. It's also a lot quieter about it.
+#
+function add_to_world
+{
+    if [ "$1" ]
+    then
+	if [ "$1" = "." ]
+	then
+	    CURRENT_WORLD_ROOT=`pwd`
+	else
+	    CURRENT_WORLD_ROOT=`realpath $1`
+	fi
+    else
+	CURRENT_WORLD_ROOT=`pwd`
+    fi
+
+    if [ -d ${CURRENT_WORLD_ROOT}/install ]
+    then
+        # Check the paths are valid
+	CURRENT_WORLD_BIN=${CURRENT_WORLD_ROOT}/install/bin
+	if [ -d "$CURRENT_WORLD_BIN" ]
+	then
+	    export PATH=$CURRENT_WORLD_BIN:$PATH
+	    RET=0
+	fi
+
+        # This *will not work* with suid binaries as it would
+	# open a massive security hole.
+
+	CURRENT_WORLD_LIB=${CURRENT_WORLD_ROOT}/install/lib
+	if [ -d "$CURRENT_WORLD_LIB" ]
+	then
+	    export LD_LIBRARY_PATH=$CURRENT_WORLD_LIB:$LD_LIBRARY_PATH
+	    RET=0
+	fi
+    else
+        echo "Just adding $CURRENT_WORLD_ROOT to PATH"
+        export PATH=$CURRENT_WORLD_ROOT:$PATH
+	RET=0
+    fi
+
+    return $RET
+}
+
+# Clean PATH (http://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem)
+function clean_path {
+    PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+}
+
+# Check for active paths
+PATH_STATUS=""
+[[ $PATH == *"lava"* ]] && PATH_STATUS="lava"
+[[ $PATH == *"/usr/local"* ]] && PATH_STATUS="$PATH_STATUS local"
+
+# I have stuff in ~/bin
+if [ -d $HOME/bin ]; then
+    export PATH=${HOME}/bin:$PATH
+    PATH_STATUS="$PATH_STATUS ~/bin"
+fi
+
+clean_path
+
+# Alises
+alias sw="switch_world"
+alias aw="add_to_world"
+
+# Alias for reloading
+alias .path=". ~/.bash_path"
+
+if [ ! -z "$PATH_STATUS" ]; then
+    echo "loading .bash_path ($PATH_STATUS)"
+fi
