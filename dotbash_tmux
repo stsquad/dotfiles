@@ -78,6 +78,12 @@ function tmux_attach_or_new
 alias tn="tmux_attach_or_new "
 alias ta="tmux_attach_or_new "
 
+# Get the Tmux Plugin Manager
+function tmux_get_tpm
+{
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+}
+
 # Sync the environment of an existing shell
 #
 #  tmux already updates the environment according to
