@@ -8,7 +8,7 @@ GIT_MSG=""
 # GIT Stuff
 #
 export GIT_AUTHOR_NAME="Alex Bennée"
-: ${GIT_AUTHOR_EMAIL:="alex@bennee.com"}
+: ${GIT_AUTHOR_EMAIL:="alex.bennee@linaro.org"}
 export GIT_AUTHOR_EMAIL # over-ride with .bash_${host} for work
 export GIT_COMMITTER_NAME="Alex Bennée"
 
