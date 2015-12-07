@@ -62,7 +62,7 @@ end
 
 # Enable auto-loading for work stuff
 
-set auto-load safe-path ~/lsrc
+set auto-load safe-path /usr/share/gdb:~/lsrc
 
 
 echo Executed .gdbinit
