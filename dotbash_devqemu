@@ -22,7 +22,8 @@ DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs # Root of all rootfs
 DEVQEMU_SYSBUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-softmmu
 DEVQEMU_SYSBIN=qemu-system-${DEVQEMU_ARCH}
 DEVQEMU_IMAGES_ROOT=/home/alex/lsrc/qemu/images # Image and disk files
-DEVQEMU_SYSMACH="-machine type=virt -cpu cortex-a15 -display none -smp 1 -m 4096"
+DEVQEMU_SYSMACH="-machine type=virt -display none -smp 1 -m 4096"
+DEVQEMU_SYSCPU="-cpu cortex-a15"
 DEVQEMU_SYSOUT="-serial telnet:127.0.0.1:4444 -monitor stdio"
 DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN:=${DEVQEMU_IMAGES_ROOT}/aarch32-current-linux-kernel-only.img}
 DEVQEMU_SYSKERN_CMDLINE="console=ttyAMA0"
@@ -90,7 +91,7 @@ function devqemu_sysrun
     else
         DISKOPTS=""
     fi
-    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN} -append \"${APPEND}\" $@"
+    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN} -append \"${APPEND}\" $@"
     echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE}"
     ${DEVQEMU_PROFILE} ${DEVQEMU_VALGRIND} ${QEMU_CMD} ${QEMU_CMDLINE}
 }
@@ -108,7 +109,21 @@ function devqemu_arch
     DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
     DEVQEMU_SYSBUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-softmmu
     DEVQEMU_SYSBIN=qemu-system-${DEVQEMU_ARCH}
-    echo "New ARCH=${DEVQEMU_ARCH}"
+
+    case "${DEVQEMU_ARCH}" in
+        aarch64*)
+            DEVQEMU_SYSCPU="-cpu cortex-a57"
+            ;;
+        arm*)
+            DEVQEMU_SYSCPU="-cpu cortex-a15"
+            ;;
+        *)
+            # this will most likely fail
+            DEVQEMU_SYSCPU="-cpu ${DEVQEMU_ARCH}"
+            ;;
+    esac
+
+    echo "New ARCH=${DEVQEMU_ARCH} (${DEVQEMU_SYSCPU})"
     echo "With ${DEVQEMU_BIN} from ${DEVQEMU_BUILD}"
     echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
 }
@@ -223,9 +238,8 @@ function devqemu_rootfs
 function devqemu_syskern
 {
     OLD_DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN}
-    CURRENT_PWD=`pwd`
-    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
-        DEVQEMU_SYSKERN=${CURRENT_PWD}/${1%/}
+    if [[ -n "$1"  && -f "$1" ]]; then
+        DEVQEMU_SYSKERN=${1}
     else
         cd ${DEVQEMU_IMAGES_ROOT}
         DIRS=`compgen -f -G {*.img,*.axf}`
