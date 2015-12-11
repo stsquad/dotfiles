@@ -84,16 +84,16 @@ function devqemu_sysrun
     export QEMU_LOG
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
-    APPEND=${DEVQEMU_SYSKERN_CMDLINE}
     if [ -n "$DEVQEMU_SYSDISK" ]; then
         DISKOPTS="-drive file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none -device virtio-blk-device,drive=myblock"
-        APPEND="${APPEND} root=${DEVQEMU_SYSDISK_ROOT}"
+        KERN_CMD=(-append  "\"${DEVQEMU_SYSKERN_CMDLINE} root=${DEVQEMU_SYSDISK_ROOT}\"")
     else
         DISKOPTS=""
+        KERN_CMD=(-append  "${DEVQEMU_SYSKERN_CMDLINE}")
     fi
-    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN} -append \"${APPEND}\" $@"
-    echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE}"
-    ${DEVQEMU_PROFILE} ${DEVQEMU_VALGRIND} ${QEMU_CMD} ${QEMU_CMDLINE}
+    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN}"
+    echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE} ${KERN_CMD[@]} $@"
+    ${DEVQEMU_PROFILE} ${DEVQEMU_VALGRIND} ${QEMU_CMD} ${QEMU_CMDLINE} "${KERN_CMD[@]}" $@
 }
 
 function devqemu_arch
