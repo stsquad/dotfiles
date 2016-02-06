@@ -25,5 +25,10 @@ case $HOST in
         ;;
 esac
 
+# Run redshift if I have it
+if [[ -f /usr/bin/redshift ]]; then
+    redshift -l 52.29:0.21 &
+fi
+
 # Set background 
 xsetroot -solid "#333333"

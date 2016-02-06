@@ -7,5 +7,6 @@ VALGRIND=`which valgrind`
 alias valmem="$VALGRIND --smc-check=all-non-file --leak-check=full --log-file=valgrind-mem.log "
 alias valchk="$VALGRIND --smc-check=all-non-file --leak-check=no --log-file=valgrind-chk.log "
 alias valdrd="$VALGRIND --smc-check=all-non-file --tool=drd --log-file=valgrind-drd.log"
+alias valhel="$VALGRIND --smc-check=all-non-file --tool=helgrind --log-file=valgrind-helgrind.log"
 
 alias .valgrind=". ~/.bash_valgrind"

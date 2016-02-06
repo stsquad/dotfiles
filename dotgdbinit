@@ -1,3 +1,4 @@
+# -*- mode: gdb-script; -*-
 #
 # My .gdbinit
 #
@@ -58,6 +59,10 @@ define mono_stack
    call (void) free ($ucp)
  end
 end
+
+# Enable auto-loading for work stuff
+
+set auto-load safe-path /usr/share/gdb:~/lsrc
 
 
 echo Executed .gdbinit

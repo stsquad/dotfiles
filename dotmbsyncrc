@@ -46,12 +46,13 @@ IMAPStore linaro-gmail
 MaildirStore linaro-local
 	Path	~/Maildir/linaro/
 	Inbox	~/Maildir/linaro/Inbox
+        SubFolders Verbatim
 
 # Exclude everything under the internal [Gmail] folder, except the interesting folders
 Channel linaro-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Patterns *  !kernel ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
         SyncState *
 
@@ -67,10 +68,17 @@ Channel linaro-inbox-sync
 Channel linaro-kernel-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns !* kernel*
+        Patterns !* kernel/*
         Create Both
         SyncState *
 
+# Exclude everything apart from kernel related stuff
+Channel linaro-distro-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns !* distros*
+        Create Both
+        SyncState *
 
 # Exclude everything apart from virtualization related stuff
 Channel linaro-virt-sync

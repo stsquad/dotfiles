@@ -19,14 +19,14 @@ else
 fi
 
 # Currently assume apt based systems
-if [[ ! `dpkg-query --status git-core` ]]; then
+if [[ ! `dpkg-query --status git` ]]; then
     echo "Fetching git"
     if [ `id -u` = 0 ] ; then
         apt-get update
-        apt-get install -y git-core
+        apt-get install -y git
     else
         sudo apt-get update
-        sudo apt-get install -y git-core
+        sudo apt-get install -y git
     fi
 else
     echo "Already have git, good"

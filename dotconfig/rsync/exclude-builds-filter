@@ -8,6 +8,8 @@
 - *.zip
 - *.gzip
 - *.gz
+- *.bz2
+- *.xz
 # Random executables
 - *.nexe
 - *.jar
@@ -18,7 +20,7 @@
 - boot/Image.gz
 - *.axf
 # QEMU builds
-- qemu-system-*
+- *-softmmu/qemu-system-*
 - *-linux-user/qemu-*
 # Skip build directories
 - out/
@@ -37,3 +39,9 @@
 - *.iso
 # Or any prefaced with nda
 - nda*
+# And filesystems (they get copied to public_html anyway)
+- *.qcow2
+- *.qcow2.bz2
+- *.qcow2.xz
+# And perf dumps
+- perf.data

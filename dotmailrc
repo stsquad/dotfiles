@@ -2,18 +2,26 @@
 # Alex's .mailrc file
 #
 
-# Peter and Christoffer
+# People I know/mail often
 alias pm peter.maydell@linaro.org
 alias pm215 peter.maydell@linaro.org
 alias cdall christoffer.dall@linaro.org
 alias chazy christoffer.dall@linaro.org
+alias ed edward.nevill@linaro.org
 alias greg greg.bellows@linaro.org
 alias agraf agraf@suse.de
 alias maz marc.zyngier@arm.com
+alias drew drjones@redhat.com
+alias paolo pbonzini@redhat.com
+alias rth rth@twiddle.net
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
+alias qemu-arm qemu-arm@nongnu.org
 alias qemu-trivial qemu-trivial@nongnu.org
+
+# TCG Work
+alias qemu-tcg rth crosthwaitepeter@gmail.com aurelien@aurel32.net paolo
 
 # Linaro patch work
 alias patches patches@linaro.org
@@ -44,9 +52,25 @@ alias kernelarm linux-arm-kernel@lists.infradead.org
 alias kvm kvm@vger.kernel.org
 alias kvmarm kvm kernelarm kvmarm@lists.cs.columbia.edu cdall maz
 
+alias ftrace rostedt@goodmis.org mingo@redhat.com Dave.Martin@arm.com
+
 # cc list for kvm debug api
-alias kvm-debug kvmarm pm agraf drjones@redhat.com pbonzini@redhat.com 
-alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com bp@suse.de 
+alias kvm-debug kvmarm pm agraf drjones@redhat.com pbonzini@redhat.com zhichao.huang@linaro.org
+alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com bp@suse.de
+
+alias qemu-debug qemu qemu-arm pm chazy zhichao.huang@linaro.org
+alias qemu-debug-cc kvmarm
+
+alias qemu-mttcg mttcg@listserver.greensocs.com mark.burton@greensocs.com fred.konrad@greensocs.com
+alias qemu-mttcg-cc qemu pm
+
+# MTTCG
+alias alvise a.rigo@virtualopensystems.com
+alias claudio claudio.fontana@huawei.com
+
+alias mttcg qemu-mttcg
+alias mttcg-cc qemu-mttcg-cc
+alias mttcg-testing a.spyridakis@virtualopensystems.com drew alvise claudio
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net

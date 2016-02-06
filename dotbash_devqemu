@@ -10,14 +10,26 @@ MY_GRP=`id -g`
 USERSPEC="--userspec ${MY_USER}:${MY_GRP}"
 
 # General paramters - these don't use QEMU env variables
-DEVQEMU_SRC=/home/alex/lsrc/qemu/qemu.git
-DEVQEMU_ARCH=aarch64
+: ${DEVQEMU_SRC:=/home/alex/lsrc/qemu/qemu.git}
+: ${DEVQEMU_ARCH:=arm}
+
+# linux-user
 DEVQEMU_BUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-linux-user
 DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
+DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs # Root of all rootfs
 
-# Root of all rootfs
-DEVQEMU_ROOTFS_ROOT=/home/alex/lsrc/qemu/rootfs
-
+# softmmu
+DEVQEMU_SYSBUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-softmmu
+DEVQEMU_SYSBIN=qemu-system-${DEVQEMU_ARCH}
+DEVQEMU_IMAGES_ROOT=/home/alex/lsrc/qemu/images # Image and disk files
+DEVQEMU_SYSMACH="-machine type=virt -display none -smp 1 -m 4096"
+DEVQEMU_SYSCPU="-cpu cortex-a15"
+DEVQEMU_SYSOUT="-serial telnet:127.0.0.1:4444 -monitor stdio"
+DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN:=${DEVQEMU_IMAGES_ROOT}/aarch32-current-linux-kernel-only.img}
+DEVQEMU_SYSKERN_CMDLINE="console=ttyAMA0"
+: ${DEVQEMU_SYSDISK:=""}
+DEVQEMU_SYSDISK_ROOT="/dev/vda1"
+DEVQEMU_NETWORK="-netdev user,id=unet,hostfwd=tcp::2222-:22 -device virtio-net-device,netdev=unet"
 DEVQEMU_PROFILE=""
 DEVQEMU_VALGRIND=""
 DEVQEMU_BINFMT=0
@@ -65,15 +77,74 @@ function devqemu_run_as_root
     sudo ${FINAL_CMD}
 }
 
+function devqemu_sysrun
+{
+    QEMU_CMD="${DEVQEMU_SYSBUILD}/${DEVQEMU_SYSBIN}"
+    echo "Using system: ${QEMU_CMD}"
+    export QEMU_LOG
+    export QEMU_LOG_FILENAME
+    echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    APPEND=${DEVQEMU_SYSKERN_CMDLINE}
+    if [ -n "$DEVQEMU_SYSDISK" ]; then
+        DISKOPTS="-drive file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none -device virtio-blk-device,drive=myblock"
+        APPEND="${APPEND} root=${DEVQEMU_SYSDISK_ROOT}"
+    else
+        DISKOPTS=""
+    fi
+    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN} -append \"${APPEND}\" $@"
+    echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE}"
+    ${DEVQEMU_PROFILE} ${DEVQEMU_VALGRIND} ${QEMU_CMD} ${QEMU_CMDLINE}
+}
+
 function devqemu_arch
 {
     echo "Current ARCH=${DEVQEMU_ARCH}"
-    read -e -p "ARCH:" NEW_ARCH
-    DEVQEMU_ARCH=${NEW_ARCH}
+    if [[ -n "$1"  && -d "${DEVQEMU_SRC}/target-$1" ]]; then
+        DEVQEMU_ARCH=${1}
+    else
+        read -e -p "ARCH:" NEW_ARCH
+        DEVQEMU_ARCH=${NEW_ARCH}
+    fi
     DEVQEMU_BUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-linux-user
     DEVQEMU_BIN=qemu-${DEVQEMU_ARCH}
-    echo "New ARCH=${DEVQEMU_ARCH}"
+    DEVQEMU_SYSBUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-softmmu
+    DEVQEMU_SYSBIN=qemu-system-${DEVQEMU_ARCH}
+
+    case "${DEVQEMU_ARCH}" in
+        aarch64*)
+            DEVQEMU_SYSCPU="-cpu cortex-a57"
+            ;;
+        arm*)
+            DEVQEMU_SYSCPU="-cpu cortex-a15"
+            ;;
+        *)
+            # this will most likely fail
+            DEVQEMU_SYSCPU="-cpu ${DEVQEMU_ARCH}"
+            ;;
+    esac
+
+    echo "New ARCH=${DEVQEMU_ARCH} (${DEVQEMU_SYSCPU})"
     echo "With ${DEVQEMU_BIN} from ${DEVQEMU_BUILD}"
+    echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
+}
+
+function devqemu_disk
+{
+    echo "Current DISK=${DEVQEMU_SYSDISK}"
+    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
+        DEVQEMU_SYSDISK=${CURRENT_PWD}/${1%/}
+    else
+        cd ${DEVQEMU_IMAGES_ROOT}
+        DIRS=`compgen -f -G {*.qcow2}`
+        read -e -p "disk:" NEW_DISK
+        if [ -z $NEW_DISK ]; then
+            unset DEVQEMU_SYSDISK
+        else
+            DEVQEMU_SYSDISK=${DEVQEMU_IMAGES_ROOT}/${NEW_DISK}
+        fi
+        cd -
+    fi
+    echo "Set disk to ${DEVQEMU_SYSDISK}"
 }
 
 function devqemu_profile
@@ -161,6 +232,22 @@ function devqemu_rootfs
         cd -
     fi
     echo "Set rootfs to ${DEVQEMU_ROOTFS} (was ${OLD_DEVQEMU_ROOTFS})"
+} 
+
+# Set the kernel image
+function devqemu_syskern
+{
+    OLD_DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN}
+    if [[ -n "$1"  && -f "$1" ]]; then
+        DEVQEMU_SYSKERN=${1}
+    else
+        cd ${DEVQEMU_IMAGES_ROOT}
+        DIRS=`compgen -f -G {*.img,*.axf}`
+        read -e -p "image:" NEW_KERN
+        DEVQEMU_SYSKERN=${DEVQEMU_IMAGES_ROOT}/${NEW_KERN}
+        cd -
+    fi
+    echo "Set kernel to ${DEVQEMU_SYSKERN} (was ${OLD_DEVQEMU_SYSKERN})"
 } 
 
 function do_bind_mount
@@ -261,7 +348,7 @@ function kill_qemu
 
 function devqemu_help
 {
-    $all_fns=`compgen -A function devqemu`
+    $all_fns=`compgen -A function devqemu_`
     echo <<EOF
 The devqemu shell environment is a set of scripts for running development versions
 of QEMU from the shell. The following functions are available:
@@ -273,7 +360,7 @@ EOF
 
 function devqemu
 {
-    $cmdfn=devqemu_$1
+    $cmdfn=devqemu_${1}
     echo "testing: $cmdfn"
     if [[ "type -t $cmdfn > /dev/null" ]]; then
         $cmdfn
@@ -282,5 +369,6 @@ function devqemu
     fi
 }
 
+# reload alisas
 alias .qemu=". ~/.bash_devqemu"
 alias .devqemu=". ~/.bash_devqemu"
