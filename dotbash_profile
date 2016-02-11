@@ -53,18 +53,6 @@ fi
 # Aliases
 #############
 
-# I like a quick grep of history
-alias h="history | grep"
-
-# Find a given export in history
-function he
-{
-    if [ "$1" ]
-    then
-       history | grep -E "^ [0-9]+  export $1" | uniq -s 6 -u
-    fi
-}
-
 # Search through a list of alternative binaries, returning the first match
 function find_alternatives ()
 {
@@ -164,33 +152,6 @@ export EDITOR=emacs
 export CVS_RSH=ssh
 export CVSEDITOR=ec
 
-# Setup history control - hard to get right, could do with
-# bashcompletion as well. Just make sure I don't repeatedly delete stuff
-# See: http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#3055135
-
-# append (as I use lots of shells)
-shopt -s histappend
-
-export HISTCONTROL=ignoredups:erasedups
-#export HISTIGNORE="rm *"
-export HISTIGNORE="&:rm *ls:[bf]g:exit"
-export HISTSIZE=100000
-export HISTFILESIZE=${HISTSIZE}
-
-history() {
-  _bash_history_sync
-  builtin history "$@"
-}
-
-_bash_history_sync() {
-  builtin history -a         #1
-  HISTFILESIZE=$HISTSIZE     #2
-  builtin history -c         #3
-  builtin history -r         #4
-}
-
-# fixup 
-export PROMPT_COMMAND=_bash_history_sync
 
 # GNU systems usually use less by default for
 # man pages, however not all unix-a-likes do
@@ -239,8 +200,11 @@ function load_extra_module()
 if [ "$SHELL" == "/bin/sh" ]; then
     echo "Executing $SHELL under minmal environment"
 else
+    # Always loaded
     load_extra_module ps1 true
     load_extra_module path true
+    load_extra_module hist true
+    # Depends on tools
     load_extra_module tmux tmux
     load_extra_module emacs emacs
     load_extra_module git git
