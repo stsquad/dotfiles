@@ -19,6 +19,8 @@ use File::Basename;
 
 use Data::Dumper;
 
+# The actual script
+my $real_me = abs_path($0);
 
 # Options
 my ($help,$verbose,$quiet);
@@ -40,7 +42,7 @@ if (!defined $binpath)
 {
     $binpath = $ENV{"HOME"};
 
-    $binpath = $binpath."/.emacs.d/my-local-pkgs/" if $me eq "linklisp.pl";
+    $binpath = $binpath."/.emacs.d" if $me eq "linklisp.pl";
     $binpath = $binpath."/bin/" if $me eq "linkbin.pl";
 
     # Otherwise
@@ -74,9 +76,9 @@ if (!File::Spec->file_name_is_absolute($binpath))
 if (defined $install)
 {
     $binpath = $ENV{"HOME"}."/bin";
-    do_linkage($me, "$binpath/linkbin.pl");
-    do_linkage($me, "$binpath/linkdot.pl");
-    do_linkage($me, "$binpath/linklisp.pl");
+    do_linkage($real_me, "$binpath/linkbin.pl");
+    do_linkage($real_me, "$binpath/linkdot.pl");
+    do_linkage($real_me, "$binpath/linklisp.pl");
 } else {
     # We can specify files or just slurp up the dir
     @files = @ARGV;
@@ -122,8 +124,6 @@ sub do_linkage
     {
 	my $basename = basename($file);
 	$dest = $dest."/".$basename;
-    } else {
-        die "no path to link to ($dest)";
     }
 
     # Remove old links if asked
