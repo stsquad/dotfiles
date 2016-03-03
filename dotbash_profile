@@ -94,46 +94,6 @@ alias grep="$GREP"
 DIFF=$(find_alternatives "gdiff" "diff")
 alias diff="$DIFF"
 
-#
-# Some systems I use don't have a decent 'find' implentation so
-#
-
-# Lets look for gfind first (The GNU find on Solaris)
-FIND=$(find_alternatives "gfind" "find")
-alias find="$FIND"
-
-FIND_VERSION=`find --version 2>/dev/null`
-if [  "${FIND_VERSION:0:8}" == "GNU find" ]; then
-
-    # Some nice find expressions
-    FIND_BACKUPS=" -name '.#*' -o -name '#*#' -o -name '*\.~*.~' -o -path '*./CVS/*.'"
-    FIND_CVS=" -path '*./CVS/.*' "
-    FIND_CCODE="  -iname '*.[chS]' -or -iname '*.cc' "
-    FIND_CHEAD=" -iname '*.h' "
-        
-    # and search code for stuff (when I figure out proper expansion and quuting I'll make this neater)
-    
-    #alias sc="find . -iname '*.[chS]' -or -iname '*.cc' -and -not \( -name '.#' -o -name '#*#' -o -name '*\.~*.~' -o -path '*./CVS/*.' \) -print0 | xargs -0 grep -H "
-
-    alias f="$FIND -iname"
-    alias sc="$FIND . \( $FIND_CCODE \) -and -not \( $FIND_BACKUPS -o $FIND_CVS \) -print0 | xargs -0 grep -H"
-#    alias sh="find . -iname '*.h' -print0 | xargs -0 grep -H "
-    alias sa="$FIND . -xtype f -print0 | xargs -0 grep -H "
-else
-    #
-    # Who knows how standard unix is, its not GNU so probably not
-    #
-    # Lets assume both find and grep are borken
-    #
-
-    # Find files under here
-    alias f="$FIND . -name"
-
-    # and search code for stuff
-    alias sc="$FIND . -name '*.[chS]' -o  -name '*.cc' | xargs grep "
-#    alias sh="find . -name '*.h' | xargs grep "
-    alias sa="$FIND -L . -type f | xargs grep "
-fi    
 
 # Find a decent browser
 BROWSER=$(find_alternatives "chromium-browser" "google-chrome" "chrome" "firefox-4.0" "firefox" "mozilla")
@@ -203,6 +163,7 @@ else
     # Always loaded
     load_extra_module ps1 true
     load_extra_module path true
+    load_extra_module find true
     load_extra_module hist true
     # Depends on tools
     load_extra_module tmux tmux
