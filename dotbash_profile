@@ -85,7 +85,7 @@ function find_directories ()
 #
 # Lets see if we have a decent "grep"
 #
-GREP=$(find_alternatives "ack-grep" "ggrep" "grep" "/bin/grep")
+GREP=$(find_alternatives "ag" "ack-grep" "ggrep" "grep" "/bin/grep")
 alias grep="$GREP"
 
 #
