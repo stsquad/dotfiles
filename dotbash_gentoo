@@ -10,7 +10,7 @@
 
 if [ -d /usr/portage ];
 then
-  LOCAL_PORTAGE=$HOME/src/gentoo/my-overlay.git
+  LOCAL_PORTAGE=$HOME/mysrc/gentoo-overlay.git
   MASTER_PORTAGE=/usr/portage
 
   export PORTAGE_TMPDIR=$HOME/src/gentoo/tmp 
