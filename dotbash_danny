@@ -26,7 +26,9 @@ function sync_torrents
 #
 function copy_to_nas
 {
-    scp $* admin@nas:/volume1/video/
+    for f in "$@"; do
+        scp "$f" admin@nas:/volume1/video/
+    done
 }
 
 #
