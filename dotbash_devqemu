@@ -90,6 +90,10 @@ function devqemu_sysrun
     export QEMU_LOG
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    if [ -n "${DEVQEMU_PRELOAD}" ]; then
+        export LD_PRELOAD="${DEVQEMU_PRELOAD}"
+        echo "     LD_PRELOAD=${DEVQEMU_PRELOAD}"
+    fi
     if [ -n "${DEVQEMU_SYSDISK}" ]; then
         DISKOPTS="-drive file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none -device virtio-blk-device,drive=myblock"
         KERN_CMD=(-append "${DEVQEMU_SYSKERN_CMDLINE} root=${DEVQEMU_SYSDISK_ROOT}")
@@ -100,6 +104,8 @@ function devqemu_sysrun
     QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN}"
     echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE} ${KERN_CMD[@]} $@"
     ${DEVQEMU_PROFILE} ${DEVQEMU_DEBUG} ${QEMU_CMD} ${QEMU_CMDLINE} "${KERN_CMD[@]}" $@
+
+    unset LD_PRELOAD
 }
 
 # Run an arbitary kernel image without the auto-magic gubbins, useful for KVM UNIT test type things
@@ -110,10 +116,16 @@ function devqemu_sysbin
     export QEMU_LOG
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    if [ -n "${DEVQEMU_PRELOAD}" ]; then
+        export LD_PRELOAD="${DEVQEMU_PRELOAD}"
+        echo "     LD_PRELOAD=${DEVQEMU_PRELOAD}"
+    fi
     QEMU_RESULT_CHAR="-device virtio-serial-device -device virtconsole,chardev=ctd -chardev testdev,id=ctd"
     QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${QEMU_RESULT_CHAR} -kernel"
     echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE} ${KERN_CMD[@]} $@"
     ${DEVQEMU_PROFILE} ${DEVQEMU_DEBUG} ${QEMU_CMD} ${QEMU_CMDLINE} $@
+
+    unset LD_PRELOAD
 }
 
 #
@@ -182,6 +194,7 @@ function devqemu_binfmt
 function devqemu_debug
 {
     OLD_DEVQEMU_DEBUG="${DEVQEMU_DEBUG}"
+    unset DEVQEMU_PRELOAD
     if [[ -z "$@" ]]; then
         unset DEVQEMU_DEBUG
         echo "Disabled debugging qemu"
@@ -192,6 +205,10 @@ function devqemu_debug
                 ;;
             valgrind*)
                 DEVQEMU_DEBUG="valgrind -- "
+                ;;
+            mutrace*)
+                DEVQEMU_PRELOAD="/usr/lib/libbfd.so"
+                DEVQEMU_DEBUG="mutrace -d --hash-size=6000 -- "
                 ;;
             *)
                 # this will most likely fail
@@ -342,7 +359,9 @@ function devqemu_clear_all_mounts
 function devqemu_sysdisk
 {
     echo "Current DISK=${DEVQEMU_SYSDISK}"
-    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
+    if [[ -n "$1"  && -f "$1" ]]; then
+        DEVQEMU_SYSDISK=$1
+    elif [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
         DEVQEMU_SYSDISK=${CURRENT_PWD}/${1%/}
     else
         cd ${DEVQEMU_IMAGES_ROOT}
