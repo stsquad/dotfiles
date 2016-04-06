@@ -358,6 +358,14 @@ function devqemu_sysdisk
     echo "Set disk to ${DEVQEMU_SYSDISK}"
 }
 
+function devqemu_syskern_cmdline
+{
+    OLD_DEVQEMU_SYSKERN_CMDLINE=${DEVQEMU_SYSKERN_CMDLINE}
+    if [[ -n "$1" ]]; then
+        DEVQEMU_SYSKERN_CMDLINE="$@"
+    fi
+    echo "Set command line to ${DEVQEMU_SYSKERN_CMDLINE} (was ${OLD_DEVQEMU_SYSKERN_CMDLINE})"
+}
 
 function devqemu_syskern
 {
@@ -402,6 +410,7 @@ function devqemu_status
     echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
     echo ""
     echo "Current kernel: ${DEVQEMU_SYSKERN}"
+    echo "       cmdline: ${DEVQEMU_SYSKERN_CMDLINE}"
     if [ -n "${DEVQEMU_SYSDISK}" ]; then
         echo "Current disk image: ${DEVQEMU_SYSDISK}"
     fi
