@@ -26,7 +26,7 @@ DEVQEMU_SYSMACH="-machine type=virt -display none -smp 1 -m 4096"
 DEVQEMU_SYSCPU="-cpu cortex-a15"
 DEVQEMU_SYSOUT="-serial telnet:127.0.0.1:4444 -monitor stdio"
 DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN:=${DEVQEMU_IMAGES_ROOT}/aarch32-current-linux-kernel-only.img}
-DEVQEMU_SYSKERN_CMDLINE="console=ttyAMA0"
+: ${DEVQEMU_SYSKERN_CMDLINE:="console=ttyAMA0"}
 : ${DEVQEMU_SYSDISK:=""}
 : ${DEVQEMU_SYSDISK_ROOT="/dev/vda1"}
 DEVQEMU_NETWORK="-netdev user,id=unet,hostfwd=tcp::2222-:22 -device virtio-net-device,netdev=unet"
@@ -94,16 +94,19 @@ function devqemu_sysrun
         export LD_PRELOAD="${DEVQEMU_PRELOAD}"
         echo "     LD_PRELOAD=${DEVQEMU_PRELOAD}"
     fi
+    # Build up the run as an array, this keeps the arguments distinct to avoid having to mess with eval or other whitespace or quote tricks
+    QEMU_RUN=(${QEMU_CMD})
+    QEMU_RUN+=(${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK})
     if [ -n "${DEVQEMU_SYSDISK}" ]; then
-        DISKOPTS="-drive file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none -device virtio-blk-device,drive=myblock"
-        KERN_CMD=(-append "${DEVQEMU_SYSKERN_CMDLINE} root=${DEVQEMU_SYSDISK_ROOT}")
+        QEMU_RUN+=(-drive "file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none" -device "virtio-blk-device,drive=myblock")
+        QEMU_RUN+=(-append "${DEVQEMU_SYSKERN_CMDLINE} root=${DEVQEMU_SYSDISK_ROOT}")
     else
-        DISKOPTS=""
-        KERN_CMD=(-append "${DEVQEMU_SYSKERN_CMDLINE}")
+        QEMU_RUN+=(-append "${DEVQEMU_SYSKERN_CMDLINE}")
     fi
-    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN}"
-    echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE} ${KERN_CMD[@]} $@"
-    ${DEVQEMU_PROFILE} ${DEVQEMU_DEBUG} ${QEMU_CMD} ${QEMU_CMDLINE} "${KERN_CMD[@]}" $@
+    QEMU_RUN+=(-kernel ${DEVQEMU_SYSKERN})
+    QEMU_RUN+=($@)
+    echo "Running \"\${QEMU_RUN[@]}\": ${QEMU_RUN[@]}"
+    ${DEVQEMU_PROFILE} ${DEVQEMU_DEBUG} "${QEMU_RUN[@]}"
 
     unset LD_PRELOAD
 }
@@ -209,6 +212,9 @@ function devqemu_debug
             mutrace*)
                 DEVQEMU_PRELOAD="/usr/lib/libbfd.so"
                 DEVQEMU_DEBUG="mutrace -d --hash-size=6000 -- "
+                ;;
+            time*)
+                DEVQEMU_DEBUG="time "
                 ;;
             *)
                 # this will most likely fail
