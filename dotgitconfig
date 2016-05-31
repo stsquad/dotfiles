@@ -1,6 +1,7 @@
 [user]
 	name = Alex Bennée
 	email = alex.bennee@linaro.org
+	signingkey = 5A9E2A44
 [sendemail]
 	from = Alex Bennée <alex.bennee@linaro.org>
 	aliasfiletype = mailrc
@@ -11,6 +12,9 @@
 	cp = cherry-pick
 	dfw = diff --ignore-space-change
 	pps = format-patch --stat --cover-letter --summary
+	ppull = format-patch --subject-prefix=PULL --cover-letter
+        bisect-fixed = bisect bad
+        bisect-unfixed = bisect good
 [credential]
 	helper = cache --timeout=3600
 [color]
@@ -28,3 +32,5 @@
 	rename = true
 [gitreview]
 	username = ajb
+[am]
+	threeWay = true
