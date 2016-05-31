@@ -26,12 +26,12 @@ DEVQEMU_SYSMACH="-machine type=virt -display none -smp 1 -m 4096"
 DEVQEMU_SYSCPU="-cpu cortex-a15"
 DEVQEMU_SYSOUT="-serial telnet:127.0.0.1:4444 -monitor stdio"
 DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN:=${DEVQEMU_IMAGES_ROOT}/aarch32-current-linux-kernel-only.img}
-DEVQEMU_SYSKERN_CMDLINE="console=ttyAMA0"
+: ${DEVQEMU_SYSKERN_CMDLINE:="console=ttyAMA0"}
 : ${DEVQEMU_SYSDISK:=""}
-DEVQEMU_SYSDISK_ROOT="/dev/vda1"
+: ${DEVQEMU_SYSDISK_ROOT="/dev/vda1"}
 DEVQEMU_NETWORK="-netdev user,id=unet,hostfwd=tcp::2222-:22 -device virtio-net-device,netdev=unet"
 DEVQEMU_PROFILE=""
-DEVQEMU_VALGRIND=""
+DEVQEMU_DEBUG=""
 DEVQEMU_BINFMT=0
 
 : ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/debian-unstable.arm64}
@@ -42,6 +42,12 @@ DEVQEMU_BINFMT=0
 : ${QEMU_LOG:="unimp"}
 # unimp,int,exec,cpu,op,out_asm
 
+#
+# Run functions:
+#
+#  devqemu_run, devqemu_run_as_root: launch linux-user shells in a rootfs
+#  devqemu_sysrun: launch a softmmu instance with a given kernel
+#
 
 function devqemu_run
 {
@@ -59,7 +65,7 @@ function devqemu_run
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
     echo "Running: ${CMD} with $# args ($@)"
-    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${DEVQEMU_VALGRIND} ${CMD} "$@"
+    sudo ${DEVQEMU_PROFILE} chroot ${USERSPEC} ${DEVQEMU_ROOTFS} ${DEVQEMU_DEBUG} ${CMD} "$@"
 }
 
 function devqemu_run_as_root
@@ -72,7 +78,7 @@ function devqemu_run_as_root
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
     echo "Running: ${CMD} with $# args ($@)"
-    FINAL_CMD="${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${DEVQEMU_VALGRIND} ${CMD} $@"
+    FINAL_CMD="${DEVQEMU_PROFILE} chroot ${DEVQEMU_ROOTFS} ${DEVQEMU_DEBUG} ${CMD} $@"
     echo "sudo ${FINAL_CMD}"
     sudo ${FINAL_CMD}
 }
@@ -84,22 +90,56 @@ function devqemu_sysrun
     export QEMU_LOG
     export QEMU_LOG_FILENAME
     echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
-    APPEND=${DEVQEMU_SYSKERN_CMDLINE}
-    if [ -n "$DEVQEMU_SYSDISK" ]; then
-        DISKOPTS="-drive file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none -device virtio-blk-device,drive=myblock"
-        APPEND="${APPEND} root=${DEVQEMU_SYSDISK_ROOT}"
-    else
-        DISKOPTS=""
+    if [ -n "${DEVQEMU_PRELOAD}" ]; then
+        export LD_PRELOAD="${DEVQEMU_PRELOAD}"
+        echo "     LD_PRELOAD=${DEVQEMU_PRELOAD}"
     fi
-    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK} ${DISKOPTS} -kernel ${DEVQEMU_SYSKERN} -append \"${APPEND}\" $@"
-    echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE}"
-    ${DEVQEMU_PROFILE} ${DEVQEMU_VALGRIND} ${QEMU_CMD} ${QEMU_CMDLINE}
+    # Build up the run as an array, this keeps the arguments distinct to avoid having to mess with eval or other whitespace or quote tricks
+    QEMU_RUN=(${QEMU_CMD})
+    QEMU_RUN+=(${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${DEVQEMU_NETWORK})
+    if [ -n "${DEVQEMU_SYSDISK}" ]; then
+        QEMU_RUN+=(-drive "file=${DEVQEMU_SYSDISK},id=myblock,index=0,if=none" -device "virtio-blk-device,drive=myblock")
+        QEMU_RUN+=(-append "${DEVQEMU_SYSKERN_CMDLINE} root=${DEVQEMU_SYSDISK_ROOT}")
+    else
+        QEMU_RUN+=(-append "${DEVQEMU_SYSKERN_CMDLINE}")
+    fi
+    QEMU_RUN+=(-kernel ${DEVQEMU_SYSKERN})
+    QEMU_RUN+=($@)
+    echo "Running \"\${QEMU_RUN[@]}\": ${QEMU_RUN[@]}"
+    ${DEVQEMU_PROFILE} ${DEVQEMU_DEBUG} "${QEMU_RUN[@]}"
+
+    unset LD_PRELOAD
 }
 
+# Run an arbitary kernel image without the auto-magic gubbins, useful for KVM UNIT test type things
+function devqemu_sysbin
+{
+    QEMU_CMD="${DEVQEMU_SYSBUILD}/${DEVQEMU_SYSBIN}"
+    echo "Using system: ${QEMU_CMD}"
+    export QEMU_LOG
+    export QEMU_LOG_FILENAME
+    echo "Env: QEMU_LOG=${QEMU_LOG}, QEMU_LOG_FILENAME=${QEMU_LOG_FILENAME}"
+    if [ -n "${DEVQEMU_PRELOAD}" ]; then
+        export LD_PRELOAD="${DEVQEMU_PRELOAD}"
+        echo "     LD_PRELOAD=${DEVQEMU_PRELOAD}"
+    fi
+    QEMU_RESULT_CHAR="-device virtio-serial-device -device virtconsole,chardev=ctd -chardev testdev,id=ctd"
+    QEMU_CMDLINE="${DEVQEMU_SYSMACH} ${DEVQEMU_SYSCPU} ${DEVQEMU_SYSOUT} ${QEMU_RESULT_CHAR} -kernel"
+    echo "Running: ${QEMU_CMD} ${QEMU_CMDLINE} ${KERN_CMD[@]} $@"
+    ${DEVQEMU_PROFILE} ${DEVQEMU_DEBUG} ${QEMU_CMD} ${QEMU_CMDLINE} $@
+
+    unset LD_PRELOAD
+}
+
+#
+# Common configuration functions for both user and system emulation
+#
+
+# Set the target architecture
 function devqemu_arch
 {
     echo "Current ARCH=${DEVQEMU_ARCH}"
-    if [[ -n "$1"  && -d "${DEVQEMU_SRC}/target-$1" ]]; then
+    if [[ -n "$1"  && -d "${DEVQEMU_SRC}/$1-softmmu" ]]; then
         DEVQEMU_ARCH=${1}
     else
         read -e -p "ARCH:" NEW_ARCH
@@ -128,25 +168,6 @@ function devqemu_arch
     echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
 }
 
-function devqemu_disk
-{
-    echo "Current DISK=${DEVQEMU_SYSDISK}"
-    if [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
-        DEVQEMU_SYSDISK=${CURRENT_PWD}/${1%/}
-    else
-        cd ${DEVQEMU_IMAGES_ROOT}
-        DIRS=`compgen -f -G {*.qcow2}`
-        read -e -p "disk:" NEW_DISK
-        if [ -z $NEW_DISK ]; then
-            unset DEVQEMU_SYSDISK
-        else
-            DEVQEMU_SYSDISK=${DEVQEMU_IMAGES_ROOT}/${NEW_DISK}
-        fi
-        cd -
-    fi
-    echo "Set disk to ${DEVQEMU_SYSDISK}"
-}
-
 function devqemu_profile
 {
     OLD_DEVQEMU_PROFILE=${DEVQEMU_PROFILE}
@@ -170,15 +191,37 @@ function devqemu_binfmt
     echo "DEVQEMU_BINFMT=${DEVQEMU_BINFMT}"
 }
 
-function devqemu_valgrind
+#
+# Enable debugging of QEMU invocation
+#
+function devqemu_debug
 {
-    OLD_DEVQEMU_VALGRIND="${DEVQEMU_VALGRIND}"
+    OLD_DEVQEMU_DEBUG="${DEVQEMU_DEBUG}"
+    unset DEVQEMU_PRELOAD
     if [[ -z "$@" ]]; then
-        unset DEVQEMU_VALGRIND
-        echo "Disabled valgrinding of qemu"
+        unset DEVQEMU_DEBUG
+        echo "Disabled debugging qemu"
     else
-        DEVQEMU_VALGRIND="$@"
-        echo "Using DEVQEMU_VALGRIND=${DEVQEMU_VALGRIND} (was ${OLD_DEVQEMU_VALGRIND})"
+        case "${1}" in
+            gdb*)
+                DEVQEMU_DEBUG="gdb --args "
+                ;;
+            valgrind*)
+                DEVQEMU_DEBUG="valgrind -- "
+                ;;
+            mutrace*)
+                DEVQEMU_PRELOAD="/usr/lib/libbfd.so"
+                DEVQEMU_DEBUG="mutrace -d --hash-size=6000 -- "
+                ;;
+            time*)
+                DEVQEMU_DEBUG="time "
+                ;;
+            *)
+                # this will most likely fail
+                DEVQEMU_DEBUG="$@"
+                ;;
+        esac
+        echo "Using DEVQEMU_DEBUG=${DEVQEMU_DEBUG} (was ${OLD_DEVQEMU_DEBUG})"
     fi
 }
 
@@ -206,17 +249,9 @@ function devqemu_logfile
     fi
 }
 
-function devqemu_debug
-{
-    OLD_DEVQEMU_GDB=${DEVQEMU_GDB}
-    if [ -z "$@" ]; then
-        unset DEVQEMU_GDB
-        echo "Disabled DEVQEMU_DEBUG"
-    else
-        DEVQEMU_GDB=$@
-        echo "Set DEVQEMU_DEBUG to ${DEVQEMU_GDB} (was ${OLD_DEVQEMU_GDB})"
-    fi
-}
+#
+# linux-user specific configuration
+#
 
 function devqemu_rootfs
 {
@@ -232,22 +267,6 @@ function devqemu_rootfs
         cd -
     fi
     echo "Set rootfs to ${DEVQEMU_ROOTFS} (was ${OLD_DEVQEMU_ROOTFS})"
-} 
-
-# Set the kernel image
-function devqemu_syskern
-{
-    OLD_DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN}
-    if [[ -n "$1"  && -f "$1" ]]; then
-        DEVQEMU_SYSKERN=${1}
-    else
-        cd ${DEVQEMU_IMAGES_ROOT}
-        DIRS=`compgen -f -G {*.img,*.axf}`
-        read -e -p "image:" NEW_KERN
-        DEVQEMU_SYSKERN=${DEVQEMU_IMAGES_ROOT}/${NEW_KERN}
-        cd -
-    fi
-    echo "Set kernel to ${DEVQEMU_SYSKERN} (was ${OLD_DEVQEMU_SYSKERN})"
 } 
 
 function do_bind_mount
@@ -301,12 +320,12 @@ function devqemu_setup_mounts
         sudo ln -s $linkpath ${DEVQEMU_ROOTFS}/lib64/$linkname
     done
 
-    if [ -n "$DEVQEMU_VALGRIND" ]; then
+    if [ -n "$DEVQEMU_DEBUG" ]; then
        echo "Copying valgrind"
        mkdir -p ${DEVQEMU_ROOTFS}/usr/bin
        cp /usr/bin/valgrind* ${DEVQEMU_ROOTFS}/usr/bin
     fi
-    
+
     # Magic dirs
     do_bind_mount /proc ${DEVQEMU_ROOTFS}/proc
     do_bind_mount /dev ${DEVQEMU_ROOTFS}/dev
@@ -322,7 +341,7 @@ function devqemu_clear_mounts
 
     sudo umount ${DEVQEMU_ROOTFS}/lib/x86_64-linux-gnu
     sudo umount ${DEVQEMU_ROOTFS}/usr/lib/x86_64-linux-gnu
-    
+
     sudo umount ${DEVQEMU_ROOTFS}/proc
     sudo umount ${DEVQEMU_ROOTFS}/dev
     sudo umount ${DEVQEMU_ROOTFS}/dev/pts
@@ -337,6 +356,56 @@ function devqemu_clear_all_mounts
         fi
     done
 }
+
+#
+# System Emulation specific configuration
+#
+# Set the kernel image
+
+function devqemu_sysdisk
+{
+    echo "Current DISK=${DEVQEMU_SYSDISK}"
+    if [[ -n "$1"  && -f "$1" ]]; then
+        DEVQEMU_SYSDISK=$1
+    elif [[ -n "$1"  && -d "${CURRENT_PWD}/$1" ]]; then
+        DEVQEMU_SYSDISK=${CURRENT_PWD}/${1%/}
+    else
+        cd ${DEVQEMU_IMAGES_ROOT}
+        DIRS=`compgen -f -G {*.qcow2}`
+        read -e -p "disk:" NEW_DISK
+        if [ -z $NEW_DISK ]; then
+            unset DEVQEMU_SYSDISK
+        else
+            DEVQEMU_SYSDISK=${DEVQEMU_IMAGES_ROOT}/${NEW_DISK}
+        fi
+        cd -
+    fi
+    echo "Set disk to ${DEVQEMU_SYSDISK}"
+}
+
+function devqemu_syskern_cmdline
+{
+    OLD_DEVQEMU_SYSKERN_CMDLINE=${DEVQEMU_SYSKERN_CMDLINE}
+    if [[ -n "$1" ]]; then
+        DEVQEMU_SYSKERN_CMDLINE="$@"
+    fi
+    echo "Set command line to ${DEVQEMU_SYSKERN_CMDLINE} (was ${OLD_DEVQEMU_SYSKERN_CMDLINE})"
+}
+
+function devqemu_syskern
+{
+    OLD_DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN}
+    if [[ -n "$1"  && -f "$1" ]]; then
+        DEVQEMU_SYSKERN=${1}
+    else
+        cd ${DEVQEMU_IMAGES_ROOT}
+        DIRS=`compgen -f -G {*.img,*.axf}`
+        read -e -p "image:" NEW_KERN
+        DEVQEMU_SYSKERN=${DEVQEMU_IMAGES_ROOT}/${NEW_KERN}
+        cd -
+    fi
+    echo "Set kernel to ${DEVQEMU_SYSKERN} (was ${OLD_DEVQEMU_SYSKERN})"
+} 
 
 function kill_qemu
 {
@@ -356,6 +425,20 @@ of QEMU from the shell. The following functions are available:
 $all_fns
 EOF
 
+}
+
+# Dump the current status
+function devqemu_status
+{
+    echo "Current ARCH=${DEVQEMU_ARCH} (${DEVQEMU_SYSCPU})"
+    echo "With ${DEVQEMU_BIN} from ${DEVQEMU_BUILD}"
+    echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
+    echo ""
+    echo "Current kernel: ${DEVQEMU_SYSKERN}"
+    echo "       cmdline: ${DEVQEMU_SYSKERN_CMDLINE}"
+    if [ -n "${DEVQEMU_SYSDISK}" ]; then
+        echo "Current disk image: ${DEVQEMU_SYSDISK}"
+    fi
 }
 
 function devqemu
