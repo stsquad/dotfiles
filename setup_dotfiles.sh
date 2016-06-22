@@ -57,8 +57,8 @@ do
 	dotfile=`echo $file | sed s/dot/\./`
 	dotfilepath=$HOME/$dotfile
 	link_dotfile $file $dotfilepath
-    elif [ -d $x ]; then
-	link_dotdir $x
+    elif [[ -d $x  && -e $x/setup.sh ]]; then
+	$x/setup.sh
     fi
 done
 

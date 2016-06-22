@@ -1,0 +1,78 @@
+#!/bin/bash
+#
+# .bashrc_history
+#
+# Bash helpers for processing shell history
+#
+
+HAVE_HH=$(find_alternatives "hh")
+HISTDIR=$HOME/.cache/shell
+if [ ! -d ${HISTDIR} ]; then
+    mkdir -p ${HISTDIR}
+fi
+
+# append (as I use lots of shells)
+shopt -s histappend
+
+export HISTFILE=$HISTDIR/bash_${BASHPID}_history
+export ALL_HISTORY=$HISTDIR/all_bash_history
+export HISTCONTROL=ignoreboth:erasedups
+export HISTIGNORE="&:rm *ls:[bf]g:exit:mpv"
+export HISTSIZE=100000
+export HISTFILESIZE=${HISTSIZE}
+
+export PROMPT_COMMAND="history -a"
+
+function combine_history
+{
+    cd $HISTDIR
+    tmp_hist=$(mktemp /tmp/hist.XXXXXX)
+    cat ${ALL_HISTORY} bash_* > $tmp_hist
+    sort -u $tmp_hist > ${ALL_HISTORY}
+    rm $tmp_hist
+    cd -
+}
+
+function flush_history
+{
+    builtin history -a         # append current history to $HISTFILE
+    combine_history
+    HISTFILE=${ALL_HISTORY} history -r # read combined history back in
+    rm ${HISTFILE}
+}
+
+# Flush history on exit
+trap "{ flush_history; }" EXIT
+
+function h
+{
+    builtin history -a
+
+    if [ -e ${HAVE_HH} ]; then
+        combine_history
+        HISTFILE=${ALL_HISTORY} hh "$@"
+    else
+        builtin history "$@"
+    fi
+}
+
+# # Setup history control - hard to get right, could do with
+# # bashcompletion as well. Just make sure I don't repeatedly delete stuff
+# # See: http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows#3055135
+
+
+# history() {
+#   _bash_history_sync
+#   builtin history "$@"
+# }
+
+# _bash_history_sync() {
+#   builtin history -a         #1
+#   HISTFILESIZE=$HISTSIZE     #2
+#   builtin history -c         #3
+#   builtin history -r         #4
+# }
+
+alias .hist="source ${DOTFILES_DIR}/dotbash_hist"
+
+echo "loading .bash_hist (with $HAVE_HH)"

@@ -176,12 +176,12 @@ function clean_path {
 # Check for active paths
 PATH_STATUS=""
 [[ $PATH == *"lava"* ]] && PATH_STATUS="lava"
-[[ $PATH == *"/usr/local"* ]] && PATH_STATUS="$PATH_STATUS local"
+[[ $PATH == *"/usr/local"* ]] && PATH_STATUS="${PATH_STATUS} local"
 
 # I have stuff in ~/bin
 if [ -d $HOME/bin ]; then
     export PATH=${HOME}/bin:$PATH
-    PATH_STATUS="$PATH_STATUS ~/bin"
+    PATH_STATUS="${PATH_STATUS} ~/bin"
 fi
 
 clean_path
@@ -191,8 +191,8 @@ alias sw="switch_world"
 alias aw="add_to_world"
 
 # Alias for reloading
-alias .path=". ~/.bash_path"
+alias .path=". $DOTFILES_DIR/dotbash_path"
 
 if [ ! -z "$PATH_STATUS" ]; then
-    echo "loading .bash_path ($PATH_STATUS)"
+    echo "loading .bash_path (${PATH_STATUS##[[:space:]]})"
 fi
