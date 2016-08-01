@@ -9,6 +9,9 @@ set history save on
 set history expansion on
 set history size 1000
 
+# I have tmux to deal with pagination
+set pagination off
+
 # disable some signal handlers I hit a lot in QEMU
 handle SIGUSR1 nostop noprint
 
