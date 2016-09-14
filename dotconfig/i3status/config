@@ -1,3 +1,7 @@
+#
+# This is the common i3status, there may be host specific ones linked to ~/.i3status
+#
+
 general {
         colors = true
         interval = 5
