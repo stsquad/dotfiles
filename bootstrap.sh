@@ -18,16 +18,25 @@ else
     MYGITHUB=https://github.com/stsquad
 fi
 
-# Currently assume apt based systems
-if [[ ! `dpkg-query --status git` ]]; then
-    echo "Fetching git"
-    if [ `id -u` = 0 ] ; then
-        apt-get update
-        apt-get install -y git
-    else
-        sudo apt-get update
-        sudo apt-get install -y git
-    fi
+GIT=`which git`
+if [[ ! -f ${GIT} ]]; then
+   # Are we on an dpkg/apt based system?
+   DPKG=`which dpkg-query`
+   if [[ ! -f ${DPKG} ]]; then
+       if [[ ! `dpkg-query --status git` ]]; then
+	   echo "Fetching git"
+	   if [ `id -u` = 0 ] ; then
+	       apt-get update
+	       apt-get install -y git
+	   else
+	       sudo apt-get update
+	       sudo apt-get install -y git
+	   fi
+       fi
+   else
+       echo "Don't know how to install git on this system"
+       exit 1
+   fi
 else
     echo "Already have git, good"
 fi

@@ -10,7 +10,8 @@ MY_GRP=`id -g`
 USERSPEC="--userspec ${MY_USER}:${MY_GRP}"
 
 # General paramters - these don't use QEMU env variables
-: ${DEVQEMU_SRC:=/home/alex/lsrc/qemu/qemu.git}
+
+: ${DEVQEMU_SRC:=$(find_directories "${HOME}/lsrc/qemu/qemu.git" "${HOME}/qemu.git")}
 : ${DEVQEMU_ARCH:=arm}
 
 # linux-user

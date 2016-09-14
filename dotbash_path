@@ -126,6 +126,29 @@ vercomp () {
 # Unlike switch_world this assumes you want to permanently add something
 # to your search paths. It's also a lot quieter about it.
 #
+
+function do_add_path
+{
+    UPDATED="none"
+    if [ -d ${1}/bin ]
+    then
+        UPDATED="Added ${1}/bin to PATH"
+        export PATH=${1}/bin:$PATH
+
+        # This *will not work* with suid binaries as it would
+        # open a massive security hole.
+        if [ -d ${1}/lib ]
+        then
+            UPDATED="${UPDATED} and ${1}/lib to LD_LIBRARY_PATH"
+            export LD_LIBRARY_PATH=${1}/lib:$LD_LIBRARY_PATH
+        fi
+    else
+        UPDATED="Just adding $1 to PATH"
+        export PATH=$1:$PATH
+    fi
+    echo "$UPDATED"
+}
+
 function add_to_world
 {
     if [ "$1" ]
@@ -142,27 +165,11 @@ function add_to_world
 
     if [ -d ${CURRENT_WORLD_ROOT}/install ]
     then
-        # Check the paths are valid
-	CURRENT_WORLD_BIN=${CURRENT_WORLD_ROOT}/install/bin
-	if [ -d "$CURRENT_WORLD_BIN" ]
-	then
-	    export PATH=$CURRENT_WORLD_BIN:$PATH
-	    RET=0
-	fi
-
-        # This *will not work* with suid binaries as it would
-	# open a massive security hole.
-
-	CURRENT_WORLD_LIB=${CURRENT_WORLD_ROOT}/install/lib
-	if [ -d "$CURRENT_WORLD_LIB" ]
-	then
-	    export LD_LIBRARY_PATH=$CURRENT_WORLD_LIB:$LD_LIBRARY_PATH
-	    RET=0
-	fi
+        do_add_path ${CURRENT_WORLD_ROOT}/install
+        RET=0
     else
-        echo "Just adding $CURRENT_WORLD_ROOT to PATH"
-        export PATH=$CURRENT_WORLD_ROOT:$PATH
-	RET=0
+        do_add_path ${CURRENT_WORLD_ROOT}
+        RET=0
     fi
 
     return $RET
