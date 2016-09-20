@@ -23,6 +23,14 @@ export HISTFILESIZE=${HISTSIZE}
 
 export PROMPT_COMMAND="history -a"
 
+if [ -e ${HAVE_HH} ]; then
+    export HH_CONFIG=keywords,hicolor
+    # if this is interactive shell, then bind hh to Ctrl-r
+    if [[ $- =~ .*i.* ]]; then
+        bind '"\C-r": "\C-a hh \C-j"'
+    fi
+fi
+
 function combine_history
 {
     cd $HISTDIR
@@ -52,7 +60,7 @@ function h
         combine_history
         HISTFILE=${ALL_HISTORY} hh "$@"
     else
-        builtin history "$@"
+        builtin history | ${GREP} "$@"
     fi
 }
 
