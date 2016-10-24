@@ -15,5 +15,14 @@ fi
 # for the benefit of Android
 export USE_CCACHE=1
 
+#
+# Remove ccache from the environment
+#
+function rmccache
+{
+    PATH=$(echo "$PATH" | awk -v RS=: -v ORS=: '$1 != "/usr/lib/ccache" {print $1}')
+    unset USE_CCACHE
+}
+
 alias .ccache=". ~/.bash_ccache"
 echo "loading .bash_ccache (using ${CCACHE_DIR})"
