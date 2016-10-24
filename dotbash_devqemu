@@ -33,6 +33,8 @@ DEVQEMU_SYSKERN=${DEVQEMU_SYSKERN:=${DEVQEMU_IMAGES_ROOT}/aarch32-current-linux-
 DEVQEMU_NETWORK="-netdev user,id=unet,hostfwd=tcp::2222-:22 -device virtio-net-device,netdev=unet"
 DEVQEMU_PROFILE=""
 DEVQEMU_DEBUG=""
+
+# Controls the initial launch - enabled it relies on binfmt_misc
 DEVQEMU_BINFMT=0
 
 : ${DEVQEMU_ROOTFS:=${DEVQEMU_ROOTFS_ROOT}/debian-unstable.arm64}
@@ -50,13 +52,31 @@ DEVQEMU_BINFMT=0
 #  devqemu_sysrun: launch a softmmu instance with a given kernel
 #
 
+# Return the "correct" path for a given binfmt binary
+function devqemu_copy_binfmt_helper
+{
+    BINFMT_HELPER=`update-binfmts --find $1`
+
+    # Check the helper matches our arch binary
+    HELPER_BASE=$(basename ${BINFMT_HELPER})
+    if [ "${HELPER_BASE}" != "${DEVQEMU_BIN}" ]; then
+        echo "/bin/false"
+        return
+    fi
+
+    HELPER_DIR=$(dirname ${BINFMT_HELPER})
+    mkdir -p ${DEVQEMU_ROOTFS}/${HELPER_DIR}
+    sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/${HELPER_DIR}
+
+    echo "${BINFMT_HELPER}"
+}
+
 function devqemu_run
 {
+    CMD=$(devqemu_copy_binfmt_helper ${DEVQEMU_ROOTFS}/$1)
+
     if [ ${DEVQEMU_BINFMT} -eq 0 ]; then
-        CMD="/bin/${DEVQEMU_BIN}"
-        echo "Copying ${DEVQEMU_BUILD}/${DEVQEMU_BIN} to ${DEVQEMU_ROOTFS}/bin/"
-        mkdir -p ${DEVQEMU_ROOTFS}/bin
-        sudo cp ${DEVQEMU_BUILD}/${DEVQEMU_BIN} ${DEVQEMU_ROOTFS}/bin/
+        echo "calling direct"
     else
         CMD=$1
         shift
@@ -209,6 +229,9 @@ function devqemu_debug
                 ;;
             valgrind*)
                 DEVQEMU_DEBUG="valgrind -- "
+                ;;
+            valmem*)
+                DEVQEMU_DEBUG="valgrind --smc-check=all-non-file --leak-check=full --log-file=valgrind-mem.log -- "
                 ;;
             mutrace*)
                 DEVQEMU_PRELOAD="/usr/lib/libbfd.so"
@@ -432,9 +455,13 @@ EOF
 function devqemu_status
 {
     echo "Current ARCH=${DEVQEMU_ARCH} (${DEVQEMU_SYSCPU})"
-    echo "With ${DEVQEMU_BIN} from ${DEVQEMU_BUILD}"
-    echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
     echo ""
+    echo "User Mode:"
+    echo "With ${DEVQEMU_BIN} from ${DEVQEMU_BUILD}"
+    echo "Copying for binfmt_misc: ${DEVQEMU_BINFMT}"
+    echo ""
+    echo "System Mode:"
+    echo "With ${DEVQEMU_SYSBIN} from ${DEVQEMU_SYSBUILD}"
     echo "Current kernel: ${DEVQEMU_SYSKERN}"
     echo "       cmdline: ${DEVQEMU_SYSKERN_CMDLINE}"
     if [ -n "${DEVQEMU_SYSDISK}" ]; then
