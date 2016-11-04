@@ -9,4 +9,33 @@ alias valchk="$VALGRIND --smc-check=all-non-file --leak-check=no --log-file=valg
 alias valdrd="$VALGRIND --smc-check=all-non-file --tool=drd --exclusive-threshold=10 --shared-threshold=10 --log-file=valgrind-drd.log"
 alias valhel="$VALGRIND --smc-check=all-non-file --tool=helgrind --log-file=valgrind-helgrind.log"
 
+function objdiff
+{
+    if [ $# != 2 ]; then
+        echo "need two objects"
+        return
+    fi
+
+    SOURCES=()
+
+    OBJ_OPTS="-d -l --no-show-raw-insn"
+    for o in $@;
+    do
+             BN=$(basename $o)
+             TN="/tmp/${BN}.S"
+             echo "$o -> $BN -> $TN"
+             objdump ${OBJ_OPTS} $o > ${TN}
+             perl -p -i.orig -e "s/[[:xdigit:]]{1,5}\:/----\:/" ${TN}
+
+             SOURCES=("${SOURCES[@]}" ${TN})
+             echo $SOURCES
+    done
+
+    TW=$(tput cols)
+    DIFF_OPTS="-y -W ${TW}"
+
+#    echo "${DIFF_OPTS} ${SOURCES[0]} ${SOURCES[1]}"
+    diff ${DIFF_OPTS} ${SOURCES[0]} ${SOURCES[1]} | less
+}
+
 alias .valgrind=". ~/.bash_valgrind"

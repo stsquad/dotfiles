@@ -14,6 +14,16 @@ alias maz marc.zyngier@arm.com
 alias drew drjones@redhat.com
 alias paolo pbonzini@redhat.com
 alias rth rth@twiddle.net
+alias stefan stefanha@redhat.com
+alias treblig dgilbert@redhat.com
+alias alvise a.rigo@virtualopensystems.com
+alias sergey serge.fdrv@gmail.com
+alias fredk fred.konrad@greensocs.com
+alias emilio cota@braap.org
+alias danpb berrange@redhat.com
+alias armbru armbru@redhat.com
+alias pranith bobby.prani@gmail.com
+alias fam famz@redhat.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
@@ -31,6 +41,10 @@ alias a64 peter.maydell@linaro.org rob.herring@linaro.org
 
 # SuSE A64 people
 alias suse-a64 agraf@suse.de matz@suse.de
+
+# VSO/Huawei
+alias alvise a.rigo@virtualopensystems.com
+alias claudio claudio.fontana@huawei.com
 
 # QEMU tracing people
 alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
@@ -61,16 +75,10 @@ alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freesca
 alias qemu-debug qemu qemu-arm pm chazy zhichao.huang@linaro.org
 alias qemu-debug-cc kvmarm
 
-alias qemu-mttcg mttcg@listserver.greensocs.com mark.burton@greensocs.com fred.konrad@greensocs.com
-alias qemu-mttcg-cc qemu pm
+alias qemu-mttcg mttcg@listserver.greensocs.com qemu fredk alvise emilio pranith nikunj@linux.vnet.ibm.com
+alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com sergey rth pm claudio
 
-# MTTCG
-alias alvise a.rigo@virtualopensystems.com
-alias claudio claudio.fontana@huawei.com
-
-alias mttcg qemu-mttcg
-alias mttcg-cc qemu-mttcg-cc
-alias mttcg-testing a.spyridakis@virtualopensystems.com drew alvise claudio
+alias qemu-softmmu alvise claudio jani.kokkonen@huawei.com
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net
