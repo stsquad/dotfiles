@@ -1,7 +1,8 @@
 #!/bin/bash
 # 
 # Bootstrap a new system
-# wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
+# wget -O - https://raw.githubusercontent.com/stsquad/dotfiles/master/bootstrap.sh | bash
+# curl -s https://raw.githubusercontent.com/stsquad/dotfiles/master/bootstrap.sh | bash
 #
 set -e
 
