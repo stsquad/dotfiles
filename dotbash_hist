@@ -56,8 +56,8 @@ function h
 {
     builtin history -a
 
+    combine_history
     if [ -e ${HAVE_HH} ]; then
-        combine_history
         HISTFILE=${ALL_HISTORY} hh "$@"
     else
         builtin history | ${GREP} "$@"

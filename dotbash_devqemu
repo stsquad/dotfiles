@@ -13,6 +13,7 @@ USERSPEC="--userspec ${MY_USER}:${MY_GRP}"
 
 : ${DEVQEMU_SRC:=$(find_directories "${HOME}/lsrc/qemu/qemu.git" "${HOME}/qemu.git")}
 : ${DEVQEMU_ARCH:=arm}
+DEVQEMU_HOST_ARCH=`uname -m`
 
 # linux-user
 DEVQEMU_BUILD=${DEVQEMU_SRC}/${DEVQEMU_ARCH}-linux-user
@@ -383,8 +384,8 @@ function devqemu_clear_all_mounts
 
 #
 # System Emulation specific configuration
-#
-# Set the kernel image
+
+# select the disk
 
 function devqemu_sysdisk
 {
@@ -406,6 +407,8 @@ function devqemu_sysdisk
     fi
     echo "Set disk to ${DEVQEMU_SYSDISK}"
 }
+
+# Set the kernel image
 
 function devqemu_syskern_cmdline
 {

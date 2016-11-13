@@ -82,6 +82,19 @@ function find_directories ()
     echo "/alternative/not/found"
 }
 
+# Search though a list of files, returning first match
+function find_alt_file ()
+{
+    for f in "$@"
+    do
+      if [ -f "$f" ]; then
+	  echo "$f"
+	  return
+      fi
+    done
+    echo "/alternative/not/found"
+}
+
 #
 # Lets see if we have a decent "grep"
 #
