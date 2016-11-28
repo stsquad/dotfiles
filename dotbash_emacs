@@ -25,7 +25,7 @@ if [ "${DISPLAY}" ]; then
 	fi
     done
 else
-    for emacs_daemon_machine in zen socrates localhost
+    for emacs_daemon_machine in zen socrates overdrive01 localhost
     do
 	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
 	    EMACS_DAEMON=1
