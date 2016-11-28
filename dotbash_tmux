@@ -97,6 +97,11 @@ function tmux_sync_env
 }
 alias se="tmux_sync_env"
 
+function tmux_set_name
+{
+    tmux rename-window $(basename `pwd`)
+}
+
 if [[ $TMUX == *tmate* ]]; then
     TMATE_MSG="inside TMATE"
     function tmate_session
