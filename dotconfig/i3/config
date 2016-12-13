@@ -34,7 +34,8 @@ focus_follows_mouse no
 
 # start a terminal
 #bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Return exec "urxvtcd --loginShell || urxvt --loginShell"
+exec --no-startup-id "urxvtd -q -o -f"
+bindsym $mod+Return exec "urxvtc --loginShell || urxvt --loginShell"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
