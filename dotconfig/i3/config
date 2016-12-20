@@ -16,6 +16,7 @@ set $mod Mod4
 #
 exec --no-startup-id /home/alex/.config/i3/setup_display.sh
 exec --no-startup-id /home/alex/.config/i3/setup_systray.sh
+exec --no-startup-id /home/alex/.config/i3/setup_keys.sh
 
 # background, screensaver and locking
 exec xautolock -time 10 -locker '/home/alex/.config/i3/lock_screen.sh'
