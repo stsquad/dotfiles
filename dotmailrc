@@ -44,7 +44,6 @@ alias suse-a64 agraf@suse.de matz@suse.de
 
 # VSO/Huawei
 alias alvise a.rigo@virtualopensystems.com
-alias claudio claudio.fontana@huawei.com
 
 # QEMU tracing people
 alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
@@ -75,10 +74,11 @@ alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freesca
 alias qemu-debug qemu qemu-arm pm chazy zhichao.huang@linaro.org
 alias qemu-debug-cc kvmarm
 
+# MTTCG work
 alias qemu-mttcg mttcg@listserver.greensocs.com qemu fredk alvise emilio pranith nikunj@linux.vnet.ibm.com
-alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com sergey rth pm claudio
+alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com sergey rth pm bamvor.zhangjian@linaro.org
 
-alias qemu-softmmu alvise claudio jani.kokkonen@huawei.com
+alias qemu-softmmu alvise jani.kokkonen@huawei.com
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net
