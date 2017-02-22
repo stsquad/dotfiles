@@ -37,6 +37,7 @@ focus_follows_mouse no
 #bindsym $mod+Return exec i3-sensible-terminal
 exec --no-startup-id "urxvtd -q -o -f"
 bindsym $mod+Return exec "urxvtc --loginShell || urxvt --loginShell"
+bindsym $mod+x exec "emacsclient -n -a '' -c"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
