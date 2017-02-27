@@ -16,6 +16,7 @@ function copy_to_nas -d "Copy files to the NAS"
     end
 end
 
+
 # Shell prompt tweaks
 # Based on https://gist.github.com/gak/5747159
 #
@@ -40,6 +41,18 @@ function error
     _common_section $argv[1] $ce $argv[2] $ce
 end
 
+function git_branch
+    set -g git_branch (git rev-parse --abbrev-ref HEAD ^ /dev/null)
+    if [ $status -ne 0 ]
+        set -ge git_branch
+        set -g git_unstaged 0
+        set -g git_staged 0
+    else
+        set -g git_staged (git diff --cached --numstat | wc -l)
+        set -g git_unstaged (git diff --numstat | wc -l)
+    end
+end
+
 function fish_prompt --description "Display the prompt"
     # $status gets nuked as soon as something else is run, e.g. set_color
     # so it has to be saved asap.
@@ -54,6 +67,9 @@ function fish_prompt --description "Display the prompt"
     set -g c4 (set_color ffffff)
     set -g ce (set_color $fish_color_error)
 
+    set -g cok (set_color 00ff7f)
+    set -g cnok (set_color b22222)
+
     # Clear the line because fish seems to emit the prompt twice. The initial
     # display, then when you press enter.
     printf "\033[K"
@@ -66,7 +82,7 @@ function fish_prompt --description "Display the prompt"
     end
 
     # Output user/hostname
-    printf "%s@%s " $USER $__fish_prompt_hostname
+    printf "%s@%s " $USER $HOSTNAME
 
     # Track the last non-empty command. It's a bit of a hack to make sure
     # execution time and last command is tracked correctly.
@@ -96,14 +112,17 @@ function fish_prompt --description "Display the prompt"
     end
 
     # Git branch and dirty files
-    # git_branch
-    # if set -q git_branch
-    #     set out $git_branch
-    #     if test $git_dirty_count -gt 0
-    #         set out "$out$c0:$ce$git_dirty_count"
-    #     end
-    #     section git $out
-    # end
+    git_branch
+    if set -q git_branch
+        set out $git_branch
+        # if test $git_staged_count -gt 0;
+        #     set out "$out$cok:$git_staged_count"
+        # end
+        # if test $git_unstaged_count -gt 0;
+        #     set out "$out$c0/$cnok$git_unstaged_count"
+        # end
+        section git $out
+    end
 
     # Current Directory
     # 1st sed for colourising forward slashes
