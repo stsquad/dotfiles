@@ -158,6 +158,7 @@ bar {
 }
 
 # Applictation dependent mapping
+for_window [title="QEMU"] floating enable
 for_window [title="TextArea"] floating enable
 for_window [title="Atomic Chrome:"] floating enable
 for_window [title="Edit with Emacs FRAME"] floating enable
