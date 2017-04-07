@@ -44,7 +44,7 @@ bindsym $mod+Shift+Q kill
 
 # start dmenu (a program launcher)
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec i3-dmenu-desktop
+bindsym $mod+d exec j4-dmenu-desktop
 
 # Move focus
 bindsym $mod+Left focus left
