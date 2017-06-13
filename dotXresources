@@ -15,6 +15,10 @@ URxvt.title: urxvt term
 URxvt.keysym.Home:          \033[1~
 URxvt.keysym.End:           \033[4~
 
+! Also squash the keyboard composition keys which I never use (and get in the way of mosh Ctrl-shift bindings)
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
 ! Clickable URLS
 URxvt*perl-ext-common : default,matcher
 URxvt*url-launcher     : /usr/bin/xdg-open

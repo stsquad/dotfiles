@@ -44,7 +44,7 @@ bindsym $mod+Shift+Q kill
 
 # start dmenu (a program launcher)
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec i3-dmenu-desktop
+bindsym $mod+d exec j4-dmenu-desktop
 
 # Move focus
 bindsym $mod+Left focus left
@@ -158,13 +158,14 @@ bar {
 }
 
 # Applictation dependent mapping
+for_window [title="QEMU"] floating enable
 for_window [title="TextArea"] floating enable
 for_window [title="Atomic Chrome:"] floating enable
 for_window [title="Edit with Emacs FRAME"] floating enable
 
 # Multimedia Keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && killall -SIGUSR1 i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && killall -SIGUSR1 i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && killall -SIGUSR1 i3status
 
 # Find stuff
 #bindsym $mod+question exec /home/ajb/src/i3-py.git/examples/winmenu.py
