@@ -1,0 +1,35 @@
+
+# -*- conf -*-
+# mbsync config IMAP mail on Overdrive01
+#
+# This is an experimental sync for just syncing work GMail
+#
+
+#
+# Linaro accounts
+#
+IMAPAccount linaro
+        Host imap.gmail.com
+        User alex.bennee@linaro.org
+        PassCmd "pass google-imap"
+        ##Use SSL
+        ##UseIMAPS yes
+        SSLType IMAPS
+        CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore linaro-gmail
+        Account linaro
+
+MaildirStore linaro-local
+	Path	~/Maildir/
+	Inbox	~/Maildir/Inbox
+        SubFolders Verbatim
+
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+Channel linaro-sync-all
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns "[Gmail]/All Mail" "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/Bin" "[Gmail]/Drafts"
+        Create Both
+        SyncState *
+
