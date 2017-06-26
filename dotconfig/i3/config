@@ -44,7 +44,7 @@ bindsym $mod+Shift+Q kill
 
 # start dmenu (a program launcher)
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec j4-dmenu-desktop
+bindsym $mod+d exec "rofi -combi-modi drun,run,ssh -ssh-client mosh -show combi -modi combi"
 
 # Move focus
 bindsym $mod+Left focus left
@@ -170,5 +170,4 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 # Find stuff
 #bindsym $mod+question exec /home/ajb/src/i3-py.git/examples/winmenu.py
 #bindsym $mod+Tab exec /home/ajb/src/i3-py.git/examples/winmenu.py
-bindsym $mod+Tab exec ~/bin/winmenu.py
-
+bindsym $mod+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
