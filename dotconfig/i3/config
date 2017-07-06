@@ -72,6 +72,7 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+f fullscreen
 
 # change container layout (stacked, tabbed, default)
+workspace_layout tabbed
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout default
 bindsym $mod+v split v
