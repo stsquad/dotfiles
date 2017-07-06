@@ -52,7 +52,7 @@ function combine_history
 function flush_history
 {
     builtin history -a         # append current history to $HISTFILE
-    combine_history
+    cat ${HISTFILE} >> ${ALL_HISTORY}
     rm ${HISTFILE}
 }
 
