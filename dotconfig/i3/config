@@ -49,8 +49,8 @@ bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi"
 #bindsym $mod+w exec "rofi -modi window"
 bindsym $mod+s exec "rofi -modi ssh -show ssh -terminal urxvtc"
 bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh -terminal urxvtc -p mosh -ssh-client mosh"
-bindsym $mod+Shift+Tab exec "rofi -modi window -show window"
-bindsym $mod+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
+bindsym $mod+Tab exec "rofi -modi window -show window"
+bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
 
 
 # Move focus
@@ -131,7 +131,6 @@ bindsym $mod+Shift+9 move container to workspace number 9
 # but $mod+shift+right works
 bindsym $mod+p move container to output HDMI2
 bindsym $mod+Shift+p move workspace to output HDMI2
-bindsym $mod+s move container to output VGA1
 bindsym $mod+Shift+s move workspace to output VGA1
 
 
