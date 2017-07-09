@@ -3,14 +3,16 @@
 # Setup initial layout, not quite a saved session but close
 #
 
+SHELL_START="urxvtc -e /bin/bash --init-file ~/.bash_profile || urxvt --loginShell"
+
 # FIXME: only spawn terminals if non exist
 for i in `seq 0 9`; do
-    i3-msg "workspace number $i; exec urxvtc --loginShell || urxvt --loginShell"
+    i3-msg "workspace number $i; exec ${SHELL_START}"
 done
 
 # extra terminals in 1
 i3-msg "workspace 1"
-i3-msg "exec urxvtc -e /bin/bash --rcfile ~/.bash_profile"
+i3-msg "exec ${SHELL_START}"
 i3-msg 'rename workspace to "1: Shells"'
 
 # set up 2 for work

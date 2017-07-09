@@ -36,7 +36,7 @@ focus_follows_mouse no
 # start a terminal
 #bindsym $mod+Return exec i3-sensible-terminal
 exec --no-startup-id "urxvtd -q -o -f"
-bindsym $mod+Return exec "urxvtc --loginShell || urxvt --loginShell"
+bindsym $mod+Return exec "urxvtc -e /bin/bash --init-file ~/.bash_profile || urxvt --loginShell"
 bindsym $mod+x exec "emacsclient -n -a '' -c"
 
 # kill focused window
@@ -47,8 +47,8 @@ bindsym $mod+Shift+Q kill
 bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi"
 # window selector
 #bindsym $mod+w exec "rofi -modi window"
-bindsym $mod+s exec "rofi -modi ssh -show ssh -terminal urxvtc"
-bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh -terminal urxvtc -p mosh -ssh-client mosh"
+bindsym $mod+s exec "rofi -modi ssh -show ssh -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
+bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
 bindsym $mod+Tab exec "rofi -modi window -show window"
 bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
 
