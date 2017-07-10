@@ -73,7 +73,7 @@ set -g LP_ENABLE_JOBS
 set -g LP_ENABLE_LOAD
 
 # Do you want to use the batt feature ?
-set -g LP_ENABLE_BATT
+# set -g LP_ENABLE_BATT
 
 # Do you want to use vcs features with root account
 # Recommended value is 0
@@ -96,7 +96,7 @@ set -g LP_ENABLE_GIT
 #set -g LP_ENABLE_BZR
 
 # Show time of the last prompt display
-#set -g LP_ENABLE_TIME
+set -g LP_ENABLE_TIME
 
 # When showing time, use an analog clock instead of numeric values.
 # The analog clock is "accurate" to the nearest half hour.
@@ -109,10 +109,12 @@ set -g LP_ENABLE_GIT
 # recommended value is 0
 # See LP_TITLE_OPEN and LP_TITLE_CLOSE to change escape characters to adapt this
 # feature to your specific terminal.
-#set -g LP_ENABLE_TITLE
+set -g LP_ENABLE_TITLE
+set -g LP_TITLE_OPEN "\033k"
+set -g LP_TITLE_CLOSE "\033\\"
 
 # Enable Title for screen and byobu
-#set -g LP_ENABLE_SCREEN_TITLE
+set -g LP_ENABLE_SCREEN_TITLE
 
 # Use differents colors for differents hosts you SSH in
 set -g LP_ENABLE_SSH_COLORS
@@ -123,7 +125,7 @@ set -g LP_DISABLED_VCS_PATH ""
 
 # Show dettached sessions of multiplexers
 
-#set -g LP_ENABLE_TMUX
+set -g LP_ENABLE_TMUX
 #set -g LP_ENABLE_SCREEN
 
 # vim: set et sts=4 sw=4 tw=120 ft=sh:
