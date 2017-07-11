@@ -38,11 +38,35 @@ else
     HISTMSG="plain"
 fi
 
+function clean_history
+{
+    cleaned=0
+    pids=$(ps -C bash -o pid --no-headers)
+    for f in $HISTDIR/bash*_history; do
+        fpid=`echo $f | sed -r 's/.*_([0-9]*)_.*/\1/g'`
+
+        # is it still running?
+        for p in $pids; do
+            if test $p -eq $fpid; then
+                f=""
+                break;
+            fi
+        done;
+
+        if [ ! -z "$f" ]; then
+            let cleaned+=1
+            rm $f
+        fi
+    done
+
+    echo "Cleaned $cleaned stale entries"
+}
+
 function combine_history
 {
     (cd $HISTDIR;
      tmp_hist=$(mktemp /tmp/hist.XXXXXX);
-     cat ${ALL_HISTORY} bash_* > $tmp_hist;
+     cat ${ALL_HISTORY} bash_* | grep -v "^(cd|copy_|sleep|rm|ls|mv|mpv|mkv2mp4)" > $tmp_hist
      sort -u $tmp_hist > ${ALL_HISTORY};
      rm $tmp_hist)
 }
