@@ -185,7 +185,7 @@ else
     load_extra_module apt apt-get
     load_extra_module kvm kvm
     load_extra_module keys ssh-agent gpg-agent keychain
-    load_extra_module screen screen
+    # load_extra_module screen screen
     load_extra_module valgrind valgrind
     load_extra_module bitbake bitbake
     load_extra_module ccache ccache
