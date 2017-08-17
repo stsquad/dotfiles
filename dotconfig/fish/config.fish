@@ -142,3 +142,8 @@ function fish_prompt --description "Display the prompt"
     printf $c4
     printf "> "
 end
+
+# Update tmux
+function update_tmux_title -d "Update TMUX pane title" -e fish_prompt
+    printf "\033k%s(f!)\033\\" (prompt_pwd)
+end
