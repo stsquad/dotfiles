@@ -15,6 +15,7 @@ alias drew drjones@redhat.com
 alias paolo pbonzini@redhat.com
 alias rth rth@twiddle.net
 alias stefan stefanha@redhat.com
+alias stefanha stefan
 alias treblig dgilbert@redhat.com
 alias alvise a.rigo@virtualopensystems.com
 alias sergey serge.fdrv@gmail.com
@@ -24,6 +25,8 @@ alias danpb berrange@redhat.com
 alias armbru armbru@redhat.com
 alias pranith bobby.prani@gmail.com
 alias fam famz@redhat.com
+alias gerd kraxel@redhat.com
+alias edgar edgar.iglesias@xilinx.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
@@ -79,6 +82,9 @@ alias qemu-mttcg mttcg@listserver.greensocs.com qemu fredk alvise emilio pranith
 alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com sergey rth pm bamvor.zhangjian@linaro.org
 
 alias qemu-softmmu alvise jani.kokkonen@huawei.com
+
+# Record/replay
+alias qemu-rr paolo boost.lists@gmail.com pavel.dovgaluk@ispras.ru
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net
