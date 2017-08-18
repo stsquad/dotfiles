@@ -36,15 +36,22 @@ focus_follows_mouse no
 # start a terminal
 #bindsym $mod+Return exec i3-sensible-terminal
 exec --no-startup-id "urxvtd -q -o -f"
-bindsym $mod+Return exec "urxvtc --loginShell || urxvt --loginShell"
+bindsym $mod+Return exec "urxvtc -e /bin/bash --init-file ~/.bash_profile || urxvt --loginShell"
 bindsym $mod+x exec "emacsclient -n -a '' -c"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
 
-# start dmenu (a program launcher)
+# Start program launcher
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec j4-dmenu-desktop
+bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi"
+# window selector
+#bindsym $mod+w exec "rofi -modi window"
+bindsym $mod+s exec "rofi -modi ssh -show ssh -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
+bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
+bindsym $mod+Tab exec "rofi -modi window -show window"
+bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
+
 
 # Move focus
 bindsym $mod+Left focus left
@@ -65,6 +72,7 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+f fullscreen
 
 # change container layout (stacked, tabbed, default)
+workspace_layout tabbed
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout default
 bindsym $mod+v split v
@@ -124,7 +132,6 @@ bindsym $mod+Shift+9 move container to workspace number 9
 # but $mod+shift+right works
 bindsym $mod+p move container to output HDMI2
 bindsym $mod+Shift+p move workspace to output HDMI2
-bindsym $mod+s move container to output VGA1
 bindsym $mod+Shift+s move workspace to output VGA1
 
 
@@ -166,9 +173,3 @@ for_window [title="Edit with Emacs FRAME"] floating enable
 # Multimedia Keys
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && killall -SIGUSR1 i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && killall -SIGUSR1 i3status
-
-# Find stuff
-#bindsym $mod+question exec /home/ajb/src/i3-py.git/examples/winmenu.py
-#bindsym $mod+Tab exec /home/ajb/src/i3-py.git/examples/winmenu.py
-bindsym $mod+Tab exec ~/bin/winmenu.py
-

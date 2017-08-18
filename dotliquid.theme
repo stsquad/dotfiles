@@ -1,0 +1,104 @@
+#!/bin/fish
+# fish-lp
+# Copyright (C) 2017 James W. Barnett
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+####################################
+# LIQUID PROMPT DEFAULT THEME FILE #
+####################################
+
+# Special characters
+# Be sure to use characters that exists in the font you use. You can use several
+# characters at once.
+# Below is an example of how to fallback to ascii if the term is not unicode capable.
+# Defaults to UTF-8 characters.
+set -l mylang (echo $LANG | cut -c 7-)
+if [ $mylang = "UTF-8" ]
+    # If charset is UTF-8.
+    set -g LP_MARK_BATTERY "⌁"     # in front of the battery charge
+    set -g LP_MARK_ADAPTER "⏚"     # displayed when plugged
+    set -g LP_MARK_LOAD "⌂"        # in front of the load
+    set -g LP_MARK_PROXY "↥"       # indicate a proxy in use
+    set -g LP_MARK_HG "☿"   # prompt mark in hg repositories
+    set -g LP_MARK_SVN "‡"  # prompt mark in svn repositories
+    set -g LP_MARK_GIT "±"         # prompt mark in git repositories
+    set -g LP_MARK_FOSSIL "⌘"         # prompt mark in fossil repositories
+    set -g LP_MARK_UNTRACKED "*"        # if git has untracked files
+    set -g LP_MARK_STASH "+"        # if git has stashs
+    set -g LP_MARK_SHORTEN_PATH "…" # prompt mark in shortened paths
+else
+    # If charset is anything else, fallback to ASCII chars
+    set -g LP_MARK_BATTERY "b"
+    set -g LP_MARK_ADAPTER "p"
+    set -g LP_MARK_LOAD "c"
+    set -g LP_MARK_PROXY "^"
+    set -g LP_MARK_HG "m"
+    set -g LP_MARK_SVN "="
+    set -g LP_MARK_GIT "+"
+    set -g LP_MARK_FOSSIL "f"
+    set -g LP_MARK_UNTRACKED "*"
+    set -g LP_MARK_STASH "+"
+    set -g LP_MARK_SHORTEN_PATH "..."
+end
+
+set -g LP_MARK_DEFAULT "\$"
+set -g LP_MARK_ROOT "#"
+set -g LP_MARK_BRACKET_OPEN "["
+set -g LP_MARK_BRACKET_CLOSE "]"
+
+set -g LP_COLOR_PATH "$BOLD"
+set -g LP_COLOR_PATH_ROOT "$BOLD_YELLOW"
+set -g LP_COLOR_PROXY "$BOLD_BLUE"
+set -g LP_COLOR_JOB_D "$YELLOW"
+set -g LP_COLOR_JOB_R "$YELLOW"
+set -g LP_COLOR_JOB_Z "$YELLOW"
+set -g LP_COLOR_ERR "$PURPLE"
+set -g LP_COLOR_MARK "$BOLD"
+set -g LP_COLOR_MARK_ROOT "$BOLD_RED"
+set -g LP_COLOR_USER_LOGGED ""
+set -g LP_COLOR_USER_ALT "$BOLD"
+set -g LP_COLOR_USER_ROOT "$BOLD_YELLOW"
+set -g LP_COLOR_HOST ""
+set -g LP_COLOR_SSH "$BLUE"
+set -g LP_COLOR_SU "$BOLD_YELLOW"
+set -g LP_COLOR_TELNET "$WARN_RED"
+set -g LP_COLOR_X11_ON "$GREEN"
+set -g LP_COLOR_X11_OFF "$YELLOW"
+set -g LP_COLOR_WRITE "$GREEN"
+set -g LP_COLOR_NOWRITE "$RED"
+set -g LP_COLOR_UP "$GREEN"
+set -g LP_COLOR_COMMITS "$YELLOW"
+set -g LP_COLOR_CHANGES "$RED"
+set -g LP_COLOR_DIFF "$PURPLE"
+set -g LP_COLOR_CHARGING_ABOVE "$GREEN"
+set -g LP_COLOR_CHARGING_UNDER "$YELLOW"
+set -g LP_COLOR_DISCHARGING_ABOVE "$YELLOW"
+set -g LP_COLOR_DISCHARGING_UNDER "$RED"
+set -g LP_COLOR_TIME "$BLUE"
+set -g LP_COLOR_IN_MULTIPLEXER "$BOLD_BLUE"
+
+set -g LP_PS1_PREFIX ""
+set -g LP_COLORMAP_0 ""
+set -g LP_COLORMAP_1 "$GREEN"
+set -g LP_COLORMAP_2 "$BOLD_GREEN"
+set -g LP_COLORMAP_3 "$YELLOW"
+set -g LP_COLORMAP_4 "$BOLD_YELLOW"
+set -g LP_COLORMAP_5 "$RED"
+set -g LP_COLORMAP_6 "$BOLD_RED"
+set -g LP_COLORMAP_7 "$WARN_RED"
+set -g LP_COLORMAP_8 "$CRIT_RED"
+set -g LP_COLORMAP_9 "$DANGER_RED"
+
+# vim: set et sts 4 sw=4 tw=120 ft=sh:
