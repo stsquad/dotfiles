@@ -25,7 +25,7 @@
 # Below is an example of how to fallback to ascii if the term is not unicode capable.
 # Defaults to UTF-8 characters.
 set -l mylang (echo $LANG | cut -c 7-)
-if [ $mylang = "utf8" ]
+if [ $mylang = "UTF-8" ]
     # If charset is UTF-8.
     set -g LP_MARK_BATTERY "⌁"     # in front of the battery charge
     set -g LP_MARK_ADAPTER "⏚"     # displayed when plugged
