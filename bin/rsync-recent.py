@@ -22,6 +22,8 @@ import subprocess
 
 logger = logging.getLogger("rsync-recent")
 
+LIMIT_4G=(4 * 1024 ** 3)
+
 #
 # Command line options
 #
@@ -36,6 +38,8 @@ def parse_arguments():
                         help="Supress all output")
 
     parser.add_argument('--total-size', default=10000000000,
+    parser.add_argument('--skip-4g', default=False, action="store_true",
+                        help="Skip files larger than 4gb (vfat limit)")
                         help="Maximum total size (default 10Gb)")
 
     # Positional
@@ -65,12 +69,15 @@ if __name__ == "__main__":
     total_size = 0
 
     for mtime, size, path in sorted(entries, reverse=True):
+        if args.skip_4g and size > LIMIT_4G:
+            continue
+
         total_size += size
         if total_size < args.total_size:
             flist.write("%s\n" % (path[len(src):]))
             if not args.quiet: print ("%s, %d, %s" % (path, size, mtime))
 
     flist.flush()
-    result = subprocess.call(["rsync", "-av", "--no-relative",
+    result = subprocess.call(["rsync", "-av", "--size-only", "--no-relative",
                               "--files-from",
                               flist.name, src, args.destination])
