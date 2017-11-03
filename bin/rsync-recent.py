@@ -67,7 +67,7 @@ if __name__ == "__main__":
     for mtime, size, path in sorted(entries, reverse=True):
         total_size += size
         if total_size < args.total_size:
-            flist.write("%s\n" % (path.lstrip(src)))
+            flist.write("%s\n" % (path[len(src):]))
             if not args.quiet: print ("%s, %d, %s" % (path, size, mtime))
 
     flist.flush()
