@@ -66,7 +66,7 @@ function combine_history
 {
     (cd $HISTDIR;
      tmp_hist=$(mktemp /tmp/hist.XXXXXX);
-     cat ${ALL_HISTORY} bash_* | grep -v "^(cd|copy_|sleep|rm|ls|mv|mpv|mkv2mp4)" > $tmp_hist
+     awk '{ if (length($0) < 2048) print }' ${ALL_HISTORY} bash_* | grep -v "^(cd|copy_|sleep|rm|ls|mv|mpv|mkv2mp4)" > $tmp_hist
      sort -u $tmp_hist > ${ALL_HISTORY};
      rm $tmp_hist)
 }
