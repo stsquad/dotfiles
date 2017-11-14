@@ -56,6 +56,14 @@ else
 fi
 
 #
+# Count the agents
+#
+AGENTS=$(ps -u ${USER} | grep ssh-agent | wc -l)
+if (( $AGENTS > 1 )); then
+    KEYSMSG+=" ${AGENTS}!"
+fi
+
+#
 # When I log on remotely I only have console mode and as such I need to reset
 # gpg-agent so it won't leave passphrase prompts on the X session. The killalls
 # unwedge any gpg passphrase requests that might be running before reloading.
