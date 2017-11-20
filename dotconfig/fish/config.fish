@@ -5,8 +5,8 @@
 set -gx HOSTNAME (hostname)
 
 # Set up any ssh/gpg keys
+# As fish is never the first shell let's not have it attempt to start any new agents, just inherit what is set
 function update_keys
-    keychain -q --inherit any-once --eval
     [ -e $HOME/.keychain/$HOSTNAME-fish ]; and . $HOME/.keychain/$HOSTNAME-fish
 end
 
