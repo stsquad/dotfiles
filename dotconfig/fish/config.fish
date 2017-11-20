@@ -25,3 +25,8 @@ end
 function update_tmux_title -d "Update TMUX pane title" -e fish_prompt
     printf "\033k%s(f!)\033\\" (prompt_pwd)
 end
+
+# Reload config
+function .fish
+        source ~/.config/fish/config.fish
+end
