@@ -7,13 +7,13 @@ alias pm peter.maydell@linaro.org
 alias pm215 peter.maydell@linaro.org
 alias cdall christoffer.dall@linaro.org
 alias chazy christoffer.dall@linaro.org
-alias ed edward.nevill@linaro.org
-alias greg greg.bellows@linaro.org
+alias riku riku.voipio@iki.fi
 alias agraf agraf@suse.de
 alias maz marc.zyngier@arm.com
 alias drew drjones@redhat.com
 alias paolo pbonzini@redhat.com
-alias rth rth@twiddle.net
+alias rth richard.henderson@linaro.org
+alias dmart Dave.Martin@arm.com
 alias stefan stefanha@redhat.com
 alias stefanha stefan
 alias treblig dgilbert@redhat.com
@@ -27,6 +27,7 @@ alias pranith bobby.prani@gmail.com
 alias fam famz@redhat.com
 alias gerd kraxel@redhat.com
 alias edgar edgar.iglesias@xilinx.com
+alias juliant julien.thierry@arm.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
@@ -71,8 +72,9 @@ alias kvmarm kvm kernelarm kvmarm@lists.cs.columbia.edu cdall maz
 alias ftrace rostedt@goodmis.org mingo@redhat.com Dave.Martin@arm.com
 
 # cc list for kvm debug api
-alias kvm-debug kvmarm pm agraf drjones@redhat.com pbonzini@redhat.com zhichao.huang@linaro.org
-alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com bp@suse.de
+# alias kvm-debug kvmarm pm agraf drjones@redhat.com pbonzini@redhat.com zhichao.huang@linaro.org
+# alias kvm-debug-cc jan.kiszka@siemens.com dahi@linux.vnet.ibm.com r65777@freescale.com bp@suse.de
+alias kvm-debug juliant kvmarm chazy
 
 alias qemu-debug qemu qemu-arm pm chazy zhichao.huang@linaro.org
 alias qemu-debug-cc kvmarm
