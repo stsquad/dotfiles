@@ -19,6 +19,7 @@ import os, sys, time
 import tempfile
 import logging
 import subprocess
+import itertools
 
 logger = logging.getLogger("rsync-recent")
 
@@ -27,6 +28,28 @@ LIMIT_4G=(4 * 1024 ** 3)
 #
 # Command line options
 #
+def human_to_size(in_string):
+    """
+    Convert size prefixed strings to something more usabale
+
+    > human_to_size("10")
+    10
+    > human_to_size("2k)
+    2048
+    """
+
+    size_map = { "K" : 1024,
+                 "M" : (1024 ** 2),
+                 "G" : (1024 ** 3) }
+
+    value = int("".join(itertools.takewhile(str.isdigit, in_string)))
+
+    for suffix, scale in size_map.iteritems():
+        if in_string.upper().endswith(suffix):
+            value *= scale
+
+    return value
+
 def parse_arguments():
     """
     Read the arguments and return them to main.
@@ -37,10 +60,11 @@ def parse_arguments():
     parser.add_argument('-q', '--quiet', default=None, action="store_true",
                         help="Supress all output")
 
-    parser.add_argument('--total-size', default=10000000000,
+    parser.add_argument('--total-size', default=10000000000, type=human_to_size,
+                        help="Maximum total size (default 10Gb)")
+
     parser.add_argument('--skip-4g', default=False, action="store_true",
                         help="Skip files larger than 4gb (vfat limit)")
-                        help="Maximum total size (default 10Gb)")
 
     # Positional
     parser.add_argument('source', metavar='SOURCE', type=str, nargs='?',
