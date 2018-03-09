@@ -109,12 +109,12 @@ set -g LP_ENABLE_TIME
 # recommended value is 0
 # See LP_TITLE_OPEN and LP_TITLE_CLOSE to change escape characters to adapt this
 # feature to your specific terminal.
-set -g LP_ENABLE_TITLE
-set -g LP_TITLE_OPEN "\033k"
-set -g LP_TITLE_CLOSE "\033\\"
+#set -g LP_ENABLE_TITLE
+#set -g LP_TITLE_OPEN "\033k"
+#set -g LP_TITLE_CLOSE "\033\\"
 
 # Enable Title for screen and byobu
-set -g LP_ENABLE_SCREEN_TITLE
+#set -g LP_ENABLE_SCREEN_TITLE
 
 # Use differents colors for differents hosts you SSH in
 set -g LP_ENABLE_SSH_COLORS
