@@ -3,5 +3,5 @@
 # Launch ssh/mosh directly from WM
 #
 
-eval `keychain -q --eval`
+eval `keychain -q -Q --eval`
 urxvtc -e $@
