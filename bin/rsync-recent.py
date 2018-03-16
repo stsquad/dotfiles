@@ -57,8 +57,9 @@ def parse_arguments():
     parser = ArgumentParser(description="rsync wrapper script.")
 
     # Short options
-    parser.add_argument('-q', '--quiet', default=None, action="store_true",
-                        help="Supress all output")
+    parser.add_argument('-v', '--verbose', action='count', default=None, help='Be verbose in output')
+    parser.add_argument('-q', '--quiet', action='store_false', dest='verbose', help="Supress output")
+    parser.add_argument('-l', '--log', default=None, help="output to a log file")
 
     parser.add_argument('--total-size', default=10000000000, type=human_to_size,
                         help="Maximum total size (default 10Gb)")
@@ -74,9 +75,31 @@ def parse_arguments():
 
     return parser.parse_args()
 
+def setup_logging(args):
+    # setup logging
+    if args.verbose:
+        if args.verbose == 1: logger.setLevel(logging.INFO)
+        if args.verbose >= 2: logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.WARNING)
+
+    if args.log:
+        handler = logging.FileHandler(args.log)
+    else:
+        handler = logging.StreamHandler()
+
+    lfmt = logging.Formatter('%(asctime)s:%(levelname)s - %(name)s - %(message)s')
+    handler.setFormatter(lfmt)
+    logger.addHandler(handler)
+
+    logger.info("running with level %s" % (logger.getEffectiveLevel()))
+
 
 if __name__ == "__main__":
     args = parse_arguments()
+
+    #
+    setup_logging(args)
 
     # get sorted list of filenames
     print ("%s" % args.source)
@@ -89,21 +112,28 @@ if __name__ == "__main__":
     entries = ((stat[ST_MTIME], stat[ST_SIZE], path)
                for stat, path in entries if S_ISREG(stat[ST_MODE]))
 
-    flist = tempfile.NamedTemporaryFile()
+    if args.verbose > 2:
+        flist = tempfile.NamedTemporaryFile(delete=false)
+        logger.info("Saved flist: %s", flist.name)
+    else:
+        flist = tempfile.NamedTemporaryFile()
+
     total_size = 0
 
     for mtime, size, path in sorted(entries, reverse=True):
         if args.skip_4g and size > LIMIT_4G:
             continue
 
-        total_size += size
-        if total_size < args.total_size:
+        if (total_size + size) < args.total_size:
+            total_size += size
             flist.write("%s\n" % (path[len(src):]))
             logger.debug("%s, %d, %s" % (path, size, mtime))
 
     logger.info("Total size: %d bytes", total_size)
 
     flist.flush()
-    result = subprocess.call(["rsync", "-av", "--size-only", "--no-relative",
-                              "--files-from",
-                              flist.name, src, args.destination])
+    result = subprocess.call(["rsync", "-av", "--size-only", "--no-relative", "--delete-before",
+                              "--files-from", flist.name,
+                              src, args.destination])
+
+    logger.info("Result: %s", result)
