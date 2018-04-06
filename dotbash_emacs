@@ -24,7 +24,7 @@ if [[ -d "$COMPILED_EMACS_PATH" && -e "$COMPILED_EMACS_PATH/install/bin/emacs" ]
     if [[ "$?" == "1" || "$?" == "0" ]]; then
 	# add_to_world from main bash profile
 	add_to_world $COMPILED_EMACS_PATH
-    if
+    fi
 fi
 
 if [[ "$DISPLAY" == "" || "${SSH_TTY}" ]]; then
