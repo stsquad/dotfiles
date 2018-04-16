@@ -34,6 +34,9 @@ if status --is-interactive
     end
 end
 
+alias ect="emacsclient -a '' -t"
+alias dired="emacsclient -a '' -t -e '(my-dired-frame default-directory)'"
+
 # Reload config
 function .fish
         source ~/.config/fish/config.fish
