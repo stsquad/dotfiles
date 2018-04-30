@@ -1,6 +1,10 @@
 #
 # Fish config
 #
+# The aim is to keep this much more minimal than the sparwling .bash
+# setup I have. However I still have some things I need to make a
+# little easier.
+#
 
 set -gx HOSTNAME (hostname)
 
@@ -15,13 +19,53 @@ if status --is-interactive;
 end
 
 # Helper function for copying to the NAS
+# (candiate for dired method to replace)
 function copy_to_nas -d "Copy files to the NAS"
     for f in "$argv";
         scp "$f" admin@nas:/volume1/video/
     end
 end
 
-# Update tmux
+# Helper for managing duplicates
+
+# From: https://github.com/fish-shell/fish-shell/issues/296
+function varclear --description 'Remove duplicates from environment variable'
+    if test (count $argv) = 1
+        set -l newvar
+        set -l count 0
+        for v in $$argv
+            if contains -- $v $newvar
+                set count (math $count+1)
+            else
+                set newvar $newvar $v
+            end
+        end
+        set $argv $newvar
+        # test $count -gt 0
+        # and echo Removed $count duplicates from $argv
+    else
+        for a in $argv
+            varclear $a
+        end
+    end
+end
+
+function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PATH'
+    if test -n "$argv[1]"; and test -d $argv[1]
+        if test -d $argv[1]/bin
+            set PATH $argv[1]/bin $PATH
+            varclear PATH
+        end
+        if test -d $argv[1]/lib
+           set LD_LIBRARY_PATH "$argv[1]/lib:$LD_LIBRARY_PATH"
+           varclear LD_LIBRARY_PATH
+        end
+        return 0
+    end
+    return -1
+end
+
+# TMUX setup
 if status --is-interactive
     and set -q TMUX
     # set -g LP_ENABLE_TITLE
@@ -34,10 +78,43 @@ if status --is-interactive
     end
 end
 
-alias ect="emacsclient -a '' -t"
-alias dired="emacsclient -a '' -t -e '(my-dired-frame default-directory)'"
+function ta --description "ta <session>"
+    tmux attach -d -t $argv[1]; or tmux new -s $argv[1]
+end
+
+# Emacs Setup
+function setup_emacs --description "Setup emacs [path to install]"
+    set -l report
+    if add_world $argv[1]
+        set report "Emacs in $argv[1]"
+    else
+        set report "System Emacs"
+    end
+    if tmux info  | grep "Tc" | grep "true" > /dev/null
+       set -gx EMACS_TERM screen-24bits
+       set report "$report with $EMACS_TERM"
+       if test -n "$TMUX_PANE"
+          tmux bind E new-window -n "Emacs" -t 0 -k "TERM=$EMACS_TERM emacsclient -a '' -t"
+       end
+    end
+    printf "$report\n"
+end
+
+function launch_emacs --description "Launch the Emacs Client with whatever tweaks we need"
+    if set -q EMACS_TERM
+        set -lx TERM $EMACS_TERM
+    end
+    emacsclient -a '' $argv
+end
+
+# set the path if it's there
+setup_emacs $HOME/src/emacs/install
+
+alias ec="launch_emacs -c -n"
+alias ect="launch_emacs -t"
+alias dired="launch_emacs -t -e '(my-dired-frame default-directory)'"
 
 # Reload config
 function .fish
-        source ~/.config/fish/config.fish
+    source ~/.config/fish/config.fish
 end
