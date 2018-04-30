@@ -36,7 +36,8 @@ focus_follows_mouse no
 # start a terminal
 #bindsym $mod+Return exec i3-sensible-terminal
 exec --no-startup-id "urxvtd -q -o -f"
-bindsym $mod+Return exec "urxvtc -e /bin/bash --init-file ~/.bash_profile || urxvt --loginShell"
+# bindsym $mod+Return exec "urxvtc -e /bin/bash --init-file ~/.bash_profile || urxvt --loginShell"
+bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish"
 bindsym $mod+x exec "emacsclient -n -a '' -c"
 
 # kill focused window
