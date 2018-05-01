@@ -86,11 +86,11 @@ end
 function setup_emacs --description "Setup emacs [path to install]"
     set -l report
     if add_world $argv[1]
-        set report "Emacs in $argv[1]"
+        set report "Using Emacs in $argv[1]"
     else
-        set report "System Emacs"
+        set report "Using System Emacs"
     end
-    if tmux info  | grep "Tc" | grep "true" > /dev/null
+    if set -q TMUX; and tmux info  | grep "Tc" | grep "true" > /dev/null
        set -gx EMACS_TERM screen-24bits
        set report "$report with $EMACS_TERM"
        if test -n "$TMUX_PANE"
