@@ -103,8 +103,10 @@ end
 function launch_emacs --description "Launch the Emacs Client with whatever tweaks we need"
     if set -q EMACS_TERM
         set -lx TERM $EMACS_TERM
+        emacsclient -a '' $argv
+    else
+        emacsclient -a '' $argv
     end
-    emacsclient -a '' $argv
 end
 
 # set the path if it's there
