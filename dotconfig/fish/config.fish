@@ -65,6 +65,9 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
     return -1
 end
 
+# Add ~/bin
+add_world $HOME
+
 # TMUX setup
 if status --is-interactive
     and set -q TMUX
