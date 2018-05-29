@@ -30,6 +30,7 @@ function link_subdotdir
     fi
 }
 
+mkdir -p ${CONFIG_DIR}
 cd $SCRIPTPATH
 # Process all directories in this directory
 for x in *
