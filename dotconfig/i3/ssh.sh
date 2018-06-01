@@ -4,4 +4,4 @@
 #
 
 eval `keychain -q -Q --eval`
-urxvtc -e $@
+st -f 'Liberation Mono:size=14' -e $@
