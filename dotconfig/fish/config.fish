@@ -82,7 +82,7 @@ if status --is-interactive
 end
 
 function ta --description "ta <session>"
-    tmux attach -d -t $argv[1]; or tmux new -s $argv[1]
+    tmux attach -d -t $argv[1]; or tmux new -s $argv[1] /bin/fish
 end
 
 # Emacs Setup
