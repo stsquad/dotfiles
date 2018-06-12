@@ -16,7 +16,7 @@ set $mod Mod4
 #
 exec --no-startup-id /home/alex/.config/i3/setup_display.sh
 exec --no-startup-id /home/alex/.config/i3/setup_systray.sh
-exec --no-startup-id /home/alex/.config/i3/setup_keys.sh
+#exec --no-startup-id /home/alex/.config/i3/setup_keys.sh
 
 # background, screensaver and locking
 exec xautolock -time 10 -locker '/home/alex/.config/i3/lock_screen.sh'
@@ -34,10 +34,8 @@ floating_modifier $mod
 focus_follows_mouse no
 
 # start a terminal
-#bindsym $mod+Return exec i3-sensible-terminal
-exec --no-startup-id "urxvtd -q -o -f"
-# bindsym $mod+Return exec "urxvtc -e /bin/bash --init-file ~/.bash_profile || urxvt --loginShell"
-bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish"
+# My Ubuntu system at work has higher DPI screens and things in a different place
+bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish || stterm -f 'Liberation Mono:size=16' -e /usr/bin/fish"
 bindsym $mod+x exec "emacsclient -n -a '' -c"
 
 # kill focused window
