@@ -65,6 +65,9 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
     return -1
 end
 
+# Add ~/bin
+add_world $HOME
+
 # TMUX setup
 if status --is-interactive
     and set -q TMUX
@@ -79,7 +82,7 @@ if status --is-interactive
 end
 
 function ta --description "ta <session>"
-    tmux attach -d -t $argv[1]; or tmux new -s $argv[1]
+    tmux attach -d -t $argv[1]; or tmux new -s $argv[1] /bin/fish
 end
 
 # Emacs Setup
@@ -87,15 +90,15 @@ function setup_emacs --description "Setup emacs [path to install]"
     set -l report
     if add_world $argv[1]
         set report "Using Emacs in $argv[1]"
+        if set -q TMUX; and tmux info  | grep "Tc" | grep "true" > /dev/null
+            set -gx EMACS_TERM screen-24bits
+            set report "$report with $EMACS_TERM"
+            if test -n "$TMUX_PANE"
+                tmux bind E new-window -n "Emacs" -t 0 -k "TERM=$EMACS_TERM emacsclient -a '' -t"
+            end
+        end
     else
         set report "Using System Emacs"
-    end
-    if set -q TMUX; and tmux info  | grep "Tc" | grep "true" > /dev/null
-       set -gx EMACS_TERM screen-24bits
-       set report "$report with $EMACS_TERM"
-       if test -n "$TMUX_PANE"
-          tmux bind E new-window -n "Emacs" -t 0 -k "TERM=$EMACS_TERM emacsclient -a '' -t"
-       end
     end
     printf "$report\n"
 end
