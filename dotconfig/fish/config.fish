@@ -9,10 +9,18 @@
 set -gx HOSTNAME (hostname)
 
 # Set up any ssh/gpg keys
-# As fish is never the first shell let's not have it attempt to start any new agents, just inherit what is set
+# As fish is (almost) never the first shell let's not have it attempt to start any new agents, just inherit what is set
 function update_keys
     [ -e $HOME/.keychain/$HOSTNAME-fish ]; and . $HOME/.keychain/$HOSTNAME-fish
 end
+
+function start_keychain --description 'Start the authorative keychain instance'
+    keychain -q -k all
+    keychain -q -Q
+    update_keys
+    ssh-add
+end
+
 
 if status --is-interactive;
     update_keys
