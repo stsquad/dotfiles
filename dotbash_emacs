@@ -14,24 +14,6 @@
 
 # I don't want to bring up daemons on every machine
 
-EMACS_DAEMON=0
-machine=`hostname`
-
-if [ "${DISPLAY}" ]; then
-    for emacs_daemon_machine in zen danny trent symbiot
-    do
-	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
-	    EMACS_DAEMON=1
-	fi
-    done
-else
-    for emacs_daemon_machine in zen socrates overdrive01 localhost
-    do
-	if [[ "$machine" == "$emacs_daemon_machine" ]]; then
-	    EMACS_DAEMON=1
-	fi
-    done
-fi
 COMPILED_EMACS_PATH=$(find_directories "${HOME}/src/emacs" "/export/src/emacs")
 # I may already have the latest and greatest, so use whatever is appropriate
 if [[ -d "$COMPILED_EMACS_PATH" && -e "$COMPILED_EMACS_PATH/install/bin/emacs" ]]; then
@@ -45,35 +27,30 @@ if [[ -d "$COMPILED_EMACS_PATH" && -e "$COMPILED_EMACS_PATH/install/bin/emacs" ]
     fi
 fi
 
-if [[ "${EMACS_DAEMON}" -gt 0 ]]; then
-    if [[ "$DISPLAY" == "" || "${SSH_TTY}" ]]; then
+if [[ "$DISPLAY" == "" || "${SSH_TTY}" ]]; then
     # Can we use muti-tty?
-	emacsclient --help 2>&1 | grep "\-\-tty" > /dev/null
-	if [[ "$?" == "0" ]]; then
-            # Thats a yes
-	    EMACS_CMD="emacsclient"
-	    EMACS_ARGS="-a '' -t"
-            REPORT="with multi-tty"
-	else
-            # Hmmm, opening in another pane would be a pain?
-            EMACS_CMD="emacs"
-	    EMACS_ARGS="-nw"
-            REPORT="standalone"
-	fi
-    else
-        # otherwise open a new frame
+    emacsclient --help 2>&1 | grep "\-\-tty" > /dev/null
+    if [[ "$?" == "0" ]]; then
+        # Thats a yes
 	EMACS_CMD="emacsclient"
-	EMACS_ARGS="-a '' -c"
-        # No wait only makes sense for interactive, GUI frame sessions
-	EMACS_NW="-n"
-        REPORT="with X"
+	EMACS_ARGS="-a '' -t"
+        REPORT="with multi-tty"
+    else
+        # Hmmm, opening in another pane would be a pain?
+        EMACS_CMD="emacs"
+	EMACS_ARGS="-nw"
+        REPORT="standalone"
     fi
-    alias ect="emacsclient -a '' -t"
 else
-    EMACS_CMD="emacs"
-    EMACS_ARGS="-nw"
-    REPORT="standalone"
+    # otherwise open a new frame
+    EMACS_CMD="emacsclient"
+    EMACS_ARGS="-a '' -c"
+    # No wait only makes sense for interactive, GUI frame sessions
+    EMACS_NW="-n"
+    REPORT="with X"
 fi
+alias ect="emacsclient -a '' -t"
+alias dired="emacsclient -a '' -t -e '(my-dired-frame default-directory)'"
 
 # Set the environment variables for the editors, remember that programs like
 # git or crontab -e will get confused if they don't wait for the editor to return.
