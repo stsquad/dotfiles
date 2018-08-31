@@ -6,7 +6,9 @@
 
 # we supress TMUX to work nicely with TMATE
 TMUX_SESSION_COUNT=`TMUX="" tmux list-sessions 2> /dev/null | wc -l`
-TMUX_SESSION_NAMES=`TMUX="" tmux ls | cut -d ':' -f 1 | sed ':a;N;$!ba;s/\n/ /g'`
+if test $TMUX_SESSION_COUNT -gt 0; then
+    TMUX_SESSION_NAMES=`TMUX="" tmux ls | cut -d ':' -f 1 | sed ':a;N;$!ba;s/\n/ /g'`
+fi
 
 # Stop C-s triggering flow control
 stty -ixon
@@ -15,7 +17,11 @@ if [[ `whoami` == "root" ]]; then
     function sysmon()
     {
 	if ! tmux has-session -t system; then
-	    tmux new-session -d -s system
+	    if which fish > /dev/null; then
+		tmux new-session -d -s system fish
+            else		    
+	        tmux new-session -d -s system
+            fi
  	    tmux new-window -t system -n 'htop' 'htop'
  	    tmux new-window -t system -n 'iotop' 'iotop -P -o -d 30'
  	    tmux new-window -t system -n 'powertop' 'powertop'
