@@ -60,6 +60,7 @@ def parse_arguments():
     parser.add_argument('-v', '--verbose', action='count', default=None, help='Be verbose in output')
     parser.add_argument('-q', '--quiet', action='store_false', dest='verbose', help="Supress output")
     parser.add_argument('-l', '--log', default=None, help="output to a log file")
+    parser.add_argument('-p', '--dry-run', default=False, action="store_true", help="dry run")
 
     parser.add_argument('--total-size', default=10000000000, type=human_to_size,
                         help="Maximum total size (default 10Gb)")
@@ -133,9 +134,18 @@ if __name__ == "__main__":
     logger.info("Total size: %d bytes", total_size)
 
     flist.flush()
-    result = subprocess.call(["rsync", "-av", "--size-only", "--no-relative",
-                              "--delete", "--delete-excluded", "--delete-before",
-                              "--files-from", flist.name,
-                              src, args.destination])
+
+    cmd = ["rsync" ]
+    if args.dry_run:
+        cmd.extend(["--dry-run", "--log-file=dryrun.log"])
+
+    cmd.extend(["-av", "--size-only", "--no-relative", "--exclude=*"
+                "--delete", "--delete-excluded", "--delete-before"])
+    cmd.extend(["--files-from", flist.name])
+    cmd.extend([src, args.destination])
+
+    logger.info("cmd: %s", cmd)
+
+    result = subprocess.call(cmd)
 
     logger.info("Result: %s", result)
