@@ -1,0 +1,179 @@
+# Sway config file
+#
+# Mostly copy-pasted from my i3 config
+#
+
+set $mod Mod4
+
+exec --no-startup-id env > ~/.sway.env
+
+# Outputs are configured directly
+
+output VGA-1 pos 0 0 res 1680x1050
+output HDMI-A-2 pos 1680 0 res 1920x1200
+
+# Keyboard Inputs
+
+input "1118:219:Microsoft_Natural®_Ergonomic_Keyboard_4000" {
+    xkb_layout gb
+    xkb_variant ,nodeadkeys
+    xkb_options ctrl:nocaps
+}
+
+# background, screensaver and locking
+#exec xautolock -time 10 -locker 'swaylock -c 334433'
+bindsym $mod+l exec swaylock -c 334433
+
+##### End of start-up apps #####
+
+# font for window titles. ISO 10646 = Unicode
+font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Disable mouse focus
+focus_follows_mouse no
+
+# start a terminal
+# My Ubuntu system at work has higher DPI screens and things in a different place
+bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish || stterm -f 'Liberation Mono:size=16' -e /usr/bin/fish"
+bindsym $mod+x exec "emacsclient -n -a '' -c"
+
+# kill focused window
+bindsym $mod+Shift+Q kill
+
+# Start program launcher
+# (this searches for .desktop files instead of any $PATH)
+bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi"
+# window selector
+#bindsym $mod+w exec "rofi -modi window"
+bindsym $mod+s exec "rofi -modi ssh -show ssh -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
+bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
+bindsym $mod+Tab exec "rofi -modi window -show window"
+bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
+
+
+# Move focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# focus the parent container
+bindsym $mod+Home focus parent
+
+# Move window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, default)
+workspace_layout tabbed
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout default
+bindsym $mod+v split v
+bindsym $mod+h split h
+
+# toggle tiling / floating
+bindsym $mod+space floating toggle
+
+# Scratchpad operations
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+Shift+XF86HomePage move scratchpad
+bindsym $mod+Shift+XF86Calculator move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+bindsym $mod+XF86HomePage scratchpad show
+bindsym $mod+XF86Calculator scratchpad show
+
+
+# focus the child container
+#bindcode $mod+d focus child
+
+# allow us to rename a workspace (mirrors tmux, screen)
+#bindsym $mod+a exec i3-input -F 'rename workspace to %s' -P 'New name: '
+
+# switch to workspace
+bindsym $mod+0 workspace "0: Main"
+bindsym $mod+1 workspace "1: Shells"
+bindsym $mod+2 workspace "2: Work"
+bindsym $mod+3 workspace "3: The Cloud!"
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace "8: Media"
+bindsym $mod+9 workspace number 9
+
+
+# move focused container to workspace
+# not keymap aware....
+bindsym $mod+Shift+0 move container to workspace number 0
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3 
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+
+# Move to primary output:
+
+# Move the current workspace to the next output
+# anoyingly it's HDMI2 on danny and HDMI1 at work
+# but $mod+shift+right works.
+#
+# Luckily though the left output is secondary on both my duel monitor
+# machines so:
+bindsym $mod+p move container to output right
+bindsym $mod+Shift+p move workspace to output right
+bindsym $mod+Shift+s move workspace to output left
+
+# reload the configuration file
+bindsym $mod+Shift+C reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+R restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+E exit
+
+# resize window (you can also use the mouse for that)
+bindsym $mod+r mode "resize"
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+	bindsym Left  resize shrink width 10 px or 10 ppt
+        bindsym Up    resize shrink height 10 px or 10 ppt
+        bindsym Down  resize grow height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+    id bar-0
+    # tray_output primary
+    status_command i3blocks
+}
+
+# Applictation dependent mapping
+for_window [title="QEMU"] floating enable
+for_window [title="TextArea"] floating enable
+for_window [title="Atomic Chrome:"] floating enable
+for_window [title="Edit with Emacs FRAME"] floating enable
+
+# Multimedia Keys
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && killall -s 44 i3blocks
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && killall -s 44 i3blocks
