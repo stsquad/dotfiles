@@ -127,6 +127,8 @@ alias ec="launch_emacs -c -n"
 alias ect="launch_emacs -t"
 alias dired="launch_emacs -t -e '(my-dired-frame default-directory)'"
 
+set -gx EDITOR ec
+
 # Reload config
 function .fish
     source ~/.config/fish/config.fish
