@@ -47,7 +47,7 @@ else
     KEYSMSG="existing ssh"
     if [[ -x ${KEYCHAIN} ]]; then
         unset SSH_AGENT_PID
-        keychain -q -k all
+        keychain -q -k others
         eval `keychain -q --inherit any-once --eval`
         eval `keychain -q --agents gpg --eval`
         if [[ "${GPG_AGENT_INFO}" ]]; then
