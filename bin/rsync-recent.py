@@ -44,7 +44,7 @@ def human_to_size(in_string):
 
     value = int("".join(itertools.takewhile(str.isdigit, in_string)))
 
-    for suffix, scale in size_map.iteritems():
+    for suffix, scale in zip(size_map.keys(), size_map.values()):
         if in_string.upper().endswith(suffix):
             value *= scale
 
@@ -60,6 +60,7 @@ def parse_arguments():
     parser.add_argument('-v', '--verbose', action='count', default=None, help='Be verbose in output')
     parser.add_argument('-q', '--quiet', action='store_false', dest='verbose', help="Supress output")
     parser.add_argument('-l', '--log', default=None, help="output to a log file")
+    parser.add_argument('-p', '--dry-run', default=False, action="store_true", help="dry run")
 
     parser.add_argument('--total-size', default=10000000000, type=human_to_size,
                         help="Maximum total size (default 10Gb)")
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     setup_logging(args)
 
     # get sorted list of filenames
-    print ("%s" % args.source)
+    logger.info("%s", args.source)
     src = os.path.abspath(args.source)
 
     entries = (os.path.join(src, fn) for fn in os.listdir(src))
@@ -112,11 +113,11 @@ if __name__ == "__main__":
     entries = ((stat[ST_MTIME], stat[ST_SIZE], path)
                for stat, path in entries if S_ISREG(stat[ST_MODE]))
 
-    if args.verbose > 2:
-        flist = tempfile.NamedTemporaryFile(delete=false)
+    if args.verbose and args.verbose > 2:
+        flist = tempfile.NamedTemporaryFile(mode="w", delete=false)
         logger.info("Saved flist: %s", flist.name)
     else:
-        flist = tempfile.NamedTemporaryFile()
+        flist = tempfile.NamedTemporaryFile(mode="w")
 
     total_size = 0
 
@@ -126,14 +127,25 @@ if __name__ == "__main__":
 
         if (total_size + size) < args.total_size:
             total_size += size
-            flist.write("%s\n" % (path[len(src):]))
-            logger.debug("%s, %d, %s" % (path, size, mtime))
+            filename = path[len(src)+1:]
+            flist.write("%s\n" % (filename))
+            logger.debug("added %s as %s, %d, %s" % (path, filename, size, mtime))
 
     logger.info("Total size: %d bytes", total_size)
 
     flist.flush()
-    result = subprocess.call(["rsync", "-av", "--size-only", "--no-relative", "--delete-before",
-                              "--files-from", flist.name,
-                              src, args.destination])
+
+    cmd = ["rsync" ]
+    if args.dry_run:
+        cmd.extend(["--dry-run", "--log-file=dryrun.log"])
+
+    cmd.extend(["-av", "--size-only", "--no-relative", "--exclude=*"
+                "--delete", "--delete-excluded", "--delete-before"])
+    cmd.extend(["--files-from", flist.name])
+    cmd.extend([src, args.destination])
+
+    logger.info("cmd: %s", cmd)
+
+    result = subprocess.call(cmd)
 
     logger.info("Result: %s", result)
