@@ -49,10 +49,19 @@ MaildirStore linaro-local
         SubFolders Verbatim
 
 # Exclude everything under the internal [Gmail] folder, except the interesting folders
+# (we skip the kernel as it takes a long time)
 Channel linaro-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns *  !kernel ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Patterns *  !kernel/* ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Create Both
+        SyncState *
+
+# As above but including the slow kernel emails
+Channel linaro-slow-sync
+	Master	:linaro-gmail:
+	Slave	:linaro-local:
+        Patterns *  ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
         SyncState *
 
