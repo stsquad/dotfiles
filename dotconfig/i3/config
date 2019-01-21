@@ -164,6 +164,7 @@ bar {
     id bar-0
     tray_output primary
     status_command i3blocks
+    font pango:Free Symbola 10
 }
 
 # Applictation dependent mapping
@@ -173,5 +174,5 @@ for_window [title="Atomic Chrome:"] floating enable
 for_window [title="Edit with Emacs FRAME"] floating enable
 
 # Multimedia Keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && killall -s 44 i3blocks
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && killall -s 44 i3blocks
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && pkill -SIGRTMIN+10 i3blocks
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && pkill -SIGRTMIN+10 i3blocks
