@@ -43,12 +43,11 @@ bindsym $mod+Shift+Q kill
 
 # Start program launcher
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi"
+bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi -display-combi run:
 # window selector
-#bindsym $mod+w exec "rofi -modi window"
 bindsym $mod+s exec "rofi -modi ssh -show ssh -display-ssh ssh: -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
 bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh: -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
-bindsym $mod+Tab exec "rofi -modi window -show window"
+bindsym $mod+Tab exec "rofi -modi window -show window -display-window window:"
 bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
 
 
