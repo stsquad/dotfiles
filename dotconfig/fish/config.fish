@@ -143,7 +143,7 @@ alias ec="launch_emacs -c -n"
 alias ect="launch_emacs -t"
 alias dired="launch_emacs -t -e '(my-dired-frame default-directory)'"
 
-set -gx EDITOR ec
+set -gx EDITOR "emacsclient -a ''"
 
 # Reload config
 function .fish

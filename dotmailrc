@@ -5,8 +5,9 @@
 # People I know/mail often
 alias pm peter.maydell@linaro.org
 alias pm215 peter.maydell@linaro.org
-alias cdall christoffer.dall@linaro.org
-alias chazy christoffer.dall@linaro.org
+alias cdall christoffer.dall@arm.com
+alias chazy christoffer.dall@arm.com
+alias maximk maxim.kuvyrkov@linaro.org
 alias riku riku.voipio@iki.fi
 alias agraf agraf@suse.de
 alias maz marc.zyngier@arm.com
@@ -21,6 +22,7 @@ alias alvise a.rigo@virtualopensystems.com
 alias sergey serge.fdrv@gmail.com
 alias fredk fred.konrad@greensocs.com
 alias emilio cota@braap.org
+alias cota cota@braap.org
 alias danpb berrange@redhat.com
 alias armbru armbru@redhat.com
 alias pranith bobby.prani@gmail.com
@@ -29,6 +31,12 @@ alias gerd kraxel@redhat.com
 alias edgar edgar.iglesias@xilinx.com
 alias juliant julien.thierry@arm.com
 alias f4bug f4bug@amsat.org
+alias th_huth thuth@redhat.com
+alias ard ard.biesheuvel@linaro.org
+alias omair omair.javaid@linaro.org
+alias lvilanova vilanova@ac.upc.edu
+alias pavel Pavel.Dovgaluk@ispras.ru
+alias mrutland mark.rutland@arm.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
@@ -89,6 +97,9 @@ alias qemu-softmmu alvise jani.kokkonen@huawei.com
 # Testing
 alias qemu-testing emilio fam danpb f4bug rth balrogg@gmail.com aurelien@aurel32.net agraf@suse.de
 alias qemu-travis fam paolo stefanha stefanb@linux.vnet.ibm.com marcandre.lureau@redhat.com
+
+alias qemu-arch-testing edgar.iglesias@gmail.com michael@walle.cc aurelien@aurel32.net amarkovic@wavecomp.com shorne@gmail.com jcmvbkbc@gmail.com
+
 
 # Record/replay
 alias qemu-rr paolo boost.lists@gmail.com pavel.dovgaluk@ispras.ru
