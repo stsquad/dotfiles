@@ -9,7 +9,8 @@
 set -gx HOSTNAME (hostname)
 
 # Set up any ssh/gpg keys
-# As fish is (almost) never the first shell let's not have it attempt to start any new agents, just inherit what is set
+
+# Update keys from keychains env file, see bellow for choices
 function update_keys
     [ -e $HOME/.keychain/$HOSTNAME-fish ]; and . $HOME/.keychain/$HOSTNAME-fish
 end
@@ -21,21 +22,34 @@ function start_keychain --description 'Start the authorative keychain instance'
     ssh-add
 end
 
+# If this is a login shell we want to definitively set the agent (forwarded or local)
+if status --is-login;
+    set -l report
+
+    if type -q keychain;
+        if test -S $SSH_AUTH_SOCK;
+            keychain -q -k all --inherit any --agents ssh --systemd
+            # keychain doesn't seem to save the parameters so lets do it here
+            echo "set -e SSH_AUTH_SOCK; set -x -U SSH_AUTH_SOCK $SSH_AUTH_SOCK;" > $HOME/.keychain/$HOSTNAME-fish
+            echo "set -e SSH_AGENT_PID;" >> $HOME/.keychain/$HOSTNAME-fish
+            set report "Using forwarded ssh agent"
+        else
+            keychain -q -k others --clear --agents ssh --systemd
+            set report "Using local ssh agent"
+        end
+    else
+        set report "missing keychain!!"
+    end
+
+    printf "$report\n"
+end
 
 if status --is-interactive;
     update_keys
 end
 
-# Helper function for copying to the NAS
-# (candiate for dired method to replace)
-function copy_to_nas -d "Copy files to the NAS"
-    for f in "$argv";
-        scp "$f" admin@nas:/volume1/video/
-    end
-end
 
 # Helper for managing duplicates
-
 # From: https://github.com/fish-shell/fish-shell/issues/296
 function varclear --description 'Remove duplicates from environment variable'
     if test (count $argv) = 1
@@ -75,6 +89,8 @@ end
 
 # Add ~/bin
 add_world $HOME
+add_world ~/.local
+add_world ~/.cargo
 
 # TMUX setup
 if status --is-interactive
