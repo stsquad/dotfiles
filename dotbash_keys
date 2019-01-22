@@ -6,62 +6,33 @@
 #
 
 KEYCHAIN=$(find_alternatives keychain)
-KEYSMSG=""
+KEYMSG=""
 
-if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
-    # If we are a login shell force flushing of credentials
-    shopt -q login_shell && KEY_OPTS="--clear" || KEY_OPTS="-Q"
-
+if shopt -q login_shell; then
     if [[ -x ${KEYCHAIN} ]]; then
-        eval `keychain -q ${KEY_OPTS} --eval`
-	KEYSMSG="Using keychain ("
- 	if [[ "${KEY_OPTS}" == "--clear" ]]; then
-	    KEYSMSG+=" flushed "
-    	fi
         if [[ -S ${SSH_AUTH_SOCK} ]]; then
-	    KEYSMSG+=" ssh "
-        fi
-        if [[ "${GPG_AGENT_INFO}" ]]; then
-	    KEYSMSG+=" gpg "
-        fi
-        KEYSMSG+=")"
-    else
-        if test -f $HOME/.gpg-agent-info && kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
-	    GPG_MSG="exisiting agent"
+            keychain -q -k all --inherit any --agents ssh --systemd
+            KEYMSG+="forwarded ssh"
         else
-	    gpg-agent --daemon --write-env-file &> /dev/null
-	    GPG_MSG="new agent"
+            keychain -q -k others --clear --agents ssh --systemd
+            KEYMSG+="local ssh"
         fi
-
-        # Setup environment variables either way
-        source $HOME/.gpg-agent-info
-        export GPG_AGENT_INFO
-
-        # Ensure prompts come to the correct TTY
-        GPG_TTY=`tty`
-        export GPG_TTY
-
-        KEYSMSG="$GPG_MSG on $GPG_TTY"
+        # add GPG agent (always local)
+        eval `keychain -q -k others --clear --agents gpg --eval`
+        KEYMSG+=" local gpg"
+    else
+        # delete default ids
+        ssh-add -d
+        KEYMSG+="missing keychain"
     fi
 else
-    KEYSMSG="existing ssh"
+    # non-login shell, don't attempt to start anything
     if [[ -x ${KEYCHAIN} ]]; then
-        unset SSH_AGENT_PID
-        keychain -q -k others
-        eval `keychain -q --inherit any-once --eval`
-        eval `keychain -q --agents gpg --eval`
-        if [[ "${GPG_AGENT_INFO}" ]]; then
-	    KEYSMSG+=" keychain gpg"
-        fi
+        eval `keychain -q --inherit any --eval`
+        KEYMSG+="keychain agents"
+    else
+        KEYMSG+="missing keychain"
     fi
-fi
-
-#
-# Count the agents
-#
-AGENTS=$(ps -u ${USER} | grep ssh-agent | wc -l)
-if (( $AGENTS > 1 )); then
-    KEYSMSG+=" ${AGENTS}!"
 fi
 
 #
@@ -81,5 +52,4 @@ function reset_gpg_agent
 }
 
 alias .keys=". ~/.bash_keys"
-echo "loading .bash_keys ($KEYSMSG)"
-
+echo "loading .bash_keys ($KEYMSG)"

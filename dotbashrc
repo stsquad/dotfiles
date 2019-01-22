@@ -12,10 +12,17 @@ if [ -d $HOME/bin ]; then
   export PATH=~/bin:$PATH
 fi
 
+# You would think SHELL is always bash, but not so if we invoke
+# bash from a fish shell environment
+
+if [[ -n "$BASH" && "$BASH" != "$SHELL" ]]; then
+   export SHELL=$BASH
+fi
+
 # locales
 #
 # It's all a bit of black art to me but if this is what Debian's reconfigure
-# can set /etc/default/locale then I guess it's good enough for my .bashrc
+# can set /etc/default/locale then I guess its good enough for my .bashrc
 #
 # LC_ALL has precendece over LANG, LC_CTYPE is needed for rxvt-unicode
 #
