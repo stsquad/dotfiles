@@ -18,7 +18,11 @@ exec --no-startup-id /home/alex/.config/i3/setup_display.sh
 exec --no-startup-id /home/alex/.config/i3/setup_systray.sh
 exec --no-startup-id /home/alex/.config/i3/setup_keys.sh
 
+# reset any keys
+exec --no-startup-id keychain -q -k others --clear --agents ssh,gpg --systemd
+
 # background, screensaver and locking
+exec --no-startup-id xset s 540 60
 exec --no-startup-id xss-lock -- /home/alex/.config/i3/lock_screen.sh
 bindsym $mod+l exec loginctl lock-session $XDG_SESSION_ID
 
