@@ -28,6 +28,8 @@ if status --is-login;
 
     if type -q keychain;
         if test -S $SSH_AUTH_SOCK;
+            # ensure we squash any SSH_AGENT_PID in the env which can confuse keychain
+            set -e SSH_AGENT_PID
             keychain -q -k all --inherit any --agents ssh --systemd
             # the second call ensures we update all the saved configs
             keychain -q --inherit any
