@@ -29,9 +29,8 @@ if status --is-login;
     if type -q keychain;
         if test -S $SSH_AUTH_SOCK;
             keychain -q -k all --inherit any --agents ssh --systemd
-            # keychain doesn't seem to save the parameters so lets do it here
-            echo "set -e SSH_AUTH_SOCK; set -x -U SSH_AUTH_SOCK $SSH_AUTH_SOCK;" > $HOME/.keychain/$HOSTNAME-fish
-            echo "set -e SSH_AGENT_PID;" >> $HOME/.keychain/$HOSTNAME-fish
+            # the second call ensures we update all the saved configs
+            keychain -q --inherit any
             set report "Using forwarded ssh agent"
         else
             keychain -q -k others --clear --agents ssh --systemd
