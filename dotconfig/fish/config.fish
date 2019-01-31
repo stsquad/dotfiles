@@ -89,9 +89,11 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
 end
 
 # Add ~/bin
-add_world $HOME
-add_world ~/.local
-add_world ~/.cargo
+if status --is-interactive
+   add_world $HOME
+   add_world ~/.local
+   add_world ~/.cargo
+end
 
 # TMUX setup
 if status --is-interactive
@@ -138,7 +140,9 @@ function launch_emacs --description "Launch the Emacs Client with whatever tweak
 end
 
 # set the path if it's there
-setup_emacs $HOME/src/emacs/install
+if status --is-interactive
+   setup_emacs $HOME/src/emacs/install
+end
 
 alias ec="launch_emacs -c -n"
 alias ect="launch_emacs -t"
