@@ -466,6 +466,20 @@ function _lp_init --description 'Initialize liquidprompt'
         end
     end
 
+    function _lp_kenv --description 'Kernel build env'
+        if not set -q LP_ENABLE_KENV
+            return
+        end
+
+        if [ -n "$ARCH" ]
+            set -l cc "$LP_COLOR_KENV_BAD""❌"
+            if [ -n "$CROSS_COMPILE" ]
+                set cc "$LP_COLOR_KENV_GOOD""✔"
+            end
+            echo "[A=$ARCH CC=$cc""$NO_COL""]"" "
+        end
+    end
+
     function _lp_jobcount --description 'Print jobs info'
         if not set -q LP_ENABLE_JOBS
             return
@@ -840,6 +854,8 @@ function _lp_config --description 'Configure liquidprompt'
         set -g LP_COLOR_DISCHARGING_UNDER "$RED"
         set -g LP_COLOR_TIME "$BLUE"
         set -g LP_COLOR_IN_MULTIPLEXER "$BOLD_BLUE"
+        set -g LP_COLOR_KENV_GOOD "$GREEN"
+        set -g LP_COLOR_KENV_BAD "$BOLD_RED"
 
         set -g LP_COLORMAP_0 ""
         set -g LP_COLORMAP_1 "$GREEN"
@@ -1185,6 +1201,7 @@ function _lp_prompt -e fish_prompt --description 'Compute the prompt'
     set -l LP_PROXY (_lp_proxy)
     set -l LP_VENV (_lp_virtualenv)
     set -l LP_VCS (_lp_wd_vcs)
+    set -l LP_KENV (_lp_kenv)
 
     ## Prompt
     if [ -n "$LP_PS1" ]
@@ -1200,6 +1217,7 @@ function _lp_prompt -e fish_prompt --description 'Compute the prompt'
         else
             set LP_PROMPT "$LP_PROMPT""$LP_VCS"
         end
+        set LP_PROMPT "$LP_PROMPT""$LP_KENV"
         set LP_PROMPT "$LP_PROMPT""$LP_ERR""$LP_MARK""$LP_PROMPT_POSTFIX"
 
         set LP_PROMPT "$LP_PROMPT"" "
@@ -1208,7 +1226,7 @@ end
 
 ## User utilities
 function lp_enable --description 'Enable an option'
-    set -l available "PERM" "PROXY" "TEMP" "JOBS" "LOAD" "GIT" "SVN" "FOSSIL" "HG" "BZR" "BATT" "TIME" "VIRTUALENV" "VCS_ROOT" "TITLE" "SCREEN_TITLE" "SSH_COLORS"
+    set -l available "PERM" "PROXY" "TEMP" "JOBS" "LOAD" "GIT" "SVN" "FOSSIL" "HG" "BZR" "BATT" "TIME" "VIRTUALENV" "VCS_ROOT" "TITLE" "SCREEN_TITLE" "SSH_COLORS" "KENV"
 
     for arg in $argv
         if [ "$arg" = "--list" -o "$arg" = "-l" ]
@@ -1243,7 +1261,7 @@ function lp_enable --description 'Enable an option'
 end
 
 function lp_disable --description 'Disable an option'
-    set -l available "PERM" "PROXY" "TEMP" "JOBS" "LOAD" "GIT" "SVN" "FOSSIL" "HG" "BZR" "BATT" "TIME" "VIRTUALENV" "VCS_ROOT" "TITLE" "SCREEN_TITLE" "SSH_COLORS"
+    set -l available "PERM" "PROXY" "TEMP" "JOBS" "LOAD" "GIT" "SVN" "FOSSIL" "HG" "BZR" "BATT" "TIME" "VIRTUALENV" "VCS_ROOT" "TITLE" "SCREEN_TITLE" "SSH_COLORS" "KENV"
 
     for arg in $argv
         if [ "$arg" = "--list" -o "$arg" = "-l" ]
@@ -1326,6 +1344,7 @@ complete -c lp_enable -x -a 'VCS_ROOT' -d 'Enable vcs informations display for r
 complete -c lp_enable -x -a 'TITLE' -d 'Enable title'
 complete -c lp_enable -x -a 'SCREEN_TITLE' -d 'Enable screen title'
 complete -c lp_enable -x -a 'SSH_COLORS' -d 'Enable ssh colors'
+complete -c lp_enable -x -a 'KENV' -d 'Enable kernel build env indicators'
 
 complete -c lp_disable -x -l list -d 'List available options'
 complete -c lp_disable -x -a 'PERM' -d 'Disable permissions color'
@@ -1343,6 +1362,7 @@ complete -c lp_disable -x -a 'VCS_ROOT' -d 'Disable vcs informations display for
 complete -c lp_disable -x -a 'TITLE' -d 'Disable title'
 complete -c lp_disable -x -a 'SCREEN_TITLE' -d 'Disable screen title'
 complete -c lp_disable -x -a 'SSH_COLORS' -d 'Disable ssh colors'
+complete -c lp_disable -x -a 'KENV' -d 'Disable kernel build env indicators'
 
 ## First initialization
 _lp_config
