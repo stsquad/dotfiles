@@ -1165,6 +1165,10 @@ function _lp_directory -v PWD -e lp_dir_option_changed --description 'Check thin
         set LP_PWD "$LP_COLOR_PATH""$_dirname"(set_color -o)"$_basename""$NO_COL"
     end
 
+    if set -q LP_ENABLE_TMUX; and set -q LP_ENABLE_TITLE
+        tmux rename-window "$_dirname""$_basename"
+    end
+
     ## Cleaning, again.
     functions -e _lp_are_vcs_disabled
     functions -e _lp_wd_vcs_type

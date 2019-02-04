@@ -98,14 +98,8 @@ end
 # TMUX setup
 if status --is-interactive
     and set -q TMUX
-    # set -g LP_ENABLE_TITLE
-    # set -g LP_TITLE_OPEN "\033k"
-    # set -g LP_TITLE_CLOSE "\033\\"
-
-    # This runs as well as the liquid prompt, it purely updates the TMUX title
-    function update_tmux_title -d "Update TMUX pane title" -e fish_prompt
-        printf "\033k%s(f!)\033\\" (prompt_pwd)
-    end
+    set -g LP_ENABLE_TITLE
+    set -g LP_ENABLE_TMUX
 end
 
 function ta --description "ta <session>"
