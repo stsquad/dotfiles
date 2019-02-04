@@ -477,6 +477,8 @@ function _lp_init --description 'Initialize liquidprompt'
                 set cc "$LP_COLOR_KENV_GOOD""✔"
             end
             echo "[A=$ARCH CC=$cc""$NO_COL""]"" "
+        else if [ -n "$CROSS_COMPILE" ]
+            echo "[CC=$CROSS_COMPILE]"" "
         end
     end
 
