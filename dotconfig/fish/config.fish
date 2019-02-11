@@ -16,8 +16,8 @@ function update_keys
 end
 
 function start_keychain --description 'Start the authorative keychain instance'
-    keychain -q -k all
-    keychain -q -Q
+    keychain -q -k all --agents ssh
+    keychain -q --agents ssh --systemd
     update_keys
     ssh-add
 end
@@ -133,7 +133,7 @@ function launch_emacs --description "Launch the Emacs Client with whatever tweak
     end
 end
 
-# set the path if it's there
+# set the path if it is there
 if status --is-interactive
    setup_emacs $HOME/src/emacs/install
 end

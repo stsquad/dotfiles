@@ -17,9 +17,8 @@ if shopt -q login_shell; then
             keychain -q -k others --clear --agents ssh --systemd
             KEYMSG+="local ssh"
         fi
-        # add GPG agent (always local)
-        eval `keychain -q -k others --clear --agents gpg --eval`
-        KEYMSG+=" local gpg"
+        # ensure we flush
+        keychain -q --inherit any --agents ssh
     else
         # delete default ids
         ssh-add -d
