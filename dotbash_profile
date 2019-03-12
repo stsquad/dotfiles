@@ -172,6 +172,12 @@ function load_extra_module()
 # If invoked as /bin/sh let's assume a minimal environment
 if [ "$SHELL" == "/bin/sh" ]; then
     echo "Executing $SHELL under minmal environment"
+elif [ "${INSIDE_EMACS/*tramp*/tramp}" == "tramp" ] ; then
+    echo "Executing $SHELL inside tramp"
+    PS1="[\u@\h \w]$ "
+elif [ "$TERM" == "dumb" ] ; then
+    echo "Executing $SHELL inside dumb (maybe tramp)"
+    PS1="[\u@\h \w]$ "
 else
     # Always loaded
     load_extra_module ps1 true
@@ -198,9 +204,9 @@ else
 
     load_extra_module local true
     echo "Loaded$LOADED_MODULES"
-fi
 
-clean_path
+    clean_path
+fi
 
 # Alias for reloading
 alias .profile=". ~/.bash_profile"
