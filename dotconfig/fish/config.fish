@@ -27,13 +27,16 @@ if status --is-login;
     set -l report
 
     if type -q keychain;
-        if test -S $SSH_AUTH_SOCK;
+        if test -S $SSH_AUTH_SOCK; and set -q SSH_TTY
             # ensure we squash any SSH_AGENT_PID in the env which can confuse keychain
             set -e SSH_AGENT_PID
             keychain -q -k all --inherit any --agents ssh --systemd
             # the second call ensures we update all the saved configs
             keychain -q --inherit any
             set report "Using forwarded ssh agent"
+        else if set -q SOMMELIER_VERSION
+            keychain -q -k others --agents ssh --systemd
+            set report "Using local ssh agent (crostini)"
         else
             keychain -q -k others --clear --agents ssh --systemd
             set report "Using local ssh agent"
