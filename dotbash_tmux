@@ -22,9 +22,15 @@ if [[ `whoami` == "root" ]]; then
             else		    
 	        tmux new-session -d -s system
             fi
+            HTOPRC="${HOME}/.config/htop/${HOSTNAME}_htoprc"
+            if [ -e ${HTOPRC} ]; then
+                cp ${HTOPRC} "${HOME}/.config/htop/htoprc"
+            fi
  	    tmux new-window -t system -n 'htop' 'htop'
  	    tmux new-window -t system -n 'iotop' 'iotop -P -o -d 30'
- 	    tmux new-window -t system -n 'powertop' 'powertop'
+            if ! systemctl is-active --quiet powertop.service; then
+ 	        tmux new-window -t system -n 'powertop' 'powertop'
+            fi
 	fi
 	tmux attach-session -t system
     }
@@ -77,7 +83,7 @@ function tmux_attach_or_new
     if [[ $TMUX == *tmate* ]]; then
         TMUX="" tmux attach -d -t ${session}
     else
-        tmux attach -d -t ${session} || tmux new -s ${session}
+        tmux attach -d -t ${session} || tmux new -s ${session} fish
     fi
 }
 
