@@ -22,6 +22,11 @@ function start_keychain --description 'Start the authorative keychain instance'
     ssh-add
 end
 
+# Bling
+if status --is-login; and type -q neofetch;
+    neofetch
+end
+
 # If this is a login shell we want to definitively set the agent (forwarded or local)
 if status --is-login;
     set -l report
