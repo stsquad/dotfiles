@@ -96,9 +96,13 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
     return -1
 end
 
-# Add ~/bin
+# Add paths to search for executables. ~/bin may contain things like
+# mosh for logins so we always add it. The others are for interactive
+# use only.
+
+add_world $HOME
+
 if status --is-interactive
-   add_world $HOME
    add_world ~/.local
    add_world ~/.cargo
 end
