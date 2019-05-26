@@ -33,4 +33,4 @@
 [gitreview]
 	username = ajb
 [am]
-	threeWay = true
+        messageid = true
