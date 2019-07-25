@@ -130,7 +130,7 @@ function setup_emacs --description "Setup emacs [path to install]"
         set -gx EMACS_TERM screen-24bits
         set report "$report with $EMACS_TERM"
         if test -n "$TMUX_PANE"
-            tmux bind E new-window -n "Emacs" -t 0 -k "TERM=$EMACS_TERM emacsclient -a '' -t"
+            tmux bind E new-window -n "Emacs" -t 0 -k "env TERM=$EMACS_TERM emacsclient -a '' -t"
         end
     end
     printf "$report\n"
