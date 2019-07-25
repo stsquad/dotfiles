@@ -9,7 +9,7 @@ alias cdall christoffer.dall@arm.com
 alias chazy christoffer.dall@arm.com
 alias maximk maxim.kuvyrkov@linaro.org
 alias riku riku.voipio@iki.fi
-alias agraf agraf@suse.de
+#alias agraf agraf@suse.de
 alias maz marc.zyngier@arm.com
 alias drew drjones@redhat.com
 alias paolo pbonzini@redhat.com
@@ -26,7 +26,7 @@ alias cota cota@braap.org
 alias danpb berrange@redhat.com
 alias armbru armbru@redhat.com
 alias pranith bobby.prani@gmail.com
-alias fam famz@redhat.com
+alias fam fam@euphon.net
 alias gerd kraxel@redhat.com
 alias edgar edgar.iglesias@xilinx.com
 alias juliant julien.thierry@arm.com
@@ -53,7 +53,7 @@ alias patches patches@linaro.org
 alias a64 peter.maydell@linaro.org rob.herring@linaro.org
 
 # SuSE A64 people
-alias suse-a64 agraf@suse.de matz@suse.de
+alias suse-a64 matz@suse.de
 
 # VSO/Huawei
 alias alvise a.rigo@virtualopensystems.com
@@ -95,10 +95,13 @@ alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com serge
 alias qemu-softmmu alvise jani.kokkonen@huawei.com
 
 # Testing
-alias qemu-testing emilio fam danpb f4bug rth balrogg@gmail.com aurelien@aurel32.net agraf@suse.de
+alias qemu-testing emilio fam danpb f4bug rth balrogg@gmail.com aurelien@aurel32.net
 alias qemu-travis fam paolo stefanha stefanb@linux.vnet.ibm.com marcandre.lureau@redhat.com
 
 alias qemu-arch-testing edgar.iglesias@gmail.com michael@walle.cc aurelien@aurel32.net amarkovic@wavecomp.com shorne@gmail.com jcmvbkbc@gmail.com
+
+# Qemu Debian Packaging
+alias qemu-debian pkg-qemu-devel@lists.alioth.debian.org
 
 
 # Record/replay
