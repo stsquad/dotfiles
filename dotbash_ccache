@@ -5,7 +5,12 @@
 # ccache specific tweaks
 #
 
-export CCACHE_DIR="/tmp/${USER}/ccache"
+# detect personal .cache
+if mountpoint -q ~/.cache; then
+    export CCACHE_DIR=$HOME/.cache/ccache
+else
+    export CCACHE_DIR="/tmp/${USER}/ccache"
+fi
 mkdir -p ${CCACHE_DIR}
 
 if [ -d /usr/lib/ccache ]; then
