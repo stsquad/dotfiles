@@ -41,6 +41,10 @@ alias mrutland mark.rutland@arm.com
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
 alias qemu-arm qemu-arm@nongnu.org
+alias qemu-ppc qemu-ppc@nongnu.org
+alias qemu-riscv qemu-riscv@nongnu.org
+alias qemu-s390x qemu-s390x@nongnu.org
+alias qemu-discuss qemu-discuss@nongnu.org
 alias qemu-trivial qemu-trivial@nongnu.org
 
 # TCG Work
