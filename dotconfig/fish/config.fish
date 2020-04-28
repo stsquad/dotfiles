@@ -114,6 +114,9 @@ end
 # TMUX setup
 if status --is-interactive
     and set -q TMUX
+
+    # reset the default command to fish
+    tmux set-option -g default-command (status fish-path)
     set -g LP_ENABLE_TITLE
     set -g LP_ENABLE_TMUX
 
