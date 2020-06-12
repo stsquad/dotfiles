@@ -3,5 +3,6 @@
 # Launch ssh/mosh directly from WM
 #
 
+SHELL=/bin/sh
 eval `keychain -q -Q --eval`
-st -f 'Liberation Mono:size=14' -e $@ || stterm -f 'Liberation Mono:size=16' -e $@
+st -f 'Liberation Mono:size=14' -e $@
