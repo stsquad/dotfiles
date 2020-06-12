@@ -53,7 +53,7 @@ MaildirStore linaro-local
 Channel linaro-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns *  !kernel/* ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Patterns * !kernel/* ![Gmail]* !old/* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
         SyncState *
 
@@ -61,7 +61,7 @@ Channel linaro-sync
 Channel linaro-slow-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns *  ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Patterns * ![Gmail]* !old/* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
         SyncState *
 
