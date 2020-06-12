@@ -40,14 +40,15 @@ focus_follows_mouse no
 # start a terminal
 # My Ubuntu system at work has higher DPI screens and things in a different place
 bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish || stterm -f 'Liberation Mono:size=16' -e /usr/bin/fish"
-bindsym $mod+x exec "emacsclient -n -a '' -c"
+#bindsym $mod+x exec "emacsclient -n -a '' -c"
+bindsym $mod+x exec "/home/alex/src/emacs/install/bin/emacsclient -n -a '' -c"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
 
 # Start program launcher
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi -display-combi run:
+bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi -display-combi run:"
 # window selector
 bindsym $mod+s exec "rofi -modi ssh -show ssh -display-ssh ssh: -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
 bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh: -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
@@ -177,5 +178,5 @@ for_window [title="Atomic Chrome:"] floating enable
 for_window [title="Edit with Emacs FRAME"] floating enable
 
 # Multimedia Keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && pkill -SIGRTMIN+10 i3blocks
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && pkill -SIGRTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && pkill -SIGRTMIN+10 i3blocks
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -2% && pkill -SIGRTMIN+10 i3blocks
