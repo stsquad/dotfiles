@@ -15,6 +15,9 @@
 	ppull = format-patch --subject-prefix=PULL --cover-letter
         bisect-fixed = bisect bad
         bisect-unfixed = bisect good
+        showfix = log -1 --format=fixes
+[pretty]
+        fixes = Fixes: %h (\"%s\")%nCc: %ae
 [credential]
 	helper = cache --timeout=3600
 [color]
@@ -34,3 +37,5 @@
 	username = ajb
 [am]
         messageid = true
+[github]
+	user = stsquad
