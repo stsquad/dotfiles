@@ -10,7 +10,7 @@ alias chazy christoffer.dall@arm.com
 alias maximk maxim.kuvyrkov@linaro.org
 alias riku riku.voipio@iki.fi
 #alias agraf agraf@suse.de
-alias maz marc.zyngier@arm.com
+alias maz maz@kernel.org
 alias drew drjones@redhat.com
 alias paolo pbonzini@redhat.com
 alias rth richard.henderson@linaro.org
@@ -37,6 +37,8 @@ alias omair omair.javaid@linaro.org
 alias lvilanova vilanova@ac.upc.edu
 alias pavel Pavel.Dovgaluk@ispras.ru
 alias mrutland mark.rutland@arm.com
+alias rf-fw robert.foley@linaro.org
+alias pp-fw peter.puhov@linaro.org
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
@@ -98,11 +100,18 @@ alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com serge
 
 alias qemu-softmmu alvise jani.kokkonen@huawei.com
 
+# Plugin work
+alias qemu-plugins cota aaron@os.amperecomputing.com pp-fw rf-fw kuhn.chenqun@huawei.com robhenry@microsoft.com
+
 # Testing
 alias qemu-testing emilio fam danpb f4bug rth balrogg@gmail.com aurelien@aurel32.net
 alias qemu-travis fam paolo stefanha stefanb@linux.vnet.ibm.com marcandre.lureau@redhat.com
+alias qemu-test qemu-testing qemu-travis
 
 alias qemu-arch-testing edgar.iglesias@gmail.com michael@walle.cc aurelien@aurel32.net amarkovic@wavecomp.com shorne@gmail.com jcmvbkbc@gmail.com
+
+# SVE work
+alias qemu-sve rth alan.hayward@arm.com luis.machado@linaro.org damien.hedde@greensocs.com
 
 # Qemu Debian Packaging
 alias qemu-debian pkg-qemu-devel@lists.alioth.debian.org
@@ -113,3 +122,7 @@ alias qemu-rr paolo boost.lists@gmail.com pavel.dovgaluk@ispras.ru
 
 # Buildroot patches
 alias buildroot buildroot@busybox.net
+
+# virtio development
+alias virtio-comment virtio-comment@lists.oasis-open.org
+alias virtio-dev  virtio-dev@lists.oasis-open.org
