@@ -81,15 +81,27 @@ function varclear --description 'Remove duplicates from environment variable'
     end
 end
 
+function add_path --description 'Add <path> to PATH'
+    if test -n "$argv[1]"; and test -d $argv[1]
+        set PATH $argv[1] $PATH
+        varclear PATH
+    end
+end
+
+function add_lib --description 'Add <path> to LD_LIBRARY_PATH'
+    if test -n "$argv[1]"; and test -d $argv[1]
+        set LD_LIBRARY_PATH "$argv[1]:$LD_LIBRARY_PATH"
+        varclear LD_LIBRARY_PATH
+    end
+end
+
 function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PATH'
     if test -n "$argv[1]"; and test -d $argv[1]
         if test -d $argv[1]/bin
-            set PATH $argv[1]/bin $PATH
-            varclear PATH
+            add_path $argv[1]/bin $PATH
         end
         if test -d $argv[1]/lib
-           set LD_LIBRARY_PATH "$argv[1]/lib:$LD_LIBRARY_PATH"
-           varclear LD_LIBRARY_PATH
+            add_lib $argv[1]/lib
         end
         return 0
     end
@@ -119,6 +131,7 @@ if status --is-interactive
     tmux set-option -g default-command (status fish-path)
     set -g LP_ENABLE_TITLE
     set -g LP_ENABLE_TMUX
+    set -g LP_ENABLE_KENV
 
     set -g __fish_git_prompt_show_informative_status 1
     set -g __fish_git_prompt_hide_untrackedfiles 1
@@ -183,6 +196,12 @@ alias ect="launch_emacs -t"
 alias dired="launch_emacs -t -e '(my-dired-frame default-directory)'"
 
 set -gx EDITOR "emacsclient -a ''"
+
+function clear_to_end
+  commandline (commandline --cut-at-cursor)
+end
+bind \cc clear_to_end
+bind \ck kill-whole-line
 
 # Reload config
 function .fish
