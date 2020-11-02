@@ -83,25 +83,36 @@ end
 
 function add_path --description 'Add <path> to PATH'
     if test -n "$argv[1]"; and test -d $argv[1]
-        set PATH $argv[1] $PATH
+        set -x PATH $argv[1] $PATH
         varclear PATH
+    else
+        printf "didn't add $argv[1] to PATH\n"
     end
 end
 
 function add_lib --description 'Add <path> to LD_LIBRARY_PATH'
     if test -n "$argv[1]"; and test -d $argv[1]
-        set LD_LIBRARY_PATH "$argv[1]:$LD_LIBRARY_PATH"
-        varclear LD_LIBRARY_PATH
+        set -x LD_LIBRARY_PATH $argv[1]
+        printf "LD_LIBRARY_PATH=$LD_LIBRARY_PATH\n"
+    else
+        printf "didn't add $argv[1] to LD_LIBRARY_PATH\n"
     end
 end
 
 function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PATH'
-    if test -n "$argv[1]"; and test -d $argv[1]
-        if test -d $argv[1]/bin
-            add_path $argv[1]/bin $PATH
+    if test -z "$argv[1]"; or test ! -d $argv[1]
+        return -1
+    end
+    set -l full_path (realpath $argv[1])
+    if test -n "$full_path"; and test -d $full_path
+        if test -d $full_path/bin
+            add_path $full_path/bin $PATH
         end
-        if test -d $argv[1]/lib
-            add_lib $argv[1]/lib
+        if test -d $full_path/sbin
+            add_path $full_path/sbin $PATH
+        end
+        if test -d $full_path/lib
+            add_lib $full_path/lib
         end
         return 0
     end
