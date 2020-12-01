@@ -129,8 +129,10 @@ function _lp_init --description 'Initialize liquidprompt'
             # Fish doesn't provide a $PPID env variable.
             function _lp_fish_parent --description 'Get fish\'s parent'
                 set -l FISH_PID %self
-                set -l FISH_PPID (ps -f "$FISH_PID" | tail -n 1 | tr -s ' ' | cut -d ' ' -f 3)
-                echo (ps -o comm= -p "$FISH_PPID" 2> /dev/null)
+                if command -sq ps
+                    set -l FISH_PPID (ps -f "$FISH_PID" | tail -n 1 | tr -s ' ' | cut -d ' ' -f 3)
+                    echo (ps -o comm= -p "$FISH_PPID" 2> /dev/null)
+                end
             end
 
             if [ -n "$SSH_CLIENT$SSH2_CLIENT$SSH_TTY" ]
@@ -201,17 +203,19 @@ function _lp_init --description 'Initialize liquidprompt'
     end
 
     function _lp_jobs_hack --description 'Hack for jobs processing'
-        # Fish shell's builtin jobs command does not provide any option
+        # The builtin jobs command does not provide any option
         # for running/stopped jobs at the moment. It displays all jobs.
-        # It is translated so we can't merely grep words such as “stopped”
+        # It is translated so we can not merely grep words such as “stopped”
         # or “running”.
         # At least, we know their position in the output.
 
-        # Any command that doesn't end until the user kills it is good.
-        # For now, let's use ping.
-        ping localhost > /dev/null &
-        set -g _LP_RUNNING_JOB_WORD (jobs -l | cut -f 4)
-        kill -9 (jobs -l -p)
+        # Any command that does not end until the user kills it is good.
+        # For now, let us use ping.
+        if command -sq ping
+           ping localhost > /dev/null &
+           set -g _LP_RUNNING_JOB_WORD (jobs -l | cut -f 4)
+           kill -9 (jobs -l -p)
+        end
     end
 
     function _lp_title_choose --description 'Choose the right _lp_title function'
