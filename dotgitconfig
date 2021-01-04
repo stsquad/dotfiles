@@ -39,3 +39,6 @@
         messageid = true
 [github]
 	user = stsquad
+[pull]
+	ff = only
+
