@@ -139,7 +139,7 @@ if status --is-interactive
     and set -q TMUX
 
     # reset the default command to fish
-    tmux set-option -g default-command (status fish-path)
+    tmux set-option -g default-command (which fish)
     set -g LP_ENABLE_TITLE
     set -g LP_ENABLE_TMUX
     set -g LP_ENABLE_KENV
