@@ -26,7 +26,7 @@ function link_subdotdir
 	fi
 
 	echo "Linking $dot_dir to $orig_dir"
-	ln -s $dot_dir $orig_dir 
+	ln -s $dot_dir $orig_dir
     fi
 }
 
@@ -37,6 +37,9 @@ for x in *
 do
     if [ -d $x ]; then
 	link_subdotdir $CONFIG_DIR/$x $SCRIPTPATH/$x
+    elif [ -f "$x" -a ! -x $x ]; then
+        echo "Linking $x into $CONFIG_DIR"
+        (cd $CONFIG_DIR; ln -sf $SCRIPTPATH/$x .)
     fi
 done
 cd $ORIG_PATH

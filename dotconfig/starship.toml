@@ -1,0 +1,48 @@
+# Inserts a blank line between shell prompts
+add_newline = false
+
+format = """
+$time\
+$username\
+$hostname\
+:\
+$directory\
+$vcsh\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$package\
+$cmd_duration\
+$status
+$character
+"""
+
+[time]
+disabled = false
+format = '🕙[$time]($style) '
+time_format = "%T"
+
+[username]
+style_user = "white"
+style_root = "red bold"
+format = "[$user]($style)"
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = false
+format =  "@[$hostname](bold red)"
+trim_at = ".companyname.com"
+disabled = false
+
+[character]
+success_symbol = "[➜](bold green) "
+#error_symbol = "[✗](bold red) "
+
+[status]
+style = "bg:red"
+symbol = "🔴"
+format = '[\[$symbol $common_meaning$signal_name$maybe_int\]]($style) '
+map_symbol = true
+disabled = false
