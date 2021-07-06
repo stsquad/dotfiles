@@ -146,6 +146,10 @@ if status --is-interactive
 
     if type -q starship
         starship init fish | source
+
+        function _set_title -e fish_postexec --description 'Update the title'
+            tmux rename-window (prompt_pwd)
+        end
     else
         set -g __fish_git_prompt_show_informative_status 1
         set -g __fish_git_prompt_hide_untrackedfiles 1
