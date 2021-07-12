@@ -147,7 +147,7 @@ if status --is-interactive
     if type -q starship
         starship init fish | source
 
-        function _set_title -e fish_postexec --description 'Update the title'
+        function _set_title -e fish_preexec --description 'Update the title'
             tmux rename-window (prompt_pwd)
         end
     else
