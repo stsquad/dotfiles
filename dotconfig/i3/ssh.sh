@@ -4,5 +4,8 @@
 #
 
 SHELL=/bin/sh
+
+dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+
 eval `keychain -q -Q --eval`
-st -f 'Liberation Mono:size=14' -e $@
+$dir/terminal.sh $@

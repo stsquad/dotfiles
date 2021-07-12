@@ -39,7 +39,7 @@ focus_follows_mouse no
 
 # start a terminal
 # My Ubuntu system at work has higher DPI screens and things in a different place
-bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish || stterm -f 'Liberation Mono:size=16' -e /usr/bin/fish"
+bindsym $mod+Return exec "/home/alex/.config/i3/terminal.sh"
 #bindsym $mod+x exec "emacsclient -n -a '' -c"
 bindsym $mod+x exec "/home/alex/src/emacs/install/bin/emacsclient -n -a '' -c"
 
