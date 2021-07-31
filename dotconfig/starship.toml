@@ -8,6 +8,7 @@ $hostname\
 :\
 $directory\
 $vcsh\
+$custom \
 $git_branch\
 $git_commit\
 $git_state\
@@ -17,6 +18,8 @@ $cmd_duration\
 $status
 $character
 """
+
+command_timeout = 1000
 
 [time]
 disabled = false
@@ -38,7 +41,7 @@ disabled = false
 
 [character]
 success_symbol = "[➜](bold green) "
-#error_symbol = "[✗](bold red) "
+error_symbol = "[✗](bold red) "
 
 [status]
 style = "bg:red"
@@ -46,3 +49,12 @@ symbol = "🔴"
 format = '[\[$symbol $common_meaning$signal_name$maybe_int\]]($style) '
 map_symbol = true
 disabled = false
+
+[custom.cross]
+description = "Show cross compiliation setup"
+when = 'test -n "$ARCH" -o -n "$CROSS_COMPILE"'
+command = 'printf "$ARCH/$CROSS_COMPILE"'
+symbol = "✘"
+style = "bold green"
+format = "with [$output]($style)"
+
