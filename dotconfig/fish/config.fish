@@ -135,6 +135,10 @@ if test -d /usr/lib/ccache
 end
 
 # TMUX setup
+if type -q starship
+   starship init fish | source
+end
+
 if status --is-interactive
     and set -q TMUX
 
@@ -145,8 +149,6 @@ if status --is-interactive
     set -g LP_ENABLE_KENV
 
     if type -q starship
-        starship init fish | source
-
         function _set_title -e fish_preexec --description 'Update the title'
             tmux rename-window (prompt_pwd)
         end
