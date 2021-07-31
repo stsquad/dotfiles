@@ -9,15 +9,14 @@ exec --no-startup-id env > ~/.sway.env
 
 # Outputs are configured directly
 
-output VGA-1 pos 0 0 res 1680x1050
-output HDMI-A-2 pos 1680 0 res 1920x1200
+output HDMI-A-1 pos 0 0 res 1920x1200
+output VGA pos 1680 0 res 1920x1200
 
 # Keyboard Inputs
 
-input "1118:219:Microsoft_Natural®_Ergonomic_Keyboard_4000" {
-    xkb_layout gb
-    xkb_variant ,nodeadkeys
-    xkb_options ctrl:nocaps
+input * {
+    xkb_layout "gb"
+    xkb_options "ctrl:nocaps"
 }
 
 # background, screensaver and locking
@@ -37,22 +36,21 @@ focus_follows_mouse no
 
 # start a terminal
 # My Ubuntu system at work has higher DPI screens and things in a different place
-bindsym $mod+Return exec "st -f 'Liberation Mono:size=14' /bin/fish || stterm -f 'Liberation Mono:size=16' -e /usr/bin/fish"
-bindsym $mod+x exec "emacsclient -n -a '' -c"
+bindsym $mod+Return exec "/home/alex/.config/i3/terminal.sh"
+#bindsym $mod+x exec "emacsclient -n -a '' -c"
+bindsym $mod+x exec "/home/alex/src/emacs/install/bin/emacsclient -n -a '' -c"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
 
 # Start program launcher
 # (this searches for .desktop files instead of any $PATH)
-bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi"
+bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi -display-combi run:"
+bindsym $mod+s exec "rofi -modi ssh -show ssh -display-ssh ssh: -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
+bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh: -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
 # window selector
-#bindsym $mod+w exec "rofi -modi window"
-bindsym $mod+s exec "rofi -modi ssh -show ssh -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
-bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
-bindsym $mod+Tab exec "rofi -modi window -show window"
+bindsym $mod+Tab exec "rofi -modi window -show window -display-window window:"
 bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
-
 
 # Move focus
 bindsym $mod+Left focus left
@@ -93,7 +91,6 @@ bindsym $mod+minus scratchpad show
 bindsym $mod+XF86HomePage scratchpad show
 bindsym $mod+XF86Calculator scratchpad show
 
-
 # focus the child container
 #bindcode $mod+d focus child
 
@@ -105,12 +102,12 @@ bindsym $mod+0 workspace "0: Main"
 bindsym $mod+1 workspace "1: Shells"
 bindsym $mod+2 workspace "2: Work"
 bindsym $mod+3 workspace "3: The Cloud!"
-bindsym $mod+4 workspace number 4
+bindsym $mod+4 workspace "4: Docs"
 bindsym $mod+5 workspace number 5
 bindsym $mod+6 workspace number 6
 bindsym $mod+7 workspace number 7
 bindsym $mod+8 workspace "8: Media"
-bindsym $mod+9 workspace number 9
+bindsym $mod+9 workspace "9: Admin"
 
 
 # move focused container to workspace
@@ -160,12 +157,10 @@ mode "resize" {
 }
 
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# Start swaybar to display a workspace bar (plus the system information from i3blocks)
 bar {
-    id bar-0
-    # tray_output primary
-    status_command i3blocks
+     id bar-0
+     status_command i3blocks
 }
 
 # Applictation dependent mapping
