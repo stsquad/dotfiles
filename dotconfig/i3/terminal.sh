@@ -17,18 +17,24 @@ cmd="$*"
 cmd=${cmd:-$(command -v fish)}
 cmd=${cmd:-$(command -v bash)}
 
-# hack kitty if ssh/mosh as we don't always have the +kitten
+# Hack kitty if ssh/mosh as we don't always have the +kitten
+# We could test to see if xterm-kitty is on remote machine?
+# Also we seem to somehow flush ssh-agent keys while launching?
 kitty="kitty"
-if test "${cmd#*ssh}" != "$cmd" ||
-        test "${cmd#*mosh}" != "$cmd" ; then
-    kitty="notkitty"
-fi
+#if test "${cmd#*ssh}" != "$cmd" ||
+#        test "${cmd#*mosh}" != "$cmd" ; then
+#     kitty="notkitty"
+#fi
 
 if terminal=$(command -v "$kitty"); then
     # if ssh/mosh, don't standalone as we loose our SSH_AUTH_SOCK
     if test "${cmd#*ssh}" != "$cmd" ||
        test "${cmd#*mosh}" != "$cmd" ; then
         standalone=""
+        cmd="kitty +kitten $cmd"
+        # prevent ssh-agent being flushed by kitty running an
+        # interactive login shell under our feet: https://github.com/kovidgoyal/kitty/issues/3889
+	export EDITOR=zile
     else
         standalone="-1"
     fi
