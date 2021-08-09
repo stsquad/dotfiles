@@ -16,6 +16,7 @@
         bisect-fixed = bisect bad
         bisect-unfixed = bisect good
         showfix = log -1 --format=fixes
+        showref = log -1 --format='%h (%s)'
 [pretty]
         fixes = Fixes: %h (\"%s\")%nCc: %ae
 [credential]
