@@ -224,6 +224,12 @@ end
 bind \cc clear_to_end
 bind \ck kill-whole-line
 
+
+# Copy terminfos
+function copy_term
+    infocmp -a $TERM | ssh $argv[1] tic -x -o \~/.terminfo /dev/stdin
+end
+
 # Reload config
 function .fish
     source ~/.config/fish/config.fish
