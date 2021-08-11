@@ -25,8 +25,17 @@ kitty="kitty"
 #        test "${cmd#*mosh}" != "$cmd" ; then
 #     kitty="notkitty"
 #fi
-
-if terminal=$(command -v "$kitty"); then
+if terminal=$(command -v foot); then
+    if test "${cmd#*ssh}" != "$cmd" ||
+       test "${cmd#*mosh}" != "$cmd" ||
+       test ! -S "/run/user/$(id -u)/foot-wayland-0.sock"; then
+        terminal="nohup $terminal $cmd >/dev/null 2>&1 &"
+    else
+        terminal="footclient $cmd"
+    fi
+elif terminal=$(command -v "alacritty"); then
+    terminal="$terminal $cmd"
+elif terminal=$(command -v "$kitty"); then
     # if ssh/mosh, don't standalone as we loose our SSH_AUTH_SOCK
     if test "${cmd#*ssh}" != "$cmd" ||
        test "${cmd#*mosh}" != "$cmd" ; then
