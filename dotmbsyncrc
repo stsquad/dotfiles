@@ -6,29 +6,6 @@
 #                         developer (my main mailing list archive)
 #
 
-# Connect via the SSH tunnel
-IMAPAccount personal
-        Host localhost
-        Port 1430
-        User alex
-        PassCmd "pass personal"
-        SSLType none
-
-IMAPStore personal-imap
-        Account personal
-
-MaildirStore personal-local
-	Path	~/Maildir/personal/
-	Inbox	~/Maildir/personal/Inbox
-
-Channel personal-sync
-	Master	:personal-imap:
-	Slave	:personal-local:
-        # Include everything relevant, it's not very big
-        Patterns * INBOX/* !INBOX/Spam
-        Create Slave
-        SyncState *
-
 #
 # Linaro accounts
 #
@@ -36,6 +13,8 @@ IMAPAccount linaro
         Host imap.gmail.com
         User alex.bennee@linaro.org
         PassCmd "pass linaro"
+        Timeout 0
+        PipelineDepth 1
         # Use SSL
         SSLType IMAPS
         CertificateFile /etc/ssl/certs/ca-certificates.crt
@@ -44,8 +23,8 @@ IMAPStore linaro-gmail
         Account linaro
 
 MaildirStore linaro-local
-	Path	~/Maildir/linaro/
-	Inbox	~/Maildir/linaro/Inbox
+	Path	~/Maildir/
+	Inbox	~/Maildir/Inbox
         SubFolders Verbatim
 
 # Exclude everything under the internal [Gmail] folder, except the interesting folders
@@ -53,41 +32,16 @@ MaildirStore linaro-local
 Channel linaro-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns * !kernel/* ![Gmail]* !old/* "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Patterns * ![Gmail]* ![Imap]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
         SyncState *
+        CopyArrivalDate yes
 
-# As above but including the slow kernel emails
-Channel linaro-slow-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
-        Patterns * ![Gmail]* !old/* "[Gmail]/Sent Mail" "[Gmail]/Starred"
-        Create Both
-        SyncState *
-
-# A minimal inbox/mythreads sync for when time/diskspace it tight
 Channel linaro-inbox-sync
 	Master	:linaro-gmail:
 	Slave	:linaro-local:
-        Patterns !* INBOX/* !INBOX/Spam mythreads team "[Gmail]/Sent Mail" "[Gmail]/Starred"
+        Patterns !* mythreads team "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
-        SyncState *
-
-# Exclude everything apart from kernel related stuff
-Channel linaro-kernel-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
-        Patterns !* kernel/*
-        Create Both
-        SyncState *
-
-# Exclude everything apart from kernel related stuff
-Channel linaro-distro-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
-        Patterns !* distros*
-        Create Both
-        SyncState *
 
 # Exclude everything apart from virtualization related stuff
 Channel linaro-virt-sync
@@ -96,38 +50,6 @@ Channel linaro-virt-sync
         Patterns !* virtualization*
         Create Both
         SyncState *
+        CopyArrivalDate yes
 
-Channel linaro-kvmarm-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
-        Patterns !* virtualization/kvm-arm
-        Create Both
-        SyncState *
-
-#
-# Developer Archive - no longer recieving email
-#
-IMAPAccount developer
-        Host imap.gmail.com
-        User developer@alexandfliss.com
-        PassCmd "pass developer"
-        # Use SSL
-        SSLType IMAPS
-        CertificateFile /etc/ssl/certs/ca-certificates.crt
-            
-IMAPStore developer-gmail
-        Account developer
-
-MaildirStore developer-local
-	Path	~/Maildir/developer/
-	Inbox	~/Maildir/developer/Inbox
-
-Channel developer-sync
-	Master	:developer-gmail:
-	Slave	:developer-local:
-        # Exclude everything apart from stuff I'm interested in ATM
-        Patterns !* Inbox "[Gmail]/Sent Mail" "[Gmail]/Starred" mythreads follow follow-up tools tools/* emacs emacs/*
-        Create Both
-        # Save the synchronization state files in the relevant directory
-        SyncState *
          

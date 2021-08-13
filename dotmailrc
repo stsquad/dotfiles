@@ -39,6 +39,16 @@ alias pavel Pavel.Dovgaluk@ispras.ru
 alias mrutland mark.rutland@arm.com
 alias rf-fw robert.foley@linaro.org
 alias pp-fw peter.puhov@linaro.org
+alias arnd arnd@linaro.org
+alias jpb jean-philippe@linaro.org
+alias akashi takahiro.akashi@linaro.org
+alias ilias ilias.apalodimas@linaro.org
+alias armbru armbru@redhat.com
+alias marcandre marcandre.lureau@gmail.com
+alias ruchika ruchika.gupta@linaro.org
+alias ulf ulf.hansson@linaro.org
+alias cohuck cohuck@redhat.com
+alias jsnow jsnow@redhat.com
 
 # Mailing lists
 alias qemu qemu-devel@nongnu.org
@@ -65,7 +75,7 @@ alias suse-a64 matz@suse.de
 alias alvise a.rigo@virtualopensystems.com
 
 # QEMU tracing people
-alias qemu-trace stefanha@redhat.com vilanova@ac.upc.edu mohamad.gebai@gmail.com
+alias qemu-trace stefanha@redhat.com vilanova@imperial.ac.uk mohamad.gebai@gmail.com matheus.ferst@eldorado.org.br
 
 # QEMU binfmt
 # Mike Frysinger <vapier@gentoo.org>
@@ -80,6 +90,7 @@ alias test1 peter.maydell@linaro.org greg.bellows@linaro.org christoffer.dall@li
 
 # LKML and ARM
 alias kernel linux-kernel@vger.kernel.org
+alias lkml kernel
 alias kernelarm linux-arm-kernel@lists.infradead.org
 alias kvm kvm@vger.kernel.org
 alias kvmarm kvm kernelarm kvmarm@lists.cs.columbia.edu cdall maz
@@ -101,14 +112,16 @@ alias qemu-mttcg-cc mark.burton@greensocs.com paolo jan.kiszka@siemens.com serge
 alias qemu-softmmu alvise jani.kokkonen@huawei.com
 
 # Plugin work
-alias qemu-plugins cota aaron@os.amperecomputing.com pp-fw rf-fw kuhn.chenqun@huawei.com robhenry@microsoft.com
+alias qemu-plugins cota aaron@os.amperecomputing.com kuhn.chenqun@huawei.com robhenry@microsoft.com mahmoudabdalghany@outlook.com minyihh@uci.edu ma.mandourr@gmail.com
 
 # Testing
-alias qemu-testing emilio fam danpb f4bug rth balrogg@gmail.com aurelien@aurel32.net
-alias qemu-travis fam paolo stefanha stefanb@linux.vnet.ibm.com marcandre.lureau@redhat.com
-alias qemu-test qemu-testing qemu-travis
+alias qemu-testing fam danpb f4bug aurelien@aurel32.net paolo stefanha crosa@redhat.com
+alias qemu-test qemu-testing
 
 alias qemu-arch-testing edgar.iglesias@gmail.com michael@walle.cc aurelien@aurel32.net amarkovic@wavecomp.com shorne@gmail.com jcmvbkbc@gmail.com
+
+# Docs
+alias qemu-docs pm danpb f4bug paolo stefanha armbru marcandre th_huth
 
 # SVE work
 alias qemu-sve rth alan.hayward@arm.com luis.machado@linaro.org damien.hedde@greensocs.com
@@ -123,6 +136,29 @@ alias qemu-rr paolo boost.lists@gmail.com pavel.dovgaluk@ispras.ru
 # Buildroot patches
 alias buildroot buildroot@busybox.net
 
+alias stratos stratos-dev@op-lists.linaro.org
+
+# xen related
+alias julieng julien@xen.org
+alias stefano stefano.stabellini@linaro.org stefano.stabellini@xilinx.com
+alias masami masami.hiramatsu@linaro.org
+alias akashi takahiro.akashi@linaro.org
+alias andre andre.przywara@arm.com
+
+alias qemu-xen julieng stefano andre stratos xen-devel@lists.xenproject.org
+
 # virtio development
 alias virtio-comment virtio-comment@lists.oasis-open.org
 alias virtio-dev  virtio-dev@lists.oasis-open.org
+
+alias rpmb-linaro maxim.uvarov@linaro.org joakim.bech@linaro.org ulf ilias arnd ruchika
+alias rpmb-intel tomas.winkler@intel.com yang.huang@intel.com  bing.zhu@intel.com
+alias rpmb-opensynergy Matti.Moell@opensynergy.com hmo@opensynergy.com
+alias rpmb rpmb-linaro rpmb-intel rpmb-opensynergy  
+alias stratos-eng arnd jpb akashi masami
+
+# Rust
+alias rust-vmm rust-vmm@lists.opendev.org
+alias rust-hackers slp@redhat.com mst@redhat.com marcandre.lureau@redhat.com
+
+
