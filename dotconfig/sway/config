@@ -21,12 +21,13 @@ input * {
 
 # background, screensaver and locking
 #exec xautolock -time 10 -locker 'swaylock -c 334433'
-bindsym $mod+l exec swaylock -c 334433
+exec swayidle -w timeout 300 '~/bin/swaylock -f -c 000000' timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep '~/bin/swaylock -f -c 000000'
+bindsym $mod+l exec ~/bin/swaylock -c 334433
 
 ##### End of start-up apps #####
 
 # font for window titles. ISO 10646 = Unicode
-font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font pango:monospace 10
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -36,9 +37,11 @@ focus_follows_mouse no
 
 # start a terminal
 # My Ubuntu system at work has higher DPI screens and things in a different place
-bindsym $mod+Return exec "/home/alex/.config/i3/terminal.sh"
+exec foot --server
+bindsym $mod+Return exec "~/.config/i3/terminal.sh"
+bindsym $mod+Shift+Return exec x-terminal-emulator
 #bindsym $mod+x exec "emacsclient -n -a '' -c"
-bindsym $mod+x exec "/home/alex/src/emacs/install/bin/emacsclient -n -a '' -c"
+bindsym $mod+x exec "~/src/emacs/install/bin/emacsclient -n -a '' -c"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
@@ -48,9 +51,10 @@ bindsym $mod+Shift+Q kill
 bindsym $mod+d exec "rofi -combi-modi drun,run -show combi -modi combi -display-combi run:"
 bindsym $mod+s exec "rofi -modi ssh -show ssh -display-ssh ssh: -ssh-command '/home/alex/.config/i3/ssh.sh ssh {host}'"
 bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh: -ssh-command '/home/alex/.config/i3/ssh.sh mosh {host}'"
+
 # window selector
-bindsym $mod+Tab exec "rofi -modi window -show window -display-window window:"
-bindsym $mod+Shift+Tab exec "/home/alex/.config/i3/i3_switch_workspace.sh"
+exec env RUST_BACKTRACE=1 ~/.cargo/bin/swayrd > ~/tmp/swayrd.log 2>&1
+bindsym $mod+Tab exec "~/.cargo/bin/swayr switch-window"
 
 # Move focus
 bindsym $mod+Left focus left
@@ -112,16 +116,16 @@ bindsym $mod+9 workspace "9: Admin"
 
 # move focused container to workspace
 # not keymap aware....
-bindsym $mod+Shift+0 move container to workspace number 0
-bindsym $mod+Shift+1 move container to workspace number 1
-bindsym $mod+Shift+2 move container to workspace number 2
-bindsym $mod+Shift+3 move container to workspace number 3 
-bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+0 move container to workspace "0: Main"
+bindsym $mod+Shift+1 move container to workspace "1: Shells"
+bindsym $mod+Shift+2 move container to workspace "2: Work"
+bindsym $mod+Shift+3 move container to workspace "3: The Cloud!"
+bindsym $mod+Shift+4 move container to workspace "4: Docs"
 bindsym $mod+Shift+5 move container to workspace number 5
 bindsym $mod+Shift+6 move container to workspace number 6
 bindsym $mod+Shift+7 move container to workspace number 7
-bindsym $mod+Shift+8 move container to workspace number 8
-bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+8 move container to workspace "8: Media"
+bindsym $mod+Shift+9 move container to workspace "9: Admin"
 
 # Move to primary output:
 
