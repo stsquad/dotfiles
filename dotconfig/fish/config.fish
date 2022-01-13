@@ -92,8 +92,8 @@ end
 
 function add_lib --description 'Add <path> to LD_LIBRARY_PATH'
     if test -n "$argv[1]"; and test -d $argv[1]
-        set -x LD_LIBRARY_PATH $argv[1]
-        printf "LD_LIBRARY_PATH=$LD_LIBRARY_PATH\n"
+        set -agx LD_LIBRARY_PATH $argv[1]
+        varclear LD_LIBRARY_PATH
     else
         printf "didn't add $argv[1] to LD_LIBRARY_PATH\n"
     end
