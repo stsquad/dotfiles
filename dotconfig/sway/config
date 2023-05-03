@@ -10,6 +10,7 @@ exec --no-startup-id env > ~/.sway.env
 # Outputs are configured directly
 
 output HDMI-A-1 pos 0 0 res 1920x1200
+output HDMI-A-1 transform 270
 output VGA pos 1680 0 res 1920x1200
 
 # Keyboard Inputs
