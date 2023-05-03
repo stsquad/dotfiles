@@ -25,7 +25,7 @@ kitty="kitty"
 #        test "${cmd#*mosh}" != "$cmd" ; then
 #     kitty="notkitty"
 #fi
-if terminal=$(command -v foot); then
+if terminal=$(command -v foot) && test -n "$WAYLAND_DISPLAY"; then
     if test "${cmd#*ssh}" != "$cmd" ||
        test "${cmd#*mosh}" != "$cmd" ||
        test ! -S "/run/user/$(id -u)/foot-wayland-0.sock"; then
