@@ -21,9 +21,14 @@ input * {
 }
 
 # background, screensaver and locking
-#exec xautolock -time 10 -locker 'swaylock -c 334433'
-exec swayidle -w timeout 300 '~/bin/swaylock -f -c 000000' timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep '~/bin/swaylock -f -c 000000'
-bindsym $mod+l exec ~/bin/swaylock -c 334433
+exec swayidle -w timeout 1800 'swaylock -f -c 000000' timeout 1800 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep 'swaylock -f -c 000000'
+bindsym $mod+l exec swaylock -c 334433
+
+# notifications
+exec swaync
+
+# Toggle control center
+bindsym $mod+Shift+n exec swaync-client -t -sw
 
 ##### End of start-up apps #####
 
@@ -56,6 +61,10 @@ bindsym $mod+m exec "rofi -modi ssh -show ssh -display-ssh mosh: -ssh-command '/
 # window selector
 exec env RUST_BACKTRACE=1 ~/.cargo/bin/swayrd > ~/tmp/swayrd.log 2>&1
 bindsym $mod+Tab exec "~/.cargo/bin/swayr switch-window"
+
+# screenshots
+bindsym Print exec "~/bin/sway-interactive-screenshot"
+bindsym Shift+Print exec "~/bin/sway-interactive-screenshot --video"
 
 # Move focus
 bindsym $mod+Left focus left
@@ -164,8 +173,19 @@ mode "resize" {
 
 # Start swaybar to display a workspace bar (plus the system information from i3blocks)
 bar {
-     id bar-0
-     status_command i3blocks
+    id bar-0
+    font pango:monospace 12, FontAwesome:style=Regular 12
+    position bottom
+    status_command /home/alex/.cargo/bin/i3status-rs /home/alex/.config/i3status-rs/config.toml
+    colors {
+        separator #666666
+        background #222222
+        statusline #dddddd
+        focused_workspace #0088CC #0088CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
 }
 
 # Applictation dependent mapping
@@ -175,5 +195,13 @@ for_window [title="Atomic Chrome:"] floating enable
 for_window [title="Edit with Emacs FRAME"] floating enable
 
 # Multimedia Keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && killall -s 44 i3blocks
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && killall -s 44 i3blocks
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && killall -s 44 i3blocks
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && killall -s 44 i3blocks
+bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && killall -s 44 i3blocks
+
+# Final things
+# ensure environment is correctly set for portals (should be systemd --user)
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+#exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
+

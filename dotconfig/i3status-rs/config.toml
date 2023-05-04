@@ -1,0 +1,80 @@
+# i3status-rs config file
+#
+# Loosely based on my old i3-blocks file. Be aware a plain "cargo
+# install" will cause issues as themes and icons will not be in
+# ~/.local
+#
+
+icons_format = "{icon}"
+
+[theme]
+theme = "solarized-dark"
+
+[icons]
+icons = "awesome4"
+[icons.overrides]
+speaker = " 🔈 "
+headphones = " 🎧 "
+
+[[block]]
+block = "memory"
+format = " $icon $mem_used_percents.eng(w:1) "
+format_alt = " $icon_swap $swap_free.eng(w:3,u:B,p:M)/$swap_total.eng(w:3,u:B,p:M)($swap_used_percents.eng(w:2)) "
+interval = 30
+warning_mem = 70
+critical_mem = 90
+
+[[block]]
+block = "disk_space"
+path = "~"
+info_type = "available"
+alert_unit = "GB"
+interval = 20
+warning = 20.0
+alert = 10.0
+format = " $icon home: $available.eng(w:2) "
+
+[[block]]
+block = "cpu"
+format = " $icon $barchart $utilization "
+format_alt = " $icon $frequency{ $boost|} "
+
+[[block]]
+block = "temperature"
+format = " $icon $max max "
+format_alt = " $icon $min min, $max max, $average avg "
+interval = 10
+chip = "*-isa-*"
+
+[[block]]
+block = "net"
+format = " $device $graph_down ($speed_down) "
+
+[[block]]
+block = "sound"
+format = " $icon { $volume|} "
+[block.mappings]
+"alsa_output.pci-0000_00_1b.0.analog-stereo" = "🔉"
+"alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" = "🎧"
+
+[[block]]
+block = "toggle"
+icon_on = "speaker"
+icon_off = "headphones"
+format = " $icon "
+command_state = "wpctl status | grep \"Audio/Sink    alsa_output.pci-0000_00_1b.0.analog-stereo\""
+command_on = "wpctl set-default 53"
+command_off = "wpctl set-default 44"
+
+[[block]]
+block = "time"
+interval = 5
+format = " $timestamp.datetime(f:'%a %d/%m %R') "
+
+# [[block]]
+# block = "notify"
+# driver = "swaync"
+# format = " 🏴 {$paused{Off}|On} "
+# [[block.click]]
+# button = "left"
+# action = "show"

@@ -60,15 +60,9 @@ label=CPU
 interval=10
 min_width=CPU: 100.00%
 
-# Volume indicator
-#
-# The first parameter sets the step (and units to display)
-# The second parameter overrides the mixer selection
-# See the script for details.
-[volume-pulseaudio]
-command=~/.config/i3blocks/volume-pulseaudio/volume-pulseaudio -a
+[volume-pipewire]
+command=/home/alex/src/misuchiru03-i3-blocks.git/volume-pipewire
 interval=once
-label=♪
 signal=10
 
 # Date Time
