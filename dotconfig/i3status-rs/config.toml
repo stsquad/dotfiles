@@ -71,10 +71,10 @@ block = "time"
 interval = 5
 format = " $timestamp.datetime(f:'%a %d/%m %R') "
 
-# [[block]]
-# block = "notify"
-# driver = "swaync"
-# format = " 🏴 {$paused{Off}|On} "
-# [[block.click]]
-# button = "left"
-# action = "show"
+[[block]]
+block = "notify"
+driver = "swaync"
+format = " $icon {($notification_count.eng(w:1)) |}"
+[[block.click]]
+button = "left"
+action = "show"
