@@ -174,7 +174,7 @@ mode "resize" {
 # Start swaybar to display a workspace bar (plus the system information from i3blocks)
 bar {
     id bar-0
-    font pango:monospace 12, FontAwesome:style=Regular 12
+    font pango:monospace 12, FontAwesome 6 Brands:style=Regular 12
     position bottom
     status_command /home/alex/.cargo/bin/i3status-rs /home/alex/.config/i3status-rs/config.toml
     colors {
