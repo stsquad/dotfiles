@@ -106,10 +106,10 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
     set -l full_path (realpath $argv[1])
     if test -n "$full_path"; and test -d $full_path
         if test -d $full_path/bin
-            add_path $full_path/bin $PATH
+            add_path $full_path/bin
         end
         if test -d $full_path/sbin
-            add_path $full_path/sbin $PATH
+            add_path $full_path/sbin
         end
         if test -d $full_path/lib
             add_lib $full_path/lib
