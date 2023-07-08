@@ -150,8 +150,12 @@ if status --is-interactive
 
     if type -q starship
         function _set_title -e fish_preexec --description 'Update the title'
-            tmux rename-window (prompt_pwd)
+            set -l npanes tmux list-panes \| wc -l
+            if test (eval $npanes) -eq 1
+                tmux rename-window (prompt_pwd)
+            end
         end
+        _set_title
     else
         set -g __fish_git_prompt_show_informative_status 1
         set -g __fish_git_prompt_hide_untrackedfiles 1
