@@ -47,13 +47,17 @@ if status --is-login;
             set report "Using local ssh agent"
         end
     else
-        set report "missing keychain!!"
+        if test -S $SSH_AUTH_SOCK
+            set report "missing keychain but have an agent"
+        else
+            set report "missing keychain and no agent"
+        end
     end
 
     printf "$report\n"
 end
 
-if status --is-interactive;
+if status --is-interactive; and type -q keychain
     update_keys
 end
 
