@@ -1,0 +1,47 @@
+[screenshot]
+
+# Prompt string to use.
+prompt = "📷> "
+
+# Directory in which to save screenshots.
+save_dir = "~"
+
+# File name format.
+# See: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+file_name = "screenshot_%Y-%m-%dT%H:%M:%S.png"
+
+# Image format.
+type = "png" # "jpeg", "ppm"
+
+# JPEG quality value.
+jpeg_quality = 80
+
+# PNG compression level value.
+png_level = 6
+
+# Show or hide cursor.
+cursor = false
+
+
+[screencast]
+
+# Prompt string to use.
+prompt = "📹> "
+
+# PID file used to keep track of a screencast in progress.
+pid_file = "${XDG_RUNTIME_DIR}/sway-interactive-screenshot.${WAYLAND_DISPLAY}.video.pid"
+
+# Directory in which to save screencast.
+save_dir = "~"
+
+# File name format.
+# See: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+file_name = "screencast_%Y-%m-%dT%H:%M:%S.mkv"
+
+# Record audio.
+audio = "ask" # "yes", "no"
+
+[notification_actions]
+# Alternative name for dragon-drop binary
+dragon.command = "/home/alex/bin/dragon"
+
