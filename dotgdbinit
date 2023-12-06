@@ -12,6 +12,9 @@ set history size 1000
 # I have tmux to deal with pagination
 set pagination off
 
+# enable debug symbol server
+set debuginfod enabled on
+
 # disable some signal handlers I hit a lot in QEMU
 handle SIGUSR1 nostop noprint
 
