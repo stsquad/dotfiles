@@ -45,8 +45,7 @@ focus_follows_mouse no
 exec foot --server
 bindsym $mod+Return exec "~/.config/i3/terminal.sh"
 bindsym $mod+Shift+Return exec x-terminal-emulator
-#bindsym $mod+x exec "emacsclient -n -a '' -c"
-bindsym $mod+x exec "~/src/emacs/install/bin/emacsclient -n -a '' -c"
+bindsym $mod+x exec "~/bin/new-emacs-frame.sh"
 
 # kill focused window
 bindsym $mod+Shift+Q kill
