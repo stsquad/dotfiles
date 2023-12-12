@@ -29,6 +29,9 @@ exec swaync
 # Toggle control center
 bindsym $mod+Shift+n exec swaync-client -t -sw
 
+# gamma adjustment
+exec gammastep-indicator
+
 ##### End of start-up apps #####
 
 # font for window titles. ISO 10646 = Unicode
