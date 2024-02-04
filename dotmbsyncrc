@@ -30,23 +30,23 @@ MaildirStore linaro-local
 # Exclude everything under the internal [Gmail] folder, except the interesting folders
 # (we skip the kernel as it takes a long time)
 Channel linaro-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
+	Far	:linaro-gmail:
+	Near	:linaro-local:
         Patterns * ![Gmail]* ![Imap]* "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
         SyncState *
         CopyArrivalDate yes
 
 Channel linaro-inbox-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
+	Far	:linaro-gmail:
+	Near	:linaro-local:
         Patterns !* mythreads team "[Gmail]/Sent Mail" "[Gmail]/Starred"
         Create Both
 
 # Exclude everything apart from virtualization related stuff
 Channel linaro-virt-sync
-	Master	:linaro-gmail:
-	Slave	:linaro-local:
+	Far	:linaro-gmail:
+	Near	:linaro-local:
         Patterns !* virtualization*
         Create Both
         SyncState *
