@@ -25,7 +25,7 @@
 # Below is an example of how to fallback to ascii if the term is not unicode capable.
 # Defaults to UTF-8 characters.
 
-if command -v showconsolefont &&
+if command -qv showconsolefont &&
     showconsolefont 2&>/dev/null
     set -l has_console_font $status
 else
