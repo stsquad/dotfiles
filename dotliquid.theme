@@ -26,7 +26,7 @@
 # Defaults to UTF-8 characters.
 
 if command -v showconsolefont &&
-    showconsolefont 2>/dev/null
+    showconsolefont 2&>/dev/null
     set -l has_console_font $status
 else
     set -l has_console_font 1
