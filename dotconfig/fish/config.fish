@@ -35,7 +35,9 @@ end
 if status --is-login;
     set -l report
 
-    if type -q keychain;
+    if test -n "$DISPLAY"; and test -S $DISPLAY;
+       set report "keeping forwarded agent for $DISPLAY"
+    else if type -q keychain;
         if test -S $SSH_AUTH_SOCK; and set -q SSH_TTY
             # ensure we squash any SSH_AGENT_PID in the env which can confuse keychain
             set -e SSH_AGENT_PID
@@ -62,7 +64,11 @@ if status --is-login;
 end
 
 if status --is-interactive; and type -q keychain
-    update_keys
+    if test -n "$DISPLAY"; and test -S $DISPLAY;
+        print "Leaving keys untouched"
+    else
+        update_keys
+    end
 end
 
 
@@ -189,7 +195,7 @@ function setup_emacs --description "Setup emacs [path to install]"
         set report "Using System Emacs"
     end
     if set -q TMUX; and tmux info  | grep "Tc" | grep "true" > /dev/null
-        set -gx EMACS_TERM screen-24bits
+        set -gx EMACS_TERM foot-direct
         set report "$report with $EMACS_TERM"
         if test -n "$TMUX_PANE"
             tmux bind E new-window -n "Emacs" -t 0 -k "env TERM=$EMACS_TERM emacsclient -a '' -t"
