@@ -118,6 +118,17 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
         end
         if test -d $full_path/lib
             add_lib $full_path/lib
+
+            # Check for arch specific subdir
+            set -l triple (gcc -dumpmachine)
+            if test -d "$full_path/lib/$triple"
+                add_lib "$full_path/lib/$triple"
+            end
+
+            # and dri drivers
+            if test -d "$full_path/lib/$triple/dri"
+                add_dri "$full_path/lib/$triple/dri"
+            end
         end
         return 0
     end
