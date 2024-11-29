@@ -172,6 +172,9 @@ function load_extra_module()
 # If invoked as /bin/sh let's assume a minimal environment
 if [ "$SHELL" == "/bin/sh" ]; then
     echo "Executing $SHELL under minmal environment"
+elif [ "${HOSTNAME}" == "toolbox" ] ; then
+    echo "Executing $SHELL under toolbox"
+    PS1="[\u@\h \w]$ "
 elif [ "${INSIDE_EMACS/*tramp*/tramp}" == "tramp" ] ; then
     echo "Executing $SHELL inside tramp"
     PS1="[\u@\h \w]$ "
