@@ -12,6 +12,9 @@ output "Iiyama North America X2485 1120023602183" pos 0    0 res 1920x1200
 output "Dell Inc. DELL U2724D J370M04" pos 1920 0 res 2560x1440
 output "Iiyama North America X2485 1120023602184" pos 4480 0 res 1920x1200
 
+# Toggle off left monitor if I want other display to work
+bindsym $mod+Shift+XF86Launch5 output "Iiyama North America X2485 1120023602183" toggle
+
 # Keyboard Inputs
 
 input * {
