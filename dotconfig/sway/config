@@ -8,12 +8,12 @@ set $mod Mod4
 exec --no-startup-id env > ~/.sway.env
 
 # Use monitor names as kernel names can move
-output "Iiyama North America X2485 1120023602183" pos 0    0 res 1920x1200
+output "Dell Inc. DELL U2412M VH7RH5CA05BS" pos 0    0 res 1920x1200
 output "Dell Inc. DELL U2724D J370M04" pos 1920 0 res 2560x1440
 output "Iiyama North America X2485 1120023602184" pos 4480 0 res 1920x1200
 
 # Toggle off left monitor if I want other display to work
-bindsym $mod+Shift+XF86Launch5 output "Iiyama North America X2485 1120023602183" toggle
+bindsym $mod+Shift+XF86Launch5 output "Dell Inc. DELL U2412M VH7RH5CA05BS" toggle
 
 # Keyboard Inputs
 
@@ -144,7 +144,7 @@ bindsym $mod+Shift+7 move container to workspace number 7
 bindsym $mod+Shift+8 move container to workspace "8: Media"
 bindsym $mod+Shift+9 move container to workspace "9: Admin"
 
-bindsym $mod+XF86Launch5 move workspace to output "Iiyama North America X2485 1120023602183"
+bindsym $mod+XF86Launch5 move workspace to output "Dell Inc. DELL U2412M VH7RH5CA05BS"
 bindsym $mod+XF86Favorites move workspace to output "Dell Inc. DELL U2724D J370M04"
 bindsym $mod+XF86Launch9 move workspace to output "Iiyama North America X2485 1120023602184"
 
