@@ -13,8 +13,9 @@ IMAPAccount linaro
         Host imap.gmail.com
         User alex.bennee@linaro.org
         PassCmd "pass linaro"
-        Timeout 0
-        PipelineDepth 1
+        # 10 mins, mu updates every 800
+        Timeout 600
+        PipelineDepth 2
         # Use SSL
         SSLType IMAPS
         CertificateFile /etc/ssl/certs/ca-certificates.crt
