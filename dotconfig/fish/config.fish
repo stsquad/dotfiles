@@ -167,6 +167,7 @@ end
 
 if status --is-interactive
     and set -q TMUX
+    and type -q tmux
 
     # reset the default command to fish
     tmux set-option -g default-command (which fish)
@@ -180,6 +181,9 @@ if status --is-interactive
         end
         _set_title
     end
+else
+    # we might be in a container, hide TMUX from the rest of the script
+    set -u TMUX
 end
 
 function ta --description "ta <session>"
@@ -194,7 +198,7 @@ function setup_emacs --description "Setup emacs [path to install]"
     else
         set report "Using System Emacs"
     end
-    if set -q TMUX; and tmux info  | grep "Tc" | grep "true" > /dev/null
+    if set -q TMUX and tmux info  | grep "Tc" | grep "true" > /dev/null
         set -gx EMACS_TERM foot-direct
         set report "$report with $EMACS_TERM"
         if test -n "$TMUX_PANE"
