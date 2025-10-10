@@ -37,7 +37,7 @@
 [gitreview]
 	username = ajb
 [am]
-        messageid = true
+        messageid = false
 [github]
 	user = stsquad
 [pull]
