@@ -225,11 +225,10 @@ if status --is-interactive
 end
 
 function clear_to_end
-  commandline (commandline --cut-at-cursor)
+    commandline (commandline --cut-at-cursor)
 end
 bind \cc clear_to_end
 bind \ck kill-whole-line
-
 
 # Copy terminfos
 function copy_term
