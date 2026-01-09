@@ -160,34 +160,31 @@ if test -d /usr/lib/ccache
     set PATH /usr/lib/ccache $PATH
 end
 
-# TMUX setup
-if type -q starship
-   starship init fish | source
+# Starship for fancy prompts
+if status --is-interactive; and type -q starship
+    starship init fish | source
 end
 
-if status --is-interactive
-    and set -q TMUX
-    and type -q tmux
-
+# TMUX setup
+if status --is-interactive; and type -q tmux; and set -q TMUX_PANE
     # reset the default command to fish
     tmux set-option -g default-command (which fish)
 
-    if type -q starship
-        function _set_title -e fish_preexec --description 'Update the title'
-            set -l npanes tmux list-panes \| wc -l
-            if test (eval $npanes) -eq 1
-                tmux rename-window (prompt_pwd)
-            end
+    function _set_title -e fish_preexec --description 'Update the title'
+        set -l npanes tmux list-panes \| wc -l
+        if test (eval $npanes) -eq 1
+            tmux rename-window (prompt_pwd)
         end
-        _set_title
     end
-else
-    # we might be in a container, hide TMUX from the rest of the script
-    set -u TMUX
-end
+    _set_title
 
-function ta --description "ta <session>"
-    tmux attach -d -t $argv[1]; or tmux new -s $argv[1] fish
+    function ta --description "ta <session>"
+        tmux attach -d -t $argv[1]; or tmux new -s $argv[1] fish
+    end
+
+    set -l current_session (tmux display-message -p '#{session_name}')
+    set -l other_sessions (tmux list-sessions -F '#{session_name}' | grep -v "^$current_session\$" | string join ' ')
+    printf "TMUX in $current_session (see also: $other_sessions)\n"
 end
 
 # Emacs Setup
