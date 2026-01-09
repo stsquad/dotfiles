@@ -188,42 +188,41 @@ if status --is-interactive; and type -q tmux; and set -q TMUX_PANE
 end
 
 # Emacs Setup
-function setup_emacs --description "Setup emacs [path to install]"
-    set -l report
-    if add_world $argv[1]
-        set report "Using Emacs in $argv[1]"
-    else
-        set report "Using System Emacs"
+if status --is-interactive
+    function setup_emacs --description "Setup emacs [path to install]"
+        set -l report
+        if add_world $argv[1]
+            set report "Using $argv[1] for Emacs"
+        else
+            set report "Using System Emacs"
+        end
+        if set -q TMUX and tmux info  | grep "Tc" | grep "true" > /dev/null
+            set -gx EMACS_TERM foot-direct
+            set report "$report with $EMACS_TERM"
+            if test -n "$TMUX_PANE"
+                tmux bind E new-window -n "Emacs" -t 0 -k "env TERM=$EMACS_TERM emacsclient -a '' -t"
+            end
+        end
+        printf "$report\n"
     end
-    if set -q TMUX and tmux info  | grep "Tc" | grep "true" > /dev/null
-        set -gx EMACS_TERM foot-direct
-        set report "$report with $EMACS_TERM"
-        if test -n "$TMUX_PANE"
-            tmux bind E new-window -n "Emacs" -t 0 -k "env TERM=$EMACS_TERM emacsclient -a '' -t"
+
+    function launch_emacs --description "Launch the Emacs Client with whatever tweaks we need"
+        if set -q EMACS_TERM
+            set -lx TERM $EMACS_TERM
+            emacsclient -a '' $argv
+        else
+            emacsclient -a '' $argv
         end
     end
-    printf "$report\n"
-end
 
-function launch_emacs --description "Launch the Emacs Client with whatever tweaks we need"
-    if set -q EMACS_TERM
-        set -lx TERM $EMACS_TERM
-        emacsclient -a '' $argv
-    else
-        emacsclient -a '' $argv
-    end
-end
-
-# set the path if it is there
-if status --is-interactive
    setup_emacs $HOME/src/emacs/install
+
+   alias ec="launch_emacs -c -n"
+   alias ect="launch_emacs -t"
+   alias dired="launch_emacs -t -e '(my-dired-frame default-directory)'"
+
+   set -gx EDITOR "emacsclient -a ''"
 end
-
-alias ec="launch_emacs -c -n"
-alias ect="launch_emacs -t"
-alias dired="launch_emacs -t -e '(my-dired-frame default-directory)'"
-
-set -gx EDITOR "emacsclient -a ''"
 
 function clear_to_end
   commandline (commandline --cut-at-cursor)
