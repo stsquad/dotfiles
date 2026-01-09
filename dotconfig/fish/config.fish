@@ -152,8 +152,8 @@ end
 add_world $HOME
 
 if status --is-interactive
-   add_world ~/.local
-   add_world ~/.cargo
+    add_world ~/.local
+    add_world ~/.cargo
 end
 
 if test -d /usr/lib/ccache
