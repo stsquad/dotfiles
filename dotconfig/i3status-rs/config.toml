@@ -52,19 +52,12 @@ format = " $device $graph_down ($speed_down) "
 
 [[block]]
 block = "sound"
-format = " $icon { $volume|} "
+format = " $output_name { $volume|} "
 [block.mappings]
-"alsa_output.pci-0000_00_1b.0.analog-stereo" = "🔉"
-"alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" = "🎧"
-
-[[block]]
-block = "toggle"
-icon_on = "speaker"
-icon_off = "headphones"
-format = " $icon "
-command_state = "wpctl status | grep \"Audio/Sink    alsa_output.pci-0000_00_1b.0.analog-stereo\""
-command_on = "wpctl set-default 53"
-command_off = "wpctl set-default 44"
+"alsa_output.pci-0000_00_1f.0.analog-stereo" = "🔉"
+"alsa_output.pci-0000_00_1f.3.hdmi-stereo" = "🖵"
+"bluez_output.AC_BF_71_64_8D_FB.1" = "🎧"
+"bluez_output.41_42_00_00_9D_B8.1" = "🎧🎤"
 
 [[block]]
 block = "time"
