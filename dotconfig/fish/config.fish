@@ -166,7 +166,9 @@ if status --is-interactive; and type -q starship
 end
 
 # TMUX setup
-if status --is-interactive; and type -q tmux; and set -q TMUX_PANE
+if status --is-interactive; and type -q tmux
+
+    if set -q TMUX_PANE
     # reset the default command to fish
     tmux set-option -g default-command (which fish)
 
@@ -177,6 +179,8 @@ if status --is-interactive; and type -q tmux; and set -q TMUX_PANE
         end
     end
     _set_title
+
+    end
 
     function ta --description "ta <session>"
         tmux attach -d -t $argv[1]; or tmux new -s $argv[1] fish
