@@ -172,7 +172,7 @@ if status --is-interactive; and type -q tmux
     # reset the default command to fish
     tmux set-option -g default-command (which fish)
 
-    function _set_title -e fish_preexec --description 'Update the title'
+    function _set_title -e fish_prompt --description 'Update the title'
         set -l npanes tmux list-panes \| wc -l
         if test (eval $npanes) -eq 1
             tmux rename-window (prompt_pwd)
