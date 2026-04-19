@@ -40,3 +40,7 @@ No single-test command exists — there are no automated tests.
 - User-specific files: `<username>_dot<name>` convention
 - ECA skill files live in `dotconfig/eca/skills/<name>/SKILL.md`
 - Commit messages: imperative mood, plain English, no emoji
+
+## Agent Configuration
+- **Agent Workspace**: Use `/home/alex/mysrc/dotfiles.git/agent_workspace/` for storing plans, tool evaluations, or temporary files. This directory is ignored by git.
+- **Communication**: Use `caveman` mode (lite or full) for all technical interactions to minimize token usage while maintaining accuracy.
