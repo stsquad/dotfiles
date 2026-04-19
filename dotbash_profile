@@ -162,7 +162,6 @@ else
     load_extra_module emacs emacs
     load_extra_module git git
     load_extra_module apt apt-get
-    load_extra_module keys ssh-agent gpg-agent keychain
     load_extra_module valgrind valgrind
     load_extra_module ccache ccache
 

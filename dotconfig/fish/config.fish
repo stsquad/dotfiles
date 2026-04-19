@@ -8,19 +8,10 @@
 
 set -gx HOSTNAME (hostname)
 
+# Stop C-s triggering flow control
+#stty -ixon
+
 # Set up any ssh/gpg keys
-
-# Update keys from keychains env file, see bellow for choices
-function update_keys
-    [ -e $HOME/.keychain/$HOSTNAME-fish ]; and . $HOME/.keychain/$HOSTNAME-fish
-end
-
-function start_keychain --description 'Start the authorative keychain instance'
-    keychain -q -k all --agents ssh
-    keychain -q --agents ssh --systemd
-    update_keys
-    ssh-add
-end
 
 # Bling (replace with fastfetch once we go to trixie)
 if status --is-login;
@@ -32,45 +23,28 @@ if status --is-login;
 end
 
 # If this is a login shell we want to definitively set the agent (forwarded or local)
-if status --is-login;
+if status --is-login
     set -l report
+    set -l local_ssh
 
-    if test -n "$DISPLAY"; and test -S $DISPLAY;
-       set report "keeping forwarded agent for $DISPLAY"
-    else if type -q keychain;
-        if test -S $SSH_AUTH_SOCK; and set -q SSH_TTY
-            # ensure we squash any SSH_AGENT_PID in the env which can confuse keychain
-            set -e SSH_AGENT_PID
-            keychain -q -k all --inherit any --agents ssh --systemd
-            # the second call ensures we update all the saved configs
-            keychain -q --inherit any
-            set report "Using forwarded ssh agent"
-        else if set -q SOMMELIER_VERSION
-            keychain -q -k others --agents ssh --systemd
-            set report "Using local ssh agent (crostini)"
-        else
-            keychain -q -k others --clear --agents ssh --systemd
-            set report "Using local ssh agent"
-        end
-    else
-        if test -S $SSH_AUTH_SOCK
-            set report "missing keychain but have an agent"
-        else
-            set report "missing keychain and no agent"
-        end
+    if systemctl --user stop ssh-agent.service
+        set local_ssh "local reset"
     end
 
-    printf "$report\n"
-end
-
-if status --is-interactive; and type -q keychain
-    if test -n "$DISPLAY"; and test -S $DISPLAY;
-        print "Leaving keys untouched"
-    else
-        update_keys
+    if test -n "$DISPLAY"; and test -S $DISPLAY
+        set report "keeping forwarded agent for $DISPLAY"
+    else if test -n "$SSH_CLIENT"; and test -S $SSH_AUTH_SOCK; and set -q SSH_TTY
+        set report "Using forwarded ssh agent"
+    else if systemctl --user start ssh-agent.service
+        set report "Using local ssh-agent"
     end
+
+    printf "$report ($local_ssh)\n"
 end
 
+if status --is-interactive
+    # printf "Leaving keys untouched: $SSH_AUTH_SOCK\n"
+end
 
 # Helper for managing duplicates
 # From: https://github.com/fish-shell/fish-shell/issues/296
@@ -111,6 +85,17 @@ function add_lib --description 'Add <path> to LD_LIBRARY_PATH'
         set -gx LD_LIBRARY_PATH (string join ':' $SHADOW_LD_LIBRARY_PATH)
     else
         printf "didn't add $argv[1] to LD_LIBRARY_PATH\n"
+    end
+end
+
+# this is for GPU drivers only
+function add_dri --description 'Add <path> to LIBGL_DRIVERS_PATH'
+    if test -n "$argv[1]"; and test -d $argv[1]
+        set -gx SHADOW_LIBGL_DRIVERS_PATH $argv[1] $SHADOW_LIBGL_DRIVERS_PATH
+        varclear SHADOW_LD_LIBRARY_PATH
+        set -gx LIBGL_DRIVERS_PATH (string join ':' $SHADOW_LIBGL_DRIVERS_PATH)
+    else
+        printf "didn't add $argv[1] to LIBGL_DRIVERS_PATH\n"
     end
 end
 

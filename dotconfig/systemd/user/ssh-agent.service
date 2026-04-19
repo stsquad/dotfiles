@@ -1,0 +1,12 @@
+[Unit]
+Description=SSH key agent
+
+[Service]
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStartPost=/usr/bin/systemctl --user set-environment SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK
+ExecStopPost=/usr/bin/systemctl --user unset-environment SSH_AUTH_SOCK
+Type=simple
+
+[Install]
+WantedBy=default.target
