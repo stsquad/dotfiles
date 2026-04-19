@@ -1,0 +1,2 @@
+# Ignore config as it is local and tends to contain tokens
+config.json
