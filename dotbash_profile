@@ -12,20 +12,6 @@ set +x
 # Source global definitions
 #
 
-#echo "Starting ajb's .bashrc $*"
-#set -x
-
-#For debuging when we are interactive or non-interactive (tty)
-#
-#ENVLOG=~/tmp/env`date +%s`.log
-#env > $ENVLOG
-#echo "ARGS=$*" >> $ENVLOG
-#PID=$$
-#echo "PID=$PID"  >> $ENVLOG
-#cat /proc/$PID/cmdline >> $ENVLOG
-#echo "pstree" >> $ENVLOG
-#pstree -p >> $ENVLOG
-
 if [ -f /etc/bashrc ]; then
     source /etc/bashrc
 fi
@@ -82,19 +68,6 @@ function find_directories ()
     echo "/alternative/not/found"
 }
 
-# Search though a list of files, returning first match
-function find_alt_file ()
-{
-    for f in "$@"
-    do
-      if [ -f "$f" ]; then
-	  echo "$f"
-	  return
-      fi
-    done
-    echo "/alternative/not/found"
-}
-
 #
 # Lets see if we have a decent "grep"
 #
@@ -117,9 +90,6 @@ BROWSER=$(find_alternatives "chromium-browser" "google-chrome" "chrome" "firefox
 
 # One editor
 export EDITOR=emacs
-
-# set CFLAGS for debugging - autoconf usually picks it up.
-#export CFLAGS=-g3
 
 # CVS exports
 export CVS_RSH=ssh
