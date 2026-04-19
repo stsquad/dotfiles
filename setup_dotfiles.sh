@@ -93,7 +93,7 @@ do
 done
 
 #
-# We also might want slightly different setups for user profiles
+# Also deal with scripts
 #
 mkdir -p $HOME/bin
 cd bin

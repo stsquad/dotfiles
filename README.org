@@ -3,6 +3,11 @@ found I spent a lot of time messing around setting up my environment.
 Eventually I moved all my dotfiles into version control and scripted
 up some quick set-up instructions.
 
+This repository is organized into three main areas:
+- [[*Dotfiles][Dotfiles]]: Configuration files for various tools (bash, i3, etc.)
+- [[*Scripts][Scripts]]: Utility scripts in the =bin/= directory
+- [[*ECA Skills][ECA Skills]]: Specialized skills for the Editor Code Assistant
+
 * Bootstrapping
 This basically runs un-trusted shell script from the internet. You
 shouldn't do it unless you are confident it won't hose your system. I
@@ -11,7 +16,7 @@ offer no such guarantees ;-)
 #+begin_src sh 
 wget -O - https://raw.github.com/stsquad/dotfiles/master/bootstrap.sh | bash
 #+end_src
-* Layout
+* Dotfiles
 This repository contains "dotfiles" for bash and a whole bunch of
 other bits and pieces. The script [[file:setup_dotfiles.sh][setup_dotfiles.sh]] will symlink all
 the files in their correct place. Currently if you add new files it
@@ -31,9 +36,15 @@ created for them by the setup script.
 Sometimes you want to only have certain setups for different users or
 machines. This is dealt with by pre-pending the dotfile with ${USER} or
 ${HOSTNAME}. Currently dotconfig directories are not supported.
-* TODO Things I want to fixup one day [0/2]
-** TODO Make .bash_profile search the repository
-There is no reason the sub-modules couldn't be kept in a directory in
-the repository to avoid cluttering up ~
-** TODO Make the dotfiles work with zsh
-In theory it should be compatible, I need to try this out.
+
+* Scripts
+The [[file:bin/][bin/]] directory contains various utility scripts for development,
+git workflow management, and system tasks. See the [[file:bin/README.org][bin/README]] for
+more details on individual scripts.
+
+* ECA Skills
+This repository now includes skills for the Editor Code Assistant
+(ECA). These are located in [[file:dotconfig/eca/skills/][dotconfig/eca/skills/]].
+
+- [[file:dotconfig/eca/skills/git-query/SKILL.md][Git Query]]: Efficiently query and summarize git history.
+

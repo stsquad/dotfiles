@@ -1,0 +1,26 @@
+* Scripts
+This directory contains various utility scripts used for development and system management.
+
+** Git Utilities
+*** [[file:git-branch-summary.sh][git-branch-summary.sh]]
+List a summary of all branches and their merge status relative to a reference (defaulting to =origin/master=).
+
+*** [[file:git-branches-touching.sh][git-branches-touching.sh]]
+List branches that contain commits touching a specific file or directory.
+
+** Emacs Utilities
+*** [[file:launch-dired.sh][launch-dired.sh]]
+Launches an Emacs dired frame, specifically targeting the =~/Downloads/= directory.
+
+*** [[file:new-emacs-frame.sh][new-emacs-frame.sh]]
+Opens a new Emacs frame using =emacsclient=.
+
+** System and Sync
+*** [[file:linkbin.pl][linkbin.pl]]
+A Perl script to create symbolic links in =~/bin= (or other locations) for files in a given directory. This is used by the bootstrapping process to make scripts available in the PATH.
+
+*** [[file:rsync-recent.py][rsync-recent.py]]
+A wrapper for =rsync= that allows syncing a subset of files based on criteria like modification time or total size. Useful for managing large directories with limited destination space.
+
+*** [[file:shell.sh][shell.sh]]
+A terminal launcher script that selects the best available terminal (foot, alacritty, kitty, st) and configures preferred fonts and shells.

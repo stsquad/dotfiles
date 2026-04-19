@@ -133,7 +133,7 @@ export PAGER=less
 
 #
 # surfraw, command line browser control
-# http://surfraw.alioth.debian.org/
+# http://surfraw.org/
 #
 SURFRAW=$(find_alternatives "surfraw")
 if [[ -f $SURFRAW ]]; then
