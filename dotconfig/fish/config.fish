@@ -27,7 +27,7 @@ if status --is-login
     set -l report
     set -l local_ssh
 
-    if systemctl --user stop ssh-agent.service
+    if type -q systemctl; and systemctl --user stop ssh-agent.service
         set local_ssh "local reset"
     end
 
