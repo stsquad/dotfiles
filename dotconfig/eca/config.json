@@ -1,0 +1,95 @@
+{
+    "defaultModel": "google/models/gemini-3.1-flash-lite",
+    "providers" : {
+        "google" : {
+            "keyRc" : "api.gemini.google.com"
+        },
+        "anthropic" : {
+            "keyRc": "api.anthropic.com"
+        },
+        "ramalama" : {
+            "api": "openai-chat",
+            "url": "http://localhost:8080",
+            "completionUrlRelativePath": "/v1/chat/completions",
+            "httpClient": {
+                "version": "http-1.1"
+            },
+            "models": {
+                "qwen3-coder:30b": {}
+            }
+        }
+    },
+    "plugins": {
+      "install": [
+        "caveman",
+        "session-journal",
+        "superpowers",
+        "tdd"
+      ]
+    },
+    "mcpServers": {
+        "semcode": {
+            "command": "semcode-mcp",
+            "args": ["--lazy"]
+        },
+        "fetch": {
+            "command": "uvx",
+            "args": ["mcp-server-fetch"]
+        },
+        "exa": {
+            "url": "https://mcp.exa.ai/mcp"
+        },
+        "time": {
+            "command": "uvx",
+            "args": ["mcp-server-time"]
+        },
+        "memory": {
+            "command": "uvx",
+            "args": ["--from", "memora-mcp", "memora-server"]
+        }
+    },
+    "toolCall": {
+        "approval": {
+            "allow": {
+                "semcode": {},
+                "time": {},
+                "memory": {},
+                "ninja": {},
+                "make": {}
+            }
+        }
+    },
+    "customTools": {
+      "make": {
+          "description": "Invoke GNU make to build a target.",
+          "command": "make -C {{directory}} {{target}}",
+          "schema": {
+              "properties": {
+                  "directory": {
+                      "type": "string",
+                      "description": "a build directory path"
+                  },
+                  "target": {
+                      "type": "string",
+                      "description": "a build target (blank == build all)"
+                  }
+              },
+              "required": ["directory"]
+          }
+      },
+      "ninja": {
+          "description": "Invoke the ninja tool build the system.",
+          "command": "ninja -C {{directory}}",
+          "schema": {
+              "properties": {
+                  "directory": {
+                      "type": "string",
+                      "description": "a build directory path"
+                  }
+              },
+              "required": ["directory"]
+          }
+      }
+    },
+    "$schema": "https://eca.dev/config.json"
+}
