@@ -2,10 +2,24 @@
     "defaultModel": "google/models/gemini-3.1-flash-lite",
     "providers" : {
         "google" : {
-            "keyRc" : "api.gemini.google.com"
+            "key": "${cmd:pass show api.gemini.google.com}",
+            "models" : {
+                "gemini-flash-flex": {
+                    "modelName": "gemini-flash-latest",
+                    "extraPayload": { "service_tier": "flex" }
+                }
+            }
         },
         "anthropic" : {
-            "keyRc": "api.anthropic.com"
+            "key": "${cmd:pass show api.anthropic.com}"
+        },
+        "linaro": {
+            "key": "${cmd:pass show api.linaro.org}",
+            "url": "https://eu-gateway.linaro.org/v1",
+            "api": "openai-chat",
+            "models": {
+                "qwen3.5-397b": {}
+            }
         },
         "ramalama" : {
             "api": "openai-chat",
