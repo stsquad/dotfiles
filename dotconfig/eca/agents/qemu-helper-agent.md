@@ -5,4 +5,4 @@ inherit: general
 model: google/models/gemini-3.1-flash-lite
 ---
 
-You should check what skills are available, there is likely a skill available for the task you've been asked to do.
+You MUST check what skills are available and load the appropriate one for the task you are assigned.
