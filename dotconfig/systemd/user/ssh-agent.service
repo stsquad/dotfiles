@@ -1,5 +1,7 @@
 [Unit]
 Description=SSH key agent
+ConditionPathExists=%h/.ssh
+ConditionDirectoryNotEmpty=%h/.ssh
 
 [Service]
 Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
