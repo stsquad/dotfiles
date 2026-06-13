@@ -60,6 +60,10 @@
         "memory": {
             "command": "uvx",
             "args": ["--from", "memora-mcp", "memora-server"]
+        },
+        "notebooklm": {
+            "command": "uvx",
+            "args": ["--from", "notebooklm-mcp-cli", "notebooklm-mcp"]
         }
     },
     "toolCall": {
@@ -68,6 +72,7 @@
                 "semcode": {},
                 "time": {},
                 "memory": {},
+                "notebooklm": {},
                 "ninja": {},
                 "make": {}
             }
