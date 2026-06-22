@@ -35,7 +35,7 @@ if status --is-login
         set report "keeping forwarded agent for $DISPLAY"
     else if test -n "$SSH_CLIENT"; and test -S $SSH_AUTH_SOCK; and set -q SSH_TTY
         set report "Using forwarded ssh agent"
-    else if systemctl --user start ssh-agent.service
+    else if type -q systemctl; and systemctl --user start ssh-agent.service
         set report "Using local ssh-agent"
     end
 
