@@ -1,0 +1,149 @@
+GOOSE_TELEMETRY_ENABLED: true
+extensions:
+  extensionmanager:
+    enabled: true
+    type: platform
+    name: Extension Manager
+    description: Enable extension management tools for discovering, enabling, and disabling extensions
+    display_name: Extension Manager
+    bundled: true
+  summarize:
+    enabled: true
+    type: platform
+    name: summarize
+    description: Load files/directories and get an LLM summary in a single call
+    display_name: Summarize
+    bundled: true
+  code_execution:
+    enabled: false
+    type: platform
+    name: code_execution
+    description: Goose will make extension calls through code execution, saving tokens
+    display_name: Code Mode
+    bundled: true
+  developer:
+    enabled: true
+    type: platform
+    name: developer
+    description: Write and edit files, and execute shell commands
+    display_name: Developer
+    bundled: true
+  todo:
+    enabled: true
+    type: platform
+    name: todo
+    description: Enable a todo list for goose so it can keep track of what it is doing
+    display_name: Todo
+    bundled: true
+  orchestrator:
+    enabled: false
+    type: platform
+    name: orchestrator
+    description: 'Manage agent sessions: list, view, start, send messages, interrupt, and stop agents'
+    display_name: Orchestrator
+    bundled: true
+  tom:
+    enabled: true
+    type: platform
+    name: tom
+    description: Inject custom context into every turn via GOOSE_MOIM_MESSAGE_TEXT and GOOSE_MOIM_MESSAGE_FILE environment variables
+    display_name: Top Of Mind
+    bundled: true
+  apps:
+    enabled: true
+    type: platform
+    name: apps
+    description: Create and manage custom Goose apps through chat. Apps are HTML/CSS/JavaScript and run in sandboxed windows.
+    display_name: Apps
+    bundled: true
+  chatrecall:
+    enabled: false
+    type: platform
+    name: chatrecall
+    description: Search past conversations and load session summaries for contextual memory
+    display_name: Chat Recall
+    bundled: true
+  analyze:
+    enabled: true
+    type: platform
+    name: analyze
+    description: 'Analyze code structure with tree-sitter: directory overviews, file details, symbol call graphs'
+    display_name: Analyze
+    bundled: true
+  skills:
+    enabled: true
+    type: platform
+    name: skills
+    description: Discover and provide skill instructions from filesystem and builtins
+    display_name: Skills
+    bundled: true
+  summon:
+    enabled: true
+    type: platform
+    name: summon
+    description: Load knowledge and delegate tasks to subagents
+    display_name: Summon
+    bundled: true
+  semcode:
+    enabled: true
+    type: stdio
+    name: semcode
+    cmd: semcode-mcp
+    args:
+    - --lazy
+    timeout: 300
+  fetch:
+    enabled: true
+    type: stdio
+    name: fetch
+    cmd: uvx
+    args:
+    - mcp-server-fetch
+    timeout: 300
+  exa:
+    enabled: true
+    type: streamable_http
+    name: exa
+    url: https://mcp.exa.ai/mcp
+    timeout: 300
+  time:
+    enabled: true
+    type: stdio
+    name: time
+    cmd: uvx
+    args:
+    - mcp-server-time
+    timeout: 300
+  memory:
+    enabled: true
+    type: stdio
+    name: memory
+    cmd: uvx
+    args:
+    - --from
+    - memora-mcp
+    - memora-server
+    timeout: 300
+  notebooklm:
+    enabled: true
+    type: stdio
+    name: notebooklm
+    cmd: uvx
+    args:
+    - --from
+    - notebooklm-mcp-cli
+    - notebooklm-mcp
+    timeout: 300
+GOOSE_THINKING_EFFORT: medium
+active_provider: google
+providers:
+  google:
+    enabled: true
+    model: gemini-2.5-flash
+    configured: true
+  anthropic:
+    enabled: true
+    model: claude-sonnet-5
+    configured: true
+ANTHROPIC_HOST: https://api.anthropic.com
+GOOGLE_HOST: https://generativelanguage.googleapis.com
