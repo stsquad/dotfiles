@@ -98,7 +98,7 @@
       },
       "ninja": {
           "description": "Invoke the ninja tool build the system.",
-          "command": "ninja -C {{directory}}",
+          "command": "ninja --quiet -C {{directory}}",
           "schema": {
               "properties": {
                   "directory": {
