@@ -102,7 +102,7 @@ end
 function add_dri --description 'Add <path> to LIBGL_DRIVERS_PATH'
     if test -n "$argv[1]"; and test -d $argv[1]
         set -gx SHADOW_LIBGL_DRIVERS_PATH $argv[1] $SHADOW_LIBGL_DRIVERS_PATH
-        varclear SHADOW_LD_LIBRARY_PATH
+        varclear SHADOW_LIBGL_DRIVERS_PATH
         set -gx LIBGL_DRIVERS_PATH (string join ':' $SHADOW_LIBGL_DRIVERS_PATH)
     else
         printf "didn't add $argv[1] to LIBGL_DRIVERS_PATH\n"
