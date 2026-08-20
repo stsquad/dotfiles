@@ -88,6 +88,16 @@ function add_lib --description 'Add <path> to LD_LIBRARY_PATH'
     end
 end
 
+function add_pkgconf --description 'Add <path> to PKG_CONFIG_PATH'
+    if test -n "$argv[1]"; and test -d $argv[1]
+        set -gx SHADOW_PKG_CONFIG_PATH $argv[1] $SHADOW_PKG_CONFIG_PATH
+        varclear SHADOW_PKG_CONFIG_PATH
+        set -gx PKG_CONFIG_PATH (string join ':' $SHADOW_PKG_CONFIG_PATH)
+    else
+        printf "didn't add $argv[1] to PKG_CONFIG_PATH\n"
+    end
+end
+
 # this is for GPU drivers only
 function add_dri --description 'Add <path> to LIBGL_DRIVERS_PATH'
     if test -n "$argv[1]"; and test -d $argv[1]
@@ -99,7 +109,7 @@ function add_dri --description 'Add <path> to LIBGL_DRIVERS_PATH'
     end
 end
 
-function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PATH'
+function add_world --description 'Add <path/[bin|lib[/pkgconfig]]> to  PATH, LD_LIBRARY_PATH and PKG_CONFIG_PATH'
     if test -z "$argv[1]"; or test ! -d $argv[1]
         return -1
     end
@@ -123,6 +133,14 @@ function add_world --description 'Add <path/[bin|lib]> to PATH and LD_LIBRARY_PA
             # and dri drivers
             if test -d "$full_path/lib/$triple/dri"
                 add_dri "$full_path/lib/$triple/dri"
+            end
+
+            # and pkgconfig
+            if test -d "$full_path/lib/pkgconfig"
+                add_pkgconf "$full_path/lib/pkgconfig"
+            end
+            if test -d "$full_path/lib/$triple/pkgconfig"
+                add_pkgconf "$full_path/lib/$triple/pkgconfig"
             end
         end
         return 0
