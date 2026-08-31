@@ -35,10 +35,7 @@
     },
     "plugins": {
       "install": [
-        "caveman",
-        "session-journal",
-        "superpowers",
-        "tdd"
+        "caveman"
       ]
     },
     "mcpServers": {
@@ -46,20 +43,8 @@
             "command": "semcode-mcp",
             "args": ["--lazy"]
         },
-        "fetch": {
-            "command": "uvx",
-            "args": ["mcp-server-fetch"]
-        },
         "exa": {
             "url": "https://mcp.exa.ai/mcp"
-        },
-        "time": {
-            "command": "uvx",
-            "args": ["mcp-server-time"]
-        },
-        "memory": {
-            "command": "uvx",
-            "args": ["--from", "memora-mcp", "memora-server"]
         },
         "notebooklm": {
             "command": "uvx",
