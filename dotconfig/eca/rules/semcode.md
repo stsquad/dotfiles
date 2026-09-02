@@ -1,0 +1,1 @@
+You should use the semcode MCP to do code exploration, git archaeology and access to lore mailing list archives. It is started lazily but the `list_categories` and `get_tools` commands can give you more information. 
