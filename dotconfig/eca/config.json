@@ -55,8 +55,6 @@
         "approval": {
             "allow": {
                 "semcode": {},
-                "time": {},
-                "memory": {},
                 "notebooklm": {},
                 "ninja": {},
                 "make": {}
