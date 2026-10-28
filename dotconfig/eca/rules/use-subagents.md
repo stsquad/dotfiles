@@ -3,5 +3,5 @@ You MUST ALWAYS consider using triggering relevant skills when asked to do somet
 Be concise and return only the final result.
 {% else %}
 You MUST invoke sub-agents for code exploration, building and testing.
-You SHOULD invoke the my-general-agent sub-agent for doing analysis tasks.
+You SHOULD prefer project specific agents over the general purpose my-general-agent.
 {% endif %}

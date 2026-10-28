@@ -1,5 +1,5 @@
 ---
 mode: subagent
 inherit: general
-model: google/gemini-flash-flex
+model: google/models/gemini-flash-lite-latest
 ---

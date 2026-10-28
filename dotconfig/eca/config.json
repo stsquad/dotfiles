@@ -1,5 +1,5 @@
 {
-    "defaultModel": "google/models/gemini-3.1-flash-lite",
+    "defaultModel": "google/models/gemini-flash-latest",
     "providers" : {
         "google" : {
             "key": "${cmd:pass show api.gemini.google.com}",
@@ -38,13 +38,13 @@
         "caveman"
       ]
     },
+    "mcpToolSearch": {
+        "includePattern": [".*"]
+    },
     "mcpServers": {
         "semcode": {
             "command": "semcode-mcp",
             "args": ["--lazy"]
-        },
-        "exa": {
-            "url": "https://mcp.exa.ai/mcp"
         },
         "notebooklm": {
             "command": "uvx",

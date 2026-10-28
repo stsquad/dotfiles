@@ -134,12 +134,19 @@ extensions:
     - notebooklm-mcp-cli
     - notebooklm-mcp
     timeout: 300
+  scheduler:
+    enabled: true
+    type: platform
+    name: scheduler
+    description: Create and manage scheduled recipe execution
+    display_name: Scheduler
+    bundled: true
 GOOSE_THINKING_EFFORT: medium
 active_provider: google
 providers:
   google:
     enabled: true
-    model: gemini-2.5-flash
+    model: gemini-flash-latest
     configured: true
   anthropic:
     enabled: true
