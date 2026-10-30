@@ -15,8 +15,11 @@
 	ppull = format-patch --subject-prefix=PULL --cover-letter
         bisect-fixed = bisect bad
         bisect-unfixed = bisect good
-        showfix = log -1 --format=fixes
-        showref = log -1 --format='%h (%s)'
+        showfix = log -1 --abbrev=12 --format=fixes
+        showref = log -1 --abbrev=12 --format='%h (\"%s\")'
+	publish = !/usr/bin/git-publish
+        find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+        show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
 [pretty]
         fixes = Fixes: %h (\"%s\")%nCc: %ae
 [credential]
