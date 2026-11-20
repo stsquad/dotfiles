@@ -157,6 +157,10 @@ add_world $HOME
 if status --is-interactive
     add_world ~/.local
     add_world ~/.cargo
+
+    # I don't usually have node, but when I do it's in a hermetically
+    # sealed VM to keep it away from my main dev environment.
+    add_path ~/node_modules/.bin
 end
 
 if test -d /usr/lib/ccache
