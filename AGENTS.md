@@ -39,6 +39,9 @@ No single-test command exists — there are no automated tests.
 - Host-specific files: `<hostname>_dot<name>` convention
 - User-specific files: `<username>_dot<name>` convention
 - ECA skill files live in `dotconfig/eca/skills/<name>/SKILL.md`
+- Claude Code config lives in `dotclaude/` (`settings.json`, `agents/`);
+  `dotclaude/setup.sh` links those items into `~/.claude/`, which stays a
+  real directory because it holds credentials and session state
 - Commit messages: imperative mood, plain English, no emoji
 
 ## Agent Configuration
